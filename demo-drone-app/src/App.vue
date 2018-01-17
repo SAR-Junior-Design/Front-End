@@ -1,7 +1,12 @@
 <template>
+<<<<<<< HEAD
   <v-app id="inspire">
     
     <!-- <v-navigation-drawer temporary v-model="sidebar">
+=======
+  <v-app style="background-color:white; margin-top: 0px; font-family: 'Barlow', sans-serif;">
+    <v-navigation-drawer temporary v-model="sidebar">
+>>>>>>> origin/master
       <v-list>
         <v-list-tile
           v-for="item in menuItems"
@@ -10,23 +15,39 @@
           <v-list-tile-content>{{ item.title }}</v-list-tile-content>
         </v-list-tile>
       </v-list>
+<<<<<<< HEAD
     </v-navigation-drawer> -->
 
     <v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" style="background-color:#253f87">
+=======
+    </v-navigation-drawer>
+
+    <v-toolbar fixed style="background-color:#0b5108;color:#ffffff">
+>>>>>>> origin/master
       <span class="hidden-sm-and-up">
         <v-toolbar-side-icon @click.stop="sidebar = !sidebar">
         </v-toolbar-side-icon>
       </span>
+<<<<<<< HEAD
       <v-toolbar-title style="margin-right:20px;">
         <router-link to="/" tag="span" style="cursor: pointer;color:white;">
           SAR
         </router-link>
       </v-toolbar-title>
+=======
+      <v-toolbar-title>
+        <router-link to="/" tag="span" style="cursor: pointer">
+          {{ appTitle }}
+        </router-link>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+>>>>>>> origin/master
       <v-toolbar-items class="hidden-xs-only">
         <v-btn
           flat
           v-for="item in menuItems"
           :key="item.title"
+<<<<<<< HEAD
           :to="item.path">
           <span style="color:white;"> {{ item.title }} </span>
         </v-btn>
@@ -45,6 +66,17 @@
     </v-toolbar>
     
 	  <router-view absolute></router-view>
+=======
+          :to="item.path"
+          style="color:#ffffff;">
+          {{ item.title }}
+        </v-btn>
+      </v-toolbar-items>
+    </v-toolbar>
+    <v-container pa-0 fluid>
+      <router-view></router-view>
+    </v-container>
+>>>>>>> origin/master
     
   </v-app>
 </template>
@@ -53,6 +85,7 @@
   export default {
     data () {
       return {
+<<<<<<< HEAD
         is_flat: true,
         sidebar: false,
         menuItems: [
@@ -60,6 +93,15 @@
           { title: 'Mission', path: '/mission', icon: 'home'},
           { title: 'New Mission', path: '/newmission', icon: 'lock'},
           { title: 'Settings', path: '/settings', icon: 'lock'}
+=======
+        appTitle: 'SAR-DRONE',
+        sidebar: false,
+        menuItems: [
+          { title: 'Home', path: '/home', icon: 'home' },
+          { title: 'Map', path: '/map', icon: 'map'},
+          { title: 'Mission', path:'/mission', icon: 'helmet'},
+          { title: 'New Mission', path: '/newmission', icon: 'helmet'}
+>>>>>>> origin/master
         ]
       }
     }
@@ -68,6 +110,7 @@
 
 <style lang="stylus">
   @import './stylus/main'
+<<<<<<< HEAD
 
   @require '../../node_modules/vuetify/src/stylus/settings/_colors'
   @import url("https://fonts.googleapis.com/css?family=Barlow")
@@ -86,4 +129,6 @@
     margin: 0;
   }
 
+=======
+>>>>>>> origin/master
 </style>

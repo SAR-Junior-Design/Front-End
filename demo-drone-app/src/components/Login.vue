@@ -1,17 +1,17 @@
 <template>
-  <v-content style="margin-top:80px;">
+  <v-content class="background" style="margin-top:-250px;padding:0px;">
     <section fill-height>
       <v-container text-xs-center>
         <v-layout row>
           <v-layout column>
-            <v-flex class="text-xs-left" fluid style="margin-top:160px;">
-              <h1 style="font-size:30px;"> Drone Search and Rescue </h1>
+            <v-flex class="text-xs-left" fluid style="margin-top:45%;color:#dadfe8">
+              <h1 style="font-size:30px;"> Search And Rescue Revamped </h1>
               <h3 class="px-0">Leave no one lost.</h3>
             </v-flex>
           </v-layout>
           <v-layout column>
             <v-flex>
-              <v-card>
+              <v-card style="background-color:#dadfe8;">
                 <v-card-title>
                   <v-flex class="text-xs-center" style="margin-top:0px;">
                     <h2> Get Started </h2>
@@ -58,7 +58,7 @@
                           ></v-text-field>
                       </v-flex>
                       <v-flex class="text-xs-center" mt-5>
-                        <v-btn style="background-color:#253f87;color:#ffffff" type="submit">Sign Up</v-btn>
+                        <v-btn style="background-color:#1d561a;color:#ffffff" type="submit">Sign Up</v-btn>
                       </v-flex>
                     </v-layout>
                   </form>
@@ -69,76 +69,18 @@
         </v-layout>
       </v-container>
     </section>
-    <section style="background-color:#253f87">
-      <v-layout
-        column
-        wrap
-        class="my-5"
-        align-center
-      >
-        <v-flex xs12 sm4 class="my-3" style="color:white;margin-top:40px;">
-          <div class="text-xs-center">
-            <h2 class="headline">The best way to start developing</h2>
-            <span class="subheading">
-              Cras facilisis mi vitae nunc 
-            </span>
-          </div>
-        </v-flex>
-        <v-flex xs12>
-          <v-container grid-list-xl>
-            <v-layout row wrap align-center>
-              <v-flex xs12 md4>
-                <v-card class="elevation-0 transparent" style="color:white;">
-                  <v-card-text class="text-xs-center">
-                    <v-icon x-large class="blue--text text--lighten-2">color_lens</v-icon>
-                  </v-card-text>
-                  <v-card-title primary-title class="layout justify-center">
-                    <div class="headline text-xs-center">Material Design</div>
-                  </v-card-title>
-                  <v-card-text>
-                    Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
-                    Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
-                    Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti. 
-                  </v-card-text>
-                </v-card>
-              </v-flex>
-              <v-flex xs12 md4>
-                <v-card class="elevation-0 transparent" style="color:white;">
-                  <v-card-text class="text-xs-center">
-                    <v-icon x-large class="blue--text text--lighten-2">flash_on</v-icon>
-                  </v-card-text>
-                  <v-card-title primary-title class="layout justify-center">
-                    <div class="headline">Fast development</div>
-                  </v-card-title>
-                  <v-card-text>
-                    Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
-                    Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
-                    Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti. 
-                  </v-card-text>
-                </v-card>
-              </v-flex>
-              <v-flex xs12 md4>
-                <v-card class="elevation-0 transparent" style="color:white;">
-                  <v-card-text class="text-xs-center">
-                    <v-icon x-large class="blue--text text--lighten-2">build</v-icon>
-                  </v-card-text>
-                  <v-card-title primary-title class="layout justify-center">
-                    <div class="headline text-xs-center">Completely Open Sourced</div>
-                  </v-card-title>
-                  <v-card-text>
-                    Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
-                    Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
-                    Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti. 
-                  </v-card-text>
-                </v-card>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-flex>
-      </v-layout>
-    </section>
   </v-content>
 </template>
+
+<style>
+  .background { 
+    background: url(https://i.imgur.com/iuiH5Cu.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+</style>
 
 <script>
 export default {
