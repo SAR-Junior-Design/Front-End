@@ -5,8 +5,10 @@
         <v-layout row>
           <v-layout column style="margin-top:50%;">
             <v-flex class="text-xs-left" fluid style="color:#dadfe8">
-              <h1 style="font-size:30px;"> Search And Rescue Revamped </h1>
-              <h3 class="px-0">Leave no one lost.</h3>
+              <span style="font-size:30px;color:#dadfe8;"> Search And Rescue Revamped </span>
+            </v-flex>
+            <v-flex class="text-xs-left" fluid style="color:#dadfe8">  
+              <span style="font-size:20px;color:#dadfe8;">Leave no one lost.</span>
             </v-flex>
           </v-layout>
           <v-layout column>
