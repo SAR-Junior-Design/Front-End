@@ -3,16 +3,9 @@ import Router from 'vue-router'
 
 const routerOptions = [
   { path: '/', component: 'Login' },
-<<<<<<< HEAD
   { path: '/map', component: 'MapPage' },
   { path: '/mission', component: 'MissionPage' },
   { path: '/newmission', component: 'NewMissionPage' },
-=======
-  { path: '/home', component: 'HomePage' },
-  { path: '/mission', component: 'MissionPage'},
-  { path: '/newmission', component: 'NewMissionPage'},
-  { path: '/map', component: 'MapPage'},
->>>>>>> origin/master
   { path: '/settings', component: 'Settings'}
 ]
 

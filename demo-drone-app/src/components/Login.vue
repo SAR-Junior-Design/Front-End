@@ -1,17 +1,17 @@
 <template>
-  <v-content class="background" style="margin-top:-250px;padding:0px;">
+  <v-content class="background">
     <section fill-height>
       <v-container text-xs-center>
         <v-layout row>
-          <v-layout column>
-            <v-flex class="text-xs-left" fluid style="margin-top:45%;color:#dadfe8">
+          <v-layout column style="margin-top:50%;">
+            <v-flex class="text-xs-left" fluid style="color:#dadfe8">
               <h1 style="font-size:30px;"> Search And Rescue Revamped </h1>
               <h3 class="px-0">Leave no one lost.</h3>
             </v-flex>
           </v-layout>
           <v-layout column>
             <v-flex>
-              <v-card style="background-color:#dadfe8;">
+              <v-card style="background-color:#dadfe8; margin-top:20%;">
                 <v-card-title>
                   <v-flex class="text-xs-center" style="margin-top:0px;">
                     <h2> Get Started </h2>
