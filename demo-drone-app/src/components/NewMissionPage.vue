@@ -33,14 +33,14 @@
           left
           fab
         >
-          <v-icon>add</v-icon>
+          <v-icon>compare_arrows</v-icon>
         </v-btn>
       <v-toolbar fixed style="width: 15%; top:10%; left: 75%;">
         <v-text-field 
           label="Latitude, Longitude"
           v-model="newCenter">
         </v-text-field>
-        <v-btn icon @click="updateMap()"">
+        <v-btn icon @click="updateMap()">
           <v-icon>search</v-icon>
         </v-btn>
       </v-toolbar>        
@@ -60,6 +60,9 @@
           </v-list-tile-title>
         </v-list-tile>
       </v-list>
+      <v-btn icon @click.stop="drawer = !drawer">
+          <v-icon>'compare_arrows'</v-icon>
+        </v-btn>
     </v-toolbar>
     <v-divider></v-divider>
 
