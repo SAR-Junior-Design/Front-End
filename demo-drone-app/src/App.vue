@@ -23,7 +23,7 @@
         </v-toolbar-side-icon>
       </span>
       <v-toolbar-title style="margin-right:20px;">
-        <router-link to="/" tag="span" style="cursor: pointer;color:white;">
+        <router-link to="/" tag="span" style="cursor: pointer;color: #dadfe8;">
           SAR
         </router-link>
       </v-toolbar-title>
@@ -33,7 +33,7 @@
           v-for="item in menuItems"
           :key="item.title"
           :to="item.path">
-          <span style="color:white;"> {{ item.title }} </span>
+          <span style="color:#dadfe8;"> {{ item.title }} </span>
         </v-btn>
       </v-toolbar-items>
       <v-spacer></v-spacer>
@@ -41,7 +41,7 @@
       	<v-btn
           flat
           to="/settings">
-          <svg fill="#ffffff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <svg fill="#dadfe8" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
 					    <path d="M0 0h24v24H0z" fill="none"/>
 					    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
 					</svg>
