@@ -26,11 +26,11 @@
       </v-content>
       <v-layout>
         <v-btn @click.stop="drawer = !drawer"
-          color="pink"
           dark
           fixed
           top
           left
+          style="background-color:#1d561a;margin-top:60px;"
           fab
         >
           <v-icon>compare_arrows</v-icon>
