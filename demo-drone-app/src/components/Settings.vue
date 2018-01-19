@@ -1,5 +1,5 @@
 <template>
-	<v-container style="margin-top:80px;">
+	<v-container style="margin-top:50px;">
 		<v-layout row>
 			<v-layout column>
 				<v-card style="margin:20px;">
@@ -74,6 +74,8 @@
 	</v-container>
 </template>
 
+<style>
+</style>
 
 <script>
 export default {
