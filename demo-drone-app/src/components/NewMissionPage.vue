@@ -77,23 +77,16 @@
           v-model="description">
         </v-text-field>
 
-        <v-list-tile @click="drawOn()">
-          <v-list-tile-action>
+        <v-btn-toggle v-model='canDraw'>
+          <v-btn @click="drawOn()" flat value='true'>
             <v-icon>'edit'</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Draw Search Area</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-
-        <v-list-tile @click="drawOff()">
-          <v-list-tile-action>
+            Draw Search Area
+          </v-btn>
+          <v-btn @click="drawOff()" flat value='false'>
             <v-icon>'pan_tool'</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Edit Map</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+            Edit Map
+          </v-btn>
+        </v-btn-toggle>
 
       </v-list>
       <v-btn @click.stop="drawer = !drawer" color="pink" dark absolute right>
@@ -107,6 +100,9 @@
   .map-panel {
     height: 1000px;
     width: 100%;
+  }
+  .btn-toggle {
+    flex-direction: column;
   }
 </style>
 
@@ -185,7 +181,6 @@
         }
       },
       drawOn: function() {
-        this.canDraw = true;
         this.draggable = false;
         document.body.style.cursor= 'crosshair';
 
@@ -205,7 +200,6 @@
         }
       },
       drawOff: function() {
-        this.canDraw = false;
         this.draggable = true;
         document.body.style.cursor= 'default';
         for (var i = 0; i < this.polygons.length; i++) {
