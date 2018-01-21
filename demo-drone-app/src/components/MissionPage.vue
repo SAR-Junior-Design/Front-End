@@ -5,33 +5,29 @@
         <section>
           <v-flex>
             <v-layout row>
-            <gmap-map
-              ref="map"
-              class="map-panel2"
-              :center="center"
-              :zoom="zoom"
-              :map-type-id="mapType"
-              :options="{scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable}">
-            </gmap-map>
-            <v-layout class="pl-2" right>
-              <v-data-table
-                v-bind:headers="headers"
-                :items="items"
-                hide-actions
-                class="elevation-1"
-                dark
-              >
-                <template slot="items" slot-scope="props">
-                  <td>{{ props.item.name }}</td>
-                  <td class="text-xs-right">{{ props.item.calories }}</td>
-                  <td class="text-xs-right">{{ props.item.fat }}</td>
-                  <td class="text-xs-right">{{ props.item.carbs }}</td>
-                  <td class="text-xs-right">{{ props.item.protein }}</td>
-                  <td class="text-xs-right">{{ props.item.sodium }}</td>
-                  <td class="text-xs-right">{{ props.item.calcium }}</td>
-                  <td class="text-xs-right">{{ props.item.iron }}</td>
-                </template>
-              </v-data-table>
+              <gmap-map
+                ref="map"
+                class="map-panel2"
+                :center="center"
+                :zoom="zoom"
+                :map-type-id="mapType"
+                :options="{scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable}">
+              </gmap-map>
+              <v-layout class="pl-2" right>
+                <v-data-table
+                  v-bind:headers="headers"
+                  :items="items"
+                  hide-actions
+                  class="elevation-1"
+                  dark
+                >
+                  <template slot="items" slot-scope="props">
+                    <td>{{ props.item.name }}</td>
+                    <td class="text-xs-right">{{ props.item.speed }}</td>
+                    <td class="text-xs-right">{{ props.item.alt }}</td>
+                    <td class="text-xs-right">{{ props.item.location }}</td>
+                  </template>
+                </v-data-table>
               </v-layout>
             </v-layout>
           </v-flex>
@@ -80,11 +76,18 @@
             sortable: true,
             value: 'name'
           },
-          { text: 'Air Speed [m/s]', value: 'calories' },
-          { text: 'Altitude [m]', value: 'fat' },
-          { text: 'Location [lat, lon]', value: 'carbs' }
+          { text: 'Air Speed [m/s]', value: 'speed' },
+          { text: 'Altitude [m]', value: 'alt' },
+          { text: 'Location [lat, lon]', value: 'location' }
         ],
-        items: []
+        items: [
+          {
+            name: 'FA12345678',
+            speed: 159,
+            alt: 35,
+            location: "24, -89"
+          }
+        ]
       };
     },
     methods: {
