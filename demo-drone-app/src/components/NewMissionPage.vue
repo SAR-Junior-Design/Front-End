@@ -77,16 +77,14 @@
           v-model="description">
         </v-text-field>
 
-        <v-btn-toggle v-model='canDraw'>
-          <v-btn @click="drawOn()" flat value='true'>
+          <v-btn @click="drawOn()" flat>
             <v-icon>'edit'</v-icon>
             Draw Search Area
           </v-btn>
-          <v-btn @click="drawOff()" flat value='false'>
+          <v-btn @click="drawOff()" flat>
             <v-icon>'pan_tool'</v-icon>
             Edit Map
           </v-btn>
-        </v-btn-toggle>
 
       </v-list>
       <v-btn @click.stop="drawer = !drawer" color="pink" dark absolute right>
@@ -181,6 +179,7 @@
         }
       },
       drawOn: function() {
+        this.canDraw = true;
         this.draggable = false;
         document.body.style.cursor= 'crosshair';
 
@@ -200,6 +199,7 @@
         }
       },
       drawOff: function() {
+        this.canDraw = false;
         this.draggable = true;
         document.body.style.cursor= 'default';
         for (var i = 0; i < this.polygons.length; i++) {
