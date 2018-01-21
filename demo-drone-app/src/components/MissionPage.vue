@@ -31,6 +31,7 @@
               </v-layout>
             </v-layout>
           </v-flex>
+          <v-btn style="background-color:#1d561a;color:#ffffff" @click="addDrone()">add drone</v-btn>
         </section>
       </v-content>
     </v-container>
@@ -107,6 +108,20 @@
           }
         }
         xhr.send(JSON.stringify(body));
+      },
+      addDrone () {
+        var marker = new google.maps.Marker({
+              position: {
+                lat: 24,
+                lng: -89
+              },
+              icon: {
+                url: 'https://cdn0.iconfinder.com/data/icons/drone-applications/512/drone_location-512.png',
+                scaledSize: new google.maps.Size(75, 75),
+                origin: new google.maps.Point(0,0),
+                anchor: new google.maps.Point(50, 50)}
+            });
+        marker.setMap(this.$refs.map.$mapObject);
       },
       updateMap() {
         if (this.newCenter != "" && this.newCenter != null) {
