@@ -30,7 +30,7 @@
 </template>
 
 <style>
-  .map-panel {
+  .map-panel2 {
     height: 600px;
     width: 60%;
   }
