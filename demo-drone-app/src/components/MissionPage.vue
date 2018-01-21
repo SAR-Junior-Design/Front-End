@@ -3,26 +3,38 @@
     <v-container>
       <v-content>
         <section>
-          <v-layout right>
-            <v-data-table
-              v-bind:headers="headers"
-              :items="items"
-              hide-actions
-              class="elevation-1"
-              dark
-            >
-              <template slot="items" slot-scope="props">
-                <td>{{ props.item.name }}</td>
-                <td class="text-xs-right">{{ props.item.calories }}</td>
-                <td class="text-xs-right">{{ props.item.fat }}</td>
-                <td class="text-xs-right">{{ props.item.carbs }}</td>
-                <td class="text-xs-right">{{ props.item.protein }}</td>
-                <td class="text-xs-right">{{ props.item.sodium }}</td>
-                <td class="text-xs-right">{{ props.item.calcium }}</td>
-                <td class="text-xs-right">{{ props.item.iron }}</td>
-              </template>
-            </v-data-table>
-          </v-layout>
+          <v-flex>
+            <v-layout row>
+            <gmap-map
+              ref="map"
+              class="map-panel2"
+              :center="center"
+              :zoom="zoom"
+              :map-type-id="mapType"
+              :options="{scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable}">
+            </gmap-map>
+            <v-layout class="pl-2" right>
+              <v-data-table
+                v-bind:headers="headers"
+                :items="items"
+                hide-actions
+                class="elevation-1"
+                dark
+              >
+                <template slot="items" slot-scope="props">
+                  <td>{{ props.item.name }}</td>
+                  <td class="text-xs-right">{{ props.item.calories }}</td>
+                  <td class="text-xs-right">{{ props.item.fat }}</td>
+                  <td class="text-xs-right">{{ props.item.carbs }}</td>
+                  <td class="text-xs-right">{{ props.item.protein }}</td>
+                  <td class="text-xs-right">{{ props.item.sodium }}</td>
+                  <td class="text-xs-right">{{ props.item.calcium }}</td>
+                  <td class="text-xs-right">{{ props.item.iron }}</td>
+                </template>
+              </v-data-table>
+              </v-layout>
+            </v-layout>
+          </v-flex>
         </section>
       </v-content>
     </v-container>
