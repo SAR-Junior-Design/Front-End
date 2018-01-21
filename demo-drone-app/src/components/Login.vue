@@ -13,6 +13,7 @@
           </v-layout>
           <v-layout column>
             <v-flex>
+
               <v-card style="background-color:#dadfe8; margin-top:20%;">
                 <v-card-title>
                   <v-flex class="text-xs-center" style="margin-top:0px;">
@@ -62,6 +63,9 @@
                       <v-flex class="text-xs-center" mt-5>
                         <v-btn style="background-color:#1d561a;color:#ffffff" type="submit">Sign Up</v-btn>
                       </v-flex>
+                      <v-flex class="text-xs-center" mt-3>
+                        <v-btn @click.native="dialog = true" style="background-color:#1d561a;color:#ffffff">Already a Member?</v-btn>
+                      </v-flex>
                     </v-layout>
                   </form>
                 </v-card-text>
@@ -69,6 +73,45 @@
             </v-flex>
           </v-layout>
         </v-layout>
+
+                        <v-dialog v-model="dialog" max-width="500px">
+                          <v-card>
+                            <form @submit.prevent="userLogin">
+                            <v-card-title>
+                              <v-flex class="text-xs-center" style="margin-top:0px;">
+                                <h2> Login </h2>
+                              </v-flex>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-text-field
+                                  name="username"
+                                  label="Username"
+                                  id="username"
+                                  type="username"
+                                  v-model="username2"
+                                  required></v-text-field>
+                                <v-text-field
+                                  name="password"
+                                  label="Password"
+                                  id="password"
+                                  type="password"
+                                  v-model="password2"
+                                  required></v-text-field>
+                                <v-flex id="warning" class="text-xs-center" style="visibility:hidden;color:#ff0000;">
+                                  <p> Member does not exist </p>
+                                </v-flex>
+                              </v-card-text>
+
+                              <v-flex class="text-xs-center" mt-2>
+                                <v-btn type="submit" style="background-color:#1d561a;color:#ffffff">Login</v-btn>
+                              </v-flex>
+                              <v-flex class="text-xs-center">
+                                <v-btn style="background-color:#1d561a;color:#ffffff" @click.stop="dialog=false">Cancel</v-btn>
+                              </v-flex>
+                            </form>
+                          </v-card>
+                        </v-dialog>
+
       </v-container>
     </section>
   </v-content>
@@ -89,9 +132,12 @@ export default {
   data () {
     return {
       username: '',
+      username2: '',
       email: '',
       password: '',
-      passwordConfirm: ''
+      password2: '',
+      passwordConfirm: '',
+      dialog: false,
     }
   },
   methods: {
@@ -100,6 +146,11 @@ export default {
         return
       }
       alert('signing up')
+    },
+    userLogin() {
+      if (true) {
+        document.getElementById("warning").style.visibility = "visible";
+      }
     }
   },
   computed: {
