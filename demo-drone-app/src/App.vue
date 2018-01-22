@@ -64,6 +64,10 @@
           { title: 'Map', path: '/map', icon: 'home' },
           { title: 'Mission', path: '/mission', icon: 'home'},
           { title: 'New Mission', path: '/newmission', icon: 'lock'}
+        ],
+        userMenu: [
+        ],
+        notLoggedIn: [
         ]
       }
     }
