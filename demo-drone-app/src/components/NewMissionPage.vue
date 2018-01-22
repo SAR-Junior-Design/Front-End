@@ -1,51 +1,43 @@
 <template>
-  <v-layout wrap>
-    <v-container>
-      <v-content>
-        <section fill-height>
-          <v-layout row>
-            <gmap-map
-              ref="map"
-              class="map-panel"
-              :center="center"
-              :zoom="zoom"
-              :map-type-id="mapType"
-              :options="{scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
-              @click="drawLine($event)"
-              @mouseout="mouseOff($event)"
-              @mouseover="mouseOn($event)">
-              <gmap-polyline v-if="paths.length > 0"
-                  :path="paths"
-                  :editable="true"
-                  ref="polyline"
-                  @click="closePolygon($event)">
-              </gmap-polyline>
-            </gmap-map>
-          </v-layout>
-        </section>
-      </v-content>
-      <v-layout>
-        <v-btn @click.stop="drawer = !drawer"
-          dark
-          fixed
-          top
-          left
-          style="background-color:#1d561a;margin-top:60px;"
-          fab
-        >
-          <v-icon>compare_arrows</v-icon>
-        </v-btn>
-      <v-toolbar fixed style="width: 15%; top:10%; left: 75%;">
-        <v-text-field 
-          label="Latitude, Longitude"
-          v-model="newCenter">
-        </v-text-field>
-        <v-btn icon @click="updateMap()">
-          <v-icon>search</v-icon>
-        </v-btn>
-      </v-toolbar>        
-      </v-layout>
-    </v-container>
+  <v-layout style="width:100%;height:100%;" fixed>
+    <gmap-map
+      ref="map"
+      class="map-panel"
+      :center="center"
+      :zoom="zoom"
+      :map-type-id="mapType"
+      :options="{scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+      @click="drawLine($event)"
+      @mouseout="mouseOff($event)"
+      @mouseover="mouseOn($event)">
+      <gmap-polyline v-if="paths.length > 0"
+          :path="paths"
+          :editable="true"
+          ref="polyline"
+          @click="closePolygon($event)">
+      </gmap-polyline>
+    </gmap-map>
+    <v-layout>
+      <v-btn @click.stop="drawer = !drawer"
+        dark
+        fixed
+        top
+        left
+        style="background-color:#1d561a;margin-top:60px;"
+        fab
+      >
+        <v-icon>compare_arrows</v-icon>
+      </v-btn>
+    <v-toolbar fixed style="width: 20%; top:15%; left: 75%;">
+      <v-text-field 
+        label="Latitude, Longitude"
+        v-model="newCenter">
+      </v-text-field>
+      <v-btn icon @click="updateMap()">
+        <v-icon>search</v-icon>
+      </v-btn>
+    </v-toolbar>        
+    </v-layout>
     <v-navigation-drawer
       temporary
       v-model="drawer"
@@ -96,8 +88,8 @@
 
 <style>
   .map-panel {
-    height: 1000px;
-    width: 100%;
+    height:100%;
+    width:100%;
   }
   .btn-toggle {
     flex-direction: column;
@@ -124,7 +116,7 @@
         newCenter: "",
         zoom: 3,
         mapType: 'hybrid',
-        scrollwheel: false,
+        scrollwheel: true,
         draggable: true,
         title: "",
         location: "",
