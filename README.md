@@ -9,6 +9,9 @@ https://yarnpkg.com/lang/en/docs/install/
 
 ``` bash
 # install dependencies
+
+All of these commands need to be done in the root of the vue project (demo-drone-app/)
+
 yarn install
 
 # serve with hot reload at localhost:8080
