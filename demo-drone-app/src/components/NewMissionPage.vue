@@ -43,6 +43,7 @@
       v-model="drawer"
       light
       absolute
+      style="width:20%;"
     >
     <v-toolbar flat>
       <v-list>
@@ -58,7 +59,7 @@
     </v-toolbar>
     <v-divider></v-divider>
 
-      <v-list dense class="pt-0">
+      <v-list dense class="pt-0" style="margin:2%;">
         <v-text-field 
           label="Mission Title"
           v-model="title">
@@ -69,11 +70,11 @@
           v-model="description">
         </v-text-field>
 
-          <v-btn @click="drawOn()" flat>
+          <v-btn @click="drawOn()" flat v-if="!canDraw">
             <v-icon>'edit'</v-icon>
             Draw Search Area
           </v-btn>
-          <v-btn @click="drawOff()" flat>
+          <v-btn @click="drawOff()" flat v-if="canDraw">
             <v-icon>'pan_tool'</v-icon>
             Edit Map
           </v-btn>

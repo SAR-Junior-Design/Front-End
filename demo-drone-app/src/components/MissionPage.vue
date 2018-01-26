@@ -3,8 +3,8 @@
     <v-container>
       <v-content>
         <section>
-          <v-flex>
-            <v-layout row>
+          <v-layout row>
+            <v-flex xs12 ma-1>
               <gmap-map
                 ref="map"
                 class="map-panel2"
@@ -13,24 +13,29 @@
                 :map-type-id="mapType"
                 :options="{scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable}">
               </gmap-map>
-              <v-layout class="pl-2" right>
+            </v-flex>
+              <v-flex xs6 ma-1>
                 <v-data-table
                   v-bind:headers="headers"
                   :items="items"
                   hide-actions
+                  item-key="name"
                   class="elevation-1"
                   dark
                 >
-                  <template slot="items" slot-scope="props">
+                <template slot="items" slot-scope="props">
+                  <tr @click="props.expanded = !props.expanded">
                     <td>{{ props.item.name }}</td>
                     <td class="text-xs-right">{{ props.item.speed }}</td>
                     <td class="text-xs-right">{{ props.item.alt }}</td>
                     <td class="text-xs-right">{{ props.item.location }}</td>
-                  </template>
+                  </tr>
+                </template>
+                <template slot="expand" slot-scope="props">
+                </template>
                 </v-data-table>
-              </v-layout>
+              </v-flex>
             </v-layout>
-          </v-flex>
           <v-btn style="background-color:#1d561a;color:#ffffff" @click="addDrone()">add drone</v-btn>
         </section>
       </v-content>
@@ -41,7 +46,7 @@
 <style>
   .map-panel2 {
     height: 600px;
-    width: 60%;
+    width: 100%;
   }
 </style>
 
