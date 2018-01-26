@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    
+
     <!-- <v-navigation-drawer temporary v-model="sidebar">
 =======
   <v-app style="background-color:white; margin-top: 0px; font-family: 'Barlow', sans-serif;">
@@ -48,9 +48,7 @@
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    
 	  <router-view absolute></router-view>
-    
   </v-app>
 </template>
 
@@ -61,7 +59,6 @@
         is_flat: true,
         sidebar: false,
         menuItems: [
-          { title: 'Map', path: '/map', icon: 'home' },
           { title: 'Mission', path: '/mission', icon: 'home'},
           { title: 'New Mission', path: '/newmission', icon: 'lock'}
         ],
@@ -79,7 +76,7 @@
 
   @require '../../node_modules/vuetify/src/stylus/settings/_colors'
   @import url("https://fonts.googleapis.com/css?family=Barlow")
- 
+
   $theme := {
     primary: $red.darken-2
     accent: $red.accent-2

@@ -5,7 +5,7 @@
         <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
         <v-layout row justify-center>
           <!-- this is the sign up & login dialog buttons  -->
-          <v-flex xs4>
+          <v-flex xs4 ma-1>
             <v-card style="background-color:#dadfe8;" max-width="500px">
               <v-card-text>
                 <v-layout column>
@@ -35,7 +35,7 @@
         <!-- Login Dialog -->
         <v-dialog v-model="loginDialog" max-width="500px">
           <v-card style="background-color:#dadfe8;">
-            <form @submit.prevent="userLogin">
+            <form @submit.prevent="userLogin"  @success="onLogin">
               <v-card-title>
                 <v-flex class="text-xs-center" style="margin-top:0px;">
                   <h2> Login </h2>
@@ -65,7 +65,7 @@
                     <p> Member does not exist </p>
                   </v-flex>
                   <v-flex class="text-xs-center">
-                    <v-btn type="submit" style="background-color:#1d561a;color:#ffffff">Login</v-btn>
+                    <v-btn v-on:click="userLogin" style="background-color:#1d561a;color:#ffffff">Login</v-btn>
                     <v-btn style="background-color:#1d561a;color:#ffffff" @click.stop="loginDialog=false">Cancel</v-btn>
                   </v-flex>
                 </v-layout>
@@ -148,6 +148,13 @@
 </style>
 
 <script>
+import Vue from 'vue';
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import router from '@/router'
+
+Vue.use(VueAxios, axios)
+
 export default {
   data () {
     return {
@@ -169,9 +176,22 @@ export default {
       alert('signing up')
     },
     userLogin() {
-      if (true) {
-        document.getElementById("warning").style.visibility = "visible";
-      }
+      var body = {'email': this.loginUsername, 'password': this.loginPassword}
+      var url = "http://backend.searchandrescuedrones.us:5000/login"
+      axios.post(url,body, {withCredentials:true})
+        .then((response) => {
+          if (response.data['code'] == 200) {
+            router.push('/homepage')
+          } else if (response.data['code'] == 31) {
+            throw error
+          }
+        })
+        .catch(error => {
+          alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+        });
+    },
+    onLogin() {
+      router.push('/homepage')
     }
   },
   computed: {

@@ -3,10 +3,10 @@ import Router from 'vue-router'
 
 const routerOptions = [
   { path: '/', component: 'Login' },
-  { path: '/map', component: 'MapPage' },
   { path: '/mission', component: 'MissionPage' },
   { path: '/newmission', component: 'NewMissionPage' },
-  { path: '/settings', component: 'Settings'}
+  { path: '/settings', component: 'Settings'},
+  { path: '/homepage', component: 'HomePage'}
 ]
 
 const routes = routerOptions.map(route => {
