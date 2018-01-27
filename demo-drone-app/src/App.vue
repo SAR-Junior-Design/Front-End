@@ -60,7 +60,9 @@
         sidebar: false,
         menuItems: [
           { title: 'Mission', path: '/mission', icon: 'home'},
-          { title: 'New Mission', path: '/newmission', icon: 'lock'}
+          { title: 'New Mission', path: '/newmission', icon: 'lock'},
+          { title: 'Connect Drones', path: '/connectDrones', icon: 'lock'}
+
         ],
         userMenu: [
         ],
