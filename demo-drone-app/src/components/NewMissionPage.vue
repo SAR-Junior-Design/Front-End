@@ -218,24 +218,41 @@
               "type": "FeatureCollection",
               "features": []
             };
-          for (var i = 0; i< this.polyPaths.length; i++) {
-            gJson.features.push(
-              {
-                  "type": "Feature",
-                  "geometry":{
-                    "type": "Polygon", 
-                    "coordinates": this.polyPaths[i]
-                  },
-                  "properties":{}
-                }
-            );
+          if (this.polyPaths.length == 0) {
+            var temp = {
+                    "type": "Feature",
+                    "geometry":{
+                      "type": "Polygon", 
+                      "coordinates": []
+                    },
+                    "properties":{}
+                  }
+            gJson.features.push(temp);
+          } else {
+            for (var i = 0; i< this.polygons.length; i++) {
+              var thing = this.polygons[i].getPath();
+              var temp = {
+                    "type": "Feature",
+                    "geometry":{
+                      "type": "Polygon", 
+                      "coordinates": []
+                    },
+                    "properties":{}
+                  }
+              var temp2 = [];
+              thing.forEach(function(xy, i) {
+                temp2.push([xy.lng(), xy.lat()]);
+              });
+              temp.geometry.coordinates = temp2;
+              gJson.features.push(temp);
+            }
           }
-          console.log(gJson);
           return gJson;
       },
       saveMission() {
         var geoJ = this.makeGeoJson();
         var body = {'title': this.title, 'area': geoJ, 'description': this.description}
+        console.log(JSON.stringify(body));
         var url = "http://backend.searchandrescuedrones.us:5000/register_mission"
         axios.post(url,body, {withCredentials:true})
           .then((response) => {
