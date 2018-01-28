@@ -252,7 +252,6 @@
       saveMission() {
         var geoJ = this.makeGeoJson();
         var body = {'title': this.title, 'area': geoJ, 'description': this.description}
-        console.log(JSON.stringify(body));
         var url = "http://backend.searchandrescuedrones.us:5000/register_mission"
         axios.post(url,body, {withCredentials:true})
           .then((response) => {
