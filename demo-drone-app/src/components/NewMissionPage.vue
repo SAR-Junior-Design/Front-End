@@ -6,7 +6,7 @@
       :center="center"
       :zoom="zoom"
       :map-type-id="mapType"
-      :options="{scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
       @click="drawLine($event)"
       @mouseout="mouseOff($event)"
       @mouseover="mouseOn($event)">
