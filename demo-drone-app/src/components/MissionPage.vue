@@ -1,47 +1,32 @@
 <template>
-  <v-layout wrap>
-    <v-container>
-      <v-content>
-        <section>
-          <v-flex>
-            <v-layout row>
-              <gmap-map
-                ref="map"
-                class="map-panel2"
-                :center="center"
-                :zoom="zoom"
-                :map-type-id="mapType"
-                :options="{scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable}">
-              </gmap-map>
-              <v-layout class="pl-2" right>
-                <v-data-table
-                  v-bind:headers="headers"
-                  :items="items"
-                  hide-actions
-                  class="elevation-1"
-                  dark
-                >
-                  <template slot="items" slot-scope="props">
-                    <td>{{ props.item.name }}</td>
-                    <td class="text-xs-right">{{ props.item.speed }}</td>
-                    <td class="text-xs-right">{{ props.item.alt }}</td>
-                    <td class="text-xs-right">{{ props.item.location }}</td>
-                  </template>
-                </v-data-table>
-              </v-layout>
-            </v-layout>
-          </v-flex>
-          <v-btn style="background-color:#1d561a;color:#ffffff" @click="addDrone()">add drone</v-btn>
-        </section>
-      </v-content>
-    </v-container>
+  <v-layout style="width:100%;height:100%;" fixed>
+    <gmap-map
+      ref="map"
+      class="map-panel"
+      :center="center"
+      :zoom="zoom"
+      :map-type-id="mapType"
+      :options="{scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+      @click="drawLine($event)"
+      @mouseout="mouseOff($event)"
+      @mouseover="mouseOn($event)">
+      <gmap-polyline v-if="paths.length > 0"
+          :path="paths"
+          :editable="true"
+          ref="polyline"
+          @click="closePolygon($event)">
+      </gmap-polyline>
+    </gmap-map>
   </v-layout>
 </template>
 
 <style>
-  .map-panel2 {
-    height: 600px;
-    width: 60%;
+  .map-panel {
+    height:100%;
+    width:100%;
+  }
+  .btn-toggle {
+    flex-direction: column;
   }
 </style>
 
@@ -55,7 +40,7 @@
     }
   });
   export default {
-    name: 'MissionPage',
+    name: 'NewMissionPage',
     data: function data() {
       return {
         center: {
@@ -65,30 +50,17 @@
         newCenter: "",
         zoom: 3,
         mapType: 'hybrid',
-        scrollwheel: false,
+        scrollwheel: true,
         draggable: true,
         title: "",
         location: "",
         description: "",
-        headers: [
-          {
-            text: 'Drone ID',
-            align: 'left',
-            sortable: true,
-            value: 'name'
-          },
-          { text: 'Air Speed [m/s]', value: 'speed' },
-          { text: 'Altitude [m]', value: 'alt' },
-          { text: 'Location [lat, lon]', value: 'location' }
-        ],
-        items: [
-          {
-            name: 'FA12345678',
-            speed: 159,
-            alt: 35,
-            location: "24, -89"
-          }
-        ]
+
+        paths: [],
+        polyPaths: [],
+        polygons:[],
+        canDraw: false,
+        drawer: false
       };
     },
     methods: {
@@ -109,19 +81,67 @@
         }
         xhr.send(JSON.stringify(body));
       },
-      addDrone () {
-        var marker = new google.maps.Marker({
-              position: {
-                lat: 24,
-                lng: -89
-              },
-              icon: {
-                url: 'https://cdn0.iconfinder.com/data/icons/drone-applications/512/drone_location-512.png',
-                scaledSize: new google.maps.Size(75, 75),
-                origin: new google.maps.Point(0,0),
-                anchor: new google.maps.Point(50, 50)}
-            });
-        marker.setMap(this.$refs.map.$mapObject);
+      closePolygon: function(event) {
+        if(this.canDraw) {
+          if(event.latLng.lng()==this.paths[0].lng) {
+            if(event.latLng.lat()==this.paths[0].lat) {
+              this.polyPaths.push(this.paths);
+              var poly = new google.maps.Polygon({
+                paths: this.paths,
+                id : this.polyPaths.length-1,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#FF0000',
+                fillOpacity: 0.35,
+                editable:false,
+                draggable:false
+              });
+              poly.setMap(this.$refs.map.$mapObject);
+              this.polygons.push(poly);
+              this.paths = [];
+            }
+          }
+        }
+      },
+      drawOn: function() {
+        this.canDraw = true;
+        this.draggable = false;
+        document.body.style.cursor= 'crosshair';
+
+        for (var i = 0; i < this.polygons.length; i++) {
+          this.polygons[i].setEditable(false);
+          this.polygons[i].setDraggable(false);
+        }
+      },
+      mouseOff: function(e) {
+        if (this.canDraw) {
+          document.body.style.cursor= 'default';
+        }
+      },
+      mouseOn: function(e) {
+        if (this.canDraw) {
+          document.body.style.cursor= 'crosshair';
+        }
+      },
+      drawOff: function() {
+        this.canDraw = false;
+        this.draggable = true;
+        document.body.style.cursor= 'default';
+        for (var i = 0; i < this.polygons.length; i++) {
+          this.polygons[i].setEditable(true);
+          this.polygons[i].setDraggable(true);
+        }
+      },
+      drawLine: function (event) {
+        if(this.canDraw) {
+          this.paths.push({lng: event.latLng.lng(), lat: event.latLng.lat()});
+        } else {
+          for (var i = 0; i < this.polyPaths.length; i++) {
+            var poly = this.polygons[i];
+            this.polyPaths[i] = poly.getPaths();
+          }
+        }
       },
       updateMap() {
         if (this.newCenter != "" && this.newCenter != null) {
@@ -142,6 +162,25 @@
             }
           }
         }
+      },
+      makeGeoJson: function() {
+        var gJson = [];
+        for (var i = 0; i< this.polyPaths.length; i++) {
+          gJson.push({
+            "type": "FeatureCollection",
+            "features": [
+              {
+                "type": "Feature",
+                "geometry":{
+                  "type": "Polygon", 
+                  "coordinates": +this.polyPaths[i]
+                },
+                "properties":{}
+              }
+            ]
+          });
+        }
+        return gJson;
       }
     }
   };
