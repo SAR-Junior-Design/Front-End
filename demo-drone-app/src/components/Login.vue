@@ -156,6 +156,7 @@ import router from '@/router'
 Vue.use(VueAxios, axios)
 
 export default {
+  name: 'Login',
   data () {
     return {
       signUpUsername: '',
@@ -165,7 +166,7 @@ export default {
       loginPassword: '',
       passwordConfirm: '',
       loginDialog: false,
-      signUpDialog: false,
+      signUpDialog: false
     }
   },
   methods: {
@@ -173,7 +174,8 @@ export default {
       if (this.comparePasswords !== true) {
         return
       }
-      alert('signing up')
+      this.loginDialog = true;
+      this.signUpDialog = false;
     },
     userLogin() {
       var body = {'email': this.loginUsername, 'password': this.loginPassword}
