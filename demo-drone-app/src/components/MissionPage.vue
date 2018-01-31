@@ -16,6 +16,7 @@
           ref="polyline"
           @click="closePolygon($event)">
       </gmap-polyline>
+      CHANGES
     </gmap-map>
   </v-layout>
 </template>
