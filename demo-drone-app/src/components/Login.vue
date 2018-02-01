@@ -174,6 +174,7 @@ export default {
       if (this.comparePasswords !== true) {
         return
       }
+      alert('signing up');
       this.loginDialog = true;
       this.signUpDialog = false;
     },

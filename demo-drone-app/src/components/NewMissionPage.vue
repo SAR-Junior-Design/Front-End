@@ -29,7 +29,7 @@
         <v-icon>compare_arrows</v-icon>
       </v-btn>
 
-    <v-toolbar fixed style="width: 22%; top:15%; left: 73%;">
+    <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
       <v-text-field 
         label="Latitude, Longitude"
         v-model="newCenter">
@@ -256,9 +256,9 @@
         axios.post(url,body, {withCredentials:true})
           .then((response) => {
             if (response.data['code'] == 200) {
-              console.log(body);
+              //console.log(body);
             } else if (response.data['code'] == 31) {
-              throw error
+              alert("Authentication Error");
             }
           })
           .catch(error => {
