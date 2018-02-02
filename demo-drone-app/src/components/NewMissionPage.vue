@@ -82,6 +82,13 @@
         Save Mission
       </v-btn>
     </v-navigation-drawer>
+    <v-snackbar top vertical
+      :timeout="timeout"
+      v-model="snackbar"
+    >
+      Mission Successfully Saved
+      <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
+    </v-snackbar>
   </v-layout>
 </template>
 
@@ -127,7 +134,9 @@
         polyPaths: [],
         polygons:[],
         canDraw: false,
-        drawer: false
+        drawer: false,
+        snackbar: false,
+        timeout: 6000,
       };
     },
     methods: {
@@ -257,6 +266,7 @@
           .then((response) => {
             if (response.data['code'] == 200) {
               //console.log(body);
+              this.snackbar = true;
             } else if (response.data['code'] == 31) {
               alert("Authentication Error");
             }
