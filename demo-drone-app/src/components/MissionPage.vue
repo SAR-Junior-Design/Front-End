@@ -55,7 +55,6 @@
         title: "",
         location: "",
         description: "",
-
         paths: [],
         polyPaths: [],
         polygons:[],
@@ -108,7 +107,6 @@
         this.canDraw = true;
         this.draggable = false;
         document.body.style.cursor= 'crosshair';
-
         for (var i = 0; i < this.polygons.length; i++) {
           this.polygons[i].setEditable(false);
           this.polygons[i].setDraggable(false);
