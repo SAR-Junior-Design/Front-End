@@ -185,6 +185,7 @@ export default {
         .then((response) => {
           if (response.data['code'] == 200) {
             router.push('/homepage')
+            this.$emit('login')
           } else if (response.data['code'] == 31) {
             throw error
           }

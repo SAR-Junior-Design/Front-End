@@ -7,7 +7,8 @@ const routerOptions = [
   { path: '/newmission', component: 'NewMissionPage' },
   { path: '/settings', component: 'Settings'},
   { path: '/homepage', component: 'HomePage'},
-  { path: '/connectdrones', component: 'ConnectDrones'}
+  { path: '/connectdrones', component: 'ConnectDrones'},
+  { path: '/profile', component: 'Profile'}
 
 ]
 
