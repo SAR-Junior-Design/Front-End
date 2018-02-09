@@ -174,9 +174,22 @@ export default {
       if (this.comparePasswords !== true) {
         return
       }
-      alert('signing up');
-      this.loginDialog = true;
-      this.signUpDialog = false;
+
+      var body = {'email': this.signUpEmail, 'password': this.signUpPassword, 'name': this.signUpUsername, 'account_type': 'operator'}
+      var url = "http://backend.searchandrescuedrones.us:5000/register_user"
+      axios.post(url,body, {withCredentials:true})
+        .then((response) => {
+          if (response.data['code'] == 200) {
+            alert('signing up')
+            this.loginDialog = true;
+            this.signUpDialog = false;
+          } else if (response.data['code'] == 31) {
+            throw error
+          }
+        })
+        .catch(error => {
+          alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+        });
     },
     userLogin() {
       var body = {'email': this.loginUsername, 'password': this.loginPassword}
