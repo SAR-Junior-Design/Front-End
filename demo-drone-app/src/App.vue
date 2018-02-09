@@ -42,10 +42,12 @@ import Vue from 'vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from '@/router'
+import API from './mixins/API.js'
 
 Vue.use(VueAxios, axios)
 
   export default {
+  	mixins: [API],
     data () {
       return {
         is_flat: true,
@@ -74,21 +76,14 @@ Vue.use(VueAxios, axios)
         this.menuItems = this.userMenu
     	},
     	logoff() {
-      var url = "http://backend.searchandrescuedrones.us:5000/logoff"
-      axios.get(url, {withCredentials:true})
-        .then((response) => {
-          if (response.data['code'] == 200) {
-            router.push('/')
-            this.logged_in = false
-            this.menuItems = this.notLoggedIn
-          } else if (response.data['code'] == 31) {
-            throw error
-          }
-        })
-        .catch(error => {
-          alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-        });
-    }
+      	this.logoff(response => {
+      		this.logged_in = false
+      		this.menuItems = this.notLoggedIn
+      	},
+      	error => {
+      		alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+      	})
+    	}
     }
   }
 </script>
