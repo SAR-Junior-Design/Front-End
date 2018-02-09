@@ -2,7 +2,10 @@
   <v-app id="inspire">
 		<v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" style="background-color:#1d561a">
       <v-toolbar-title style="margin-right:20px;">
-        <router-link to="/" tag="span" style="cursor: pointer;color: #dadfe8;">
+        <router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: #dadfe8;">
+          SAR
+        </router-link>
+        <router-link v-if="logged_in" to="/homepage" tag="span" style="cursor: pointer;color: #dadfe8;">
           SAR
         </router-link>
       </v-toolbar-title>
@@ -27,7 +30,7 @@
           <v-list-tile to="/profile">
             <v-list-tile-title> profile</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile @click="logoff()">
+          <v-list-tile @click="_logoff()">
             <v-list-tile-title> sign out</v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -75,15 +78,31 @@ Vue.use(VueAxios, axios)
         this.logged_in = true
         this.menuItems = this.userMenu
     	},
-    	logoff() {
+    	_logoff() {
       	this.logoff(response => {
       		this.logged_in = false
       		this.menuItems = this.notLoggedIn
+      		router.push('/')
       	},
       	error => {
       		alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
       	})
     	}
+    },
+    mounted() {
+    	this.isLoggedIn(
+    		response => {
+    			if (response.data == 'True') {
+    				this.logged_in = true
+    				this.menuItems = this.userMenu
+    			} else {
+    				this.logged_in = false
+    				this.menuItems = this.notLoggedIn
+    			}
+    		},
+    		error => {
+    			alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+    		})
     }
   }
 </script>

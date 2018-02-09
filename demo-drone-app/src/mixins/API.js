@@ -19,6 +19,12 @@ export default {
  	  hello() {
   	  alert('bye!');
     },
+    isLoggedIn(success, failure) {
+    	var url = this.base_url + '/isLoggedIn'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
     login(email, password, success, failure) {
     	var body = {'email': email, 'password': password}
       var url = this.base_url + '/login'
@@ -28,7 +34,7 @@ export default {
     },
     logoff(success, failure) {
     	var url = this.base_url + '/logoff'
-      axios.post(url,body, {withCredentials:true})
+      axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     }

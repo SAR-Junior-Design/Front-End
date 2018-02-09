@@ -216,6 +216,17 @@ export default {
     comparePasswords () {
       return this.signUpPassword === this.passwordConfirm ? true : 'Passwords don\'t match'
     }
-}
+  },
+  mounted() {
+    this.isLoggedIn(
+      response => {
+        if (response.data == 'True') {
+          router.push('/homepage')
+        }
+      },
+      error => {
+        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+      })
+  }
 }
 </script>
