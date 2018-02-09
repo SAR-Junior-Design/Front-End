@@ -1,27 +1,6 @@
 <template>
   <v-app id="inspire">
-
-    <!-- <v-navigation-drawer temporary v-model="sidebar">
-=======
-  <v-app style="background-color:white; margin-top: 0px; font-family: 'Barlow', sans-serif;">
-    <v-navigation-drawer temporary v-model="sidebar">
->>>>>>> origin/master
-      <v-list>
-        <v-list-tile
-          v-for="item in menuItems"
-          :key="item.title"
-          :to="item.path">
-          <v-list-tile-content>{{ item.title }}</v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-<<<<<<< HEAD
-    </v-navigation-drawer> -->
-
-    <v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" style="background-color:#1d561a" v-if="$route.name != 'Login'" >
-      <span class="hidden-sm-and-up">
-        <v-toolbar-side-icon @click.stop="sidebar = !sidebar">
-        </v-toolbar-side-icon>
-      </span>
+		<v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" style="background-color:#1d561a">
       <v-toolbar-title style="margin-right:20px;">
         <router-link to="/" tag="span" style="cursor: pointer;color: #dadfe8;">
           SAR
@@ -37,59 +16,41 @@
         </v-btn>
       </v-toolbar-items>
       <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-xs-only">
-      	<v-btn
-          flat
-          to="/settings">
-          <svg fill="#dadfe8" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-					    <path d="M0 0h24v24H0z" fill="none"/>
-					    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-					</svg>
+      <v-menu bottom left>
+        <v-btn icon slot="activator" dark>
+          <v-icon>more_vert</v-icon>
         </v-btn>
-      </v-toolbar-items>
+        <v-list>
+          <v-list-tile to="/settings">
+            <v-list-tile-title> settings</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile to="/profile">
+            <v-list-tile-title> profile</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="logoff()">
+            <v-list-tile-title> sign out</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
     </v-toolbar>
-
-<v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" style="background-color:#1d561a">
-      <span class="hidden-sm-and-up">
-        <v-toolbar-side-icon @click.stop="sidebar = !sidebar">
-        </v-toolbar-side-icon>
-      </span>
-      <v-toolbar-title style="margin-right:20px;">
-        <router-link to="/" tag="span" style="cursor: pointer;color: #dadfe8;">
-          SAR
-        </router-link>
-      </v-toolbar-title>
-      <v-toolbar-items class="hidden-xs-only">
-        <v-btn
-          flat
-          v-for="item in menuItems"
-          :key="item.title"
-          :to="item.path">
-          <span style="color:#dadfe8;"> {{ item.title }} </span>
-        </v-btn>
-      </v-toolbar-items>
-      <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-xs-only">
-        <v-btn
-          flat
-          to="/settings">
-          <svg fill="#dadfe8" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0 0h24v24H0z" fill="none"/>
-              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </v-btn>
-      </v-toolbar-items>
-    </v-toolbar>
-	  <router-view absolute></router-view>
+	  <router-view absolute v-on:login="login"></router-view>
   </v-app>
 </template>
 
 <script>
+import Vue from 'vue';
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import router from '@/router'
+
+Vue.use(VueAxios, axios)
+
   export default {
     data () {
       return {
         is_flat: true,
         sidebar: false,
+        logged_in: false,
         menuItems: [
           { title: 'Mission', path: '/mission', icon: 'home'},
           { title: 'New Mission', path: '/newmission', icon: 'lock'},
@@ -99,8 +60,33 @@
         userMenu: [
         ],
         notLoggedIn: [
+        ],
+        settings_menu: [
+        	'profile',
+        	'settings',
+        	'sign out'
         ]
       }
+    },
+    methods: {
+    	login() {
+        logged_in = true
+    	},
+    	logoff() {
+      var url = "http://backend.searchandrescuedrones.us:5000/logoff"
+      axios.get(url, {withCredentials:true})
+        .then((response) => {
+          if (response.data['code'] == 200) {
+            router.push('/')
+            this.logged_in = false
+          } else if (response.data['code'] == 31) {
+            throw error
+          }
+        })
+        .catch(error => {
+          alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+        });
+    }
     }
   }
 </script>
