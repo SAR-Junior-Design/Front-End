@@ -16,7 +16,7 @@
         </v-btn>
       </v-toolbar-items>
       <v-spacer></v-spacer>
-      <v-menu bottom left>
+      <v-menu bottom left v-if="logged_in">
         <v-btn icon slot="activator" dark>
           <v-icon>more_vert</v-icon>
         </v-btn>
@@ -52,14 +52,14 @@ Vue.use(VueAxios, axios)
         sidebar: false,
         logged_in: false,
         menuItems: [
-          { title: 'Mission', path: '/mission', icon: 'home'},
-          { title: 'New Mission', path: '/newmission', icon: 'lock'},
-          { title: 'Connect Drones', path: '/connectDrones', icon: 'lock'}
-
         ],
         userMenu: [
+        	{ title: 'Mission', path: '/mission', icon: 'home'},
+          { title: 'New Mission', path: '/newmission', icon: 'lock'},
+          { title: 'Connect Drones', path: '/connectDrones', icon: 'lock'}
         ],
         notLoggedIn: [
+
         ],
         settings_menu: [
         	'profile',
@@ -70,7 +70,8 @@ Vue.use(VueAxios, axios)
     },
     methods: {
     	login() {
-        logged_in = true
+        this.logged_in = true
+        this.menuItems = this.userMenu
     	},
     	logoff() {
       var url = "http://backend.searchandrescuedrones.us:5000/logoff"
@@ -79,6 +80,7 @@ Vue.use(VueAxios, axios)
           if (response.data['code'] == 200) {
             router.push('/')
             this.logged_in = false
+            this.menuItems = this.notLoggedIn
           } else if (response.data['code'] == 31) {
             throw error
           }
