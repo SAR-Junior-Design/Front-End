@@ -45,11 +45,11 @@
                 <v-layout column>
                   <v-flex>
                     <v-text-field
-                      name="loginUsername"
+                      name="loginEmail"
                       label="Username"
-                      id="loginUsername"
+                      id="loginEmail"
                       type="username"
-                      v-model="loginUsername"
+                      v-model="loginEmail"
                       required></v-text-field>
                   </v-flex>
                   <v-flex>
@@ -152,17 +152,19 @@ import Vue from 'vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from '@/router'
+import API from '../mixins/API.js'
 
 Vue.use(VueAxios, axios)
 
 export default {
   name: 'Login',
+  mixins: [API],
   data () {
     return {
       signUpUsername: '',
       signUpEmail: '',
       signUpPassword: '',
-      loginUsername: '',
+      loginEmail: '',
       loginPassword: '',
       passwordConfirm: '',
       loginDialog: false,
@@ -174,7 +176,6 @@ export default {
       if (this.comparePasswords !== true) {
         return
       }
-
       var body = {'email': this.signUpEmail, 'password': this.signUpPassword, 'name': this.signUpUsername, 'account_type': 'operator'}
       var url = "http://backend.searchandrescuedrones.us:5000/register_user"
       axios.post(url,body, {withCredentials:true})
@@ -192,20 +193,20 @@ export default {
         });
     },
     userLogin() {
-      var body = {'email': this.loginUsername, 'password': this.loginPassword}
-      var url = "http://backend.searchandrescuedrones.us:5000/login"
-      axios.post(url,body, {withCredentials:true})
-        .then((response) => {
+      this.login(this.loginEmail, this.loginPassword,
+        response => {
           if (response.data['code'] == 200) {
-            router.push('/homepage')
+            this.loginDialog = true;
+            this.signUpDialog = false;
             this.$emit('login')
+            router.push('/homepage')
           } else if (response.data['code'] == 31) {
             throw error
           }
-        })
-        .catch(error => {
+        },
+        error => {
           alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-        });
+        })
     },
     onLogin() {
       router.push('/homepage')
@@ -215,6 +216,17 @@ export default {
     comparePasswords () {
       return this.signUpPassword === this.passwordConfirm ? true : 'Passwords don\'t match'
     }
-}
+  },
+  mounted() {
+    this.isLoggedIn(
+      response => {
+        if (response.data == 'True') {
+          router.push('/homepage')
+        }
+      },
+      error => {
+        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+      })
+  }
 }
 </script>
