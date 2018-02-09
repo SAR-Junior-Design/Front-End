@@ -152,11 +152,13 @@ import Vue from 'vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from '@/router'
+import API from '../mixins/API.js'
 
 Vue.use(VueAxios, axios)
 
 export default {
   name: 'Login',
+  mixins: [API],
   data () {
     return {
       signUpUsername: '',
@@ -197,6 +199,7 @@ export default {
       axios.post(url,body, {withCredentials:true})
         .then((response) => {
           if (response.data['code'] == 200) {
+            alert('yeah!!')
             router.push('/homepage')
             this.$emit('login')
           } else if (response.data['code'] == 31) {
