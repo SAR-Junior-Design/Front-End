@@ -37,6 +37,19 @@ export default {
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
+    },
+    register_user(email, password, name, success, failure) {
+      var body = {'email': email, 'password': password, 'name': name, 'account_type': "operator"}
+      var url = this.base_url + '/login'
+      axios.post(url,body, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
+    get_user_drones(success, failure){
+      var url = this.base_url + '/get_user_drones'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
     }
   }
 }

@@ -176,10 +176,8 @@ export default {
       if (this.comparePasswords !== true) {
         return
       }
-      var body = {'email': this.signUpEmail, 'password': this.signUpPassword, 'name': this.signUpUsername, 'account_type': 'operator'}
-      var url = "http://backend.searchandrescuedrones.us:5000/register_user"
-      axios.post(url,body, {withCredentials:true})
-        .then((response) => {
+      this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername,
+        (response) => {
           if (response.data['code'] == 200) {
             alert('signing up')
             this.loginDialog = true;
@@ -187,10 +185,10 @@ export default {
           } else if (response.data['code'] == 31) {
             throw error
           }
-        })
-        .catch(error => {
+        },
+        error => {
           alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-        });
+        })
     },
     userLogin() {
       this.login(this.loginEmail, this.loginPassword,
