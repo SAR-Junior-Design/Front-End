@@ -1,7 +1,7 @@
 <template>
   <div id="about">
   Ladd is working on getting a chart that shows the most improtant readouts of connected drones.
-  As well as giving the user the ability to connect more drones. 
+  As well as giving the user the ability to connect more drones. Table.
   </div>
 </template>
 
