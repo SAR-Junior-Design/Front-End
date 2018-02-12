@@ -50,6 +50,12 @@ export default {
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
+    },
+    get_user_missions(success, failure){
+      var url = this.base_url + '/get_user_missions'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
     }
   }
 }
