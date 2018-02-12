@@ -61,7 +61,7 @@ Vue.use(VueAxios, axios)
         userMenu: [
         	{ title: 'Mission', path: '/mission', icon: 'home'},
           { title: 'New Mission', path: '/newmission', icon: 'lock'},
-          { title: 'Connect Drones', path: '/connectDrones', icon: 'lock'}
+          { title: 'Drones', path: '/drones', icon: 'lock'}
         ],
         notLoggedIn: [
 

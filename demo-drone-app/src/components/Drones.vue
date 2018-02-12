@@ -6,21 +6,36 @@
 </template>
 
 <script>
+
+import Vue from 'vue';
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import router from '@/router'
+import API from '../mixins/API.js'
+
 export default {
-  name: 'about'
-}
-
-httpGetAsync(app.add_url_rule('/get_user_drones', 'get_user_drones', Drone.get_user_drones, methods=['GET']), callback);
-
-function httpGetAsync(theUrl, callback)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(xmlHttp.responseText);
+  name: 'Login',
+  mixins: [API],
+  data () {
+    return {
+      drone_data: {}
     }
-    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
-    xmlHttp.send(null);
+  },
+  methods: {
+    getUserDrones() {
+      this.get_user_drones(
+        response => {
+          this.drone_data = response.data
+          alert(JSON.stringify(this.drone_data))
+      },
+      error => {
+        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+      })
+    }
+  },
+  mounted () {
+    this.getUserDrones();
+  }
 }
 </script>
 
