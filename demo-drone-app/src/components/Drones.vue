@@ -40,10 +40,8 @@
           >
           <template slot="items" slot-scope="props">
 
-            <td class="text-xs-right">{{ props.item.droneNumber }}</td>
-            <td class="text-xs-right">{{ props.item.droneType }}</td>
-            <td class="text-xs-right">{{ props.item.numBlades }}</td>
-            <td class="text-xs-right">{{ props.item.batteryPercent }}</td>
+            <td class="text-xs-right">{{ props.item.id }}</td>
+            <td class="text-xs-right">{{ props.item.description }}</td>
 
               <v-edit-dialog
                 @open="tmp = props.item.iron"
@@ -93,44 +91,11 @@ export default {
       tmp: '',
       search: '',
       pagination: {},
-      headers: [
-        { text: 'Drone Number', value: 'droneNumber' },
-        { text: 'Drone Type', value: 'droneType' },
-        { text: 'Numer of Blades', value: 'numBlades' },
-        { text: 'Battery', value: 'batteryPercent' }
+      headers: [        
+        { text: 'Drone ID', value: 'id' },
+        { text: 'Description', value: 'description' },
       ],
-      items: [
-        {
-          droneNumber: 11, 
-          droneType: 'DJI Phantom 5',
-          numBlades: 4,
-          batteryPercent: 94.1,
-        },
-        {
-          droneNumber: '23415',
-          droneType: 'Mavic Air',
-          numBlades: 8,
-          batteryPercent: 89.1,
-        },
-        {
-          droneNumber: '12',
-          droneType: 'Karma GoPro',
-          numBlades: 4,
-          batteryPercent: 79.9,
-        },
-        {
-          droneNumber: '98',
-          droneType: 'Inspire Pro',
-          numBlades: 4,
-          batteryPercent: 50.2,
-        },
-        {
-          droneNumber: '178',
-          droneType: 'Maciv Pro Alpine',
-          numBlades: 3,
-          batteryPercent: 39.4,
-        }
-      ]
+      items: []
     }
   },
   methods: {
@@ -138,10 +103,12 @@ export default {
       this.get_user_drones(
         response => {
           this.drone_data = response.data
-          alert(JSON.stringify(this.drone_data))
+          for(var i=0; i<this.drone_data.length; i++) {
+            this.items.push(this.drone_data[i])
+          }
       },
       error => {
-        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
       })
     }
   },
