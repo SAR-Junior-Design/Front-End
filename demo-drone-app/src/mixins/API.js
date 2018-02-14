@@ -42,6 +42,12 @@ export default {
         .then(success)
         .catch(failure);
     },
+    list_all_users(success, failure) {
+      var url = this.base_url + '/list_all_users'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
     //DRONE API CALLS
     get_user_drones(success, failure){
       var url = this.base_url + '/get_user_drones'
@@ -83,8 +89,8 @@ export default {
         .then(success)
         .catch(failure);
     },
-    add_drone_to_mission(drone_id, mission_id, operator_email, success, failure) {
-      var body = {'drone_id': drone_id, 'mission_id': mission_id, 'operator_email': operator_email}
+    add_drone_to_mission(drone_id, mission_id, operator_id, success, failure) {
+      var body = {'drone_id': drone_id, 'mission_id': mission_id, 'operator_id': operator_id}
       var url = this.base_url + '/add_drone_to_mission'
       axios.post(url,body, {withCredentials:true})
         .then(success)
