@@ -6,7 +6,7 @@
       :center="center"
       :zoom="zoom"
       :map-type-id="mapType"
-      :options="{scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
       @click="drawLine($event)"
       @mouseout="mouseOff($event)"
       @mouseover="mouseOn($event)">
@@ -28,13 +28,22 @@
       >
         <v-icon>compare_arrows</v-icon>
       </v-btn>
-    <v-toolbar fixed style="width: 20%; top:15%; left: 75%;">
+
+    <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
       <v-text-field 
         label="Latitude, Longitude"
         v-model="newCenter">
       </v-text-field>
       <v-btn icon @click="updateMap()">
         <v-icon>search</v-icon>
+      </v-btn>
+      <v-btn @click="drawOn()" flat v-if="!canDraw">
+        <v-icon>'edit'</v-icon>
+        Draw Search Area
+      </v-btn>
+      <v-btn @click="drawOff()" flat v-if="canDraw">
+        <v-icon>'pan_tool'</v-icon>
+        Edit Map
       </v-btn>
     </v-toolbar>        
     </v-layout>
@@ -43,6 +52,7 @@
       v-model="drawer"
       light
       absolute
+      style="width:20%;"
     >
     <v-toolbar flat>
       <v-list>
@@ -56,9 +66,8 @@
           <v-icon>'compare_arrows'</v-icon>
         </v-btn>
     </v-toolbar>
-    <v-divider></v-divider>
 
-      <v-list dense class="pt-0">
+      <v-list dense class="pt-0" style="margin:2%;">
         <v-text-field 
           label="Mission Title"
           v-model="title">
@@ -68,21 +77,18 @@
           multi-line
           v-model="description">
         </v-text-field>
-
-          <v-btn @click="drawOn()" flat>
-            <v-icon>'edit'</v-icon>
-            Draw Search Area
-          </v-btn>
-          <v-btn @click="drawOff()" flat>
-            <v-icon>'pan_tool'</v-icon>
-            Edit Map
-          </v-btn>
-
       </v-list>
-      <v-btn @click.stop="drawer = !drawer" color="pink" dark absolute right>
+      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" color="pink" dark absolute right>
         Save Mission
       </v-btn>
     </v-navigation-drawer>
+    <v-snackbar top vertical
+      :timeout="timeout"
+      v-model="snackbar"
+    >
+      Mission Successfully Saved
+      <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
+    </v-snackbar>
   </v-layout>
 </template>
 
@@ -99,6 +105,8 @@
 <script>
   import * as VueGoogleMaps from 'vue2.1-google-maps';
   import Vue from 'vue';
+  import axios from 'axios'
+  import VueAxios from 'vue-axios'
   Vue.use(VueGoogleMaps, {
     load: {
       installComponents: true,
@@ -126,27 +134,12 @@
         polyPaths: [],
         polygons:[],
         canDraw: false,
-        drawer: false
+        drawer: false,
+        snackbar: false,
+        timeout: 6000,
       };
     },
     methods: {
-      httpPost: function(theUrl, body) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', theUrl);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        var that = this;
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState == XMLHttpRequest.DONE) {
-            that.rTxt = xhr.responseText;
-            if (that.rTxt.includes("login failed")) {
-              alert("login failed");
-            } else {
-              that.$router.push({ path: '/current-mission-page' });
-            }
-          }
-        }
-        xhr.send(JSON.stringify(body));
-      },
       closePolygon: function(event) {
         if(this.canDraw) {
           if(event.latLng.lng()==this.paths[0].lng) {
@@ -230,23 +223,57 @@
         }
       },
       makeGeoJson: function() {
-        var gJson = [];
-        for (var i = 0; i< this.polyPaths.length; i++) {
-          gJson.push({
-            "type": "FeatureCollection",
-            "features": [
-              {
-                "type": "Feature",
-                "geometry":{
-                  "type": "Polygon", 
-                  "coordinates": +this.polyPaths[i]
-                },
-                "properties":{}
-              }
-            ]
+        var gJson = {
+              "type": "FeatureCollection",
+              "features": []
+            };
+          if (this.polyPaths.length == 0) {
+            var temp = {
+                    "type": "Feature",
+                    "geometry":{
+                      "type": "Polygon", 
+                      "coordinates": []
+                    },
+                    "properties":{}
+                  }
+            gJson.features.push(temp);
+          } else {
+            for (var i = 0; i< this.polygons.length; i++) {
+              var thing = this.polygons[i].getPath();
+              var temp = {
+                    "type": "Feature",
+                    "geometry":{
+                      "type": "Polygon", 
+                      "coordinates": []
+                    },
+                    "properties":{}
+                  }
+              var temp2 = [];
+              thing.forEach(function(xy, i) {
+                temp2.push([xy.lng(), xy.lat()]);
+              });
+              temp.geometry.coordinates = temp2;
+              gJson.features.push(temp);
+            }
+          }
+          return gJson;
+      },
+      saveMission() {
+        var geoJ = this.makeGeoJson();
+        var body = {'title': this.title, 'area': geoJ, 'description': this.description}
+        var url = "http://backend.searchandrescuedrones.us:5000/register_mission"
+        axios.post(url,body, {withCredentials:true})
+          .then((response) => {
+            if (response.data['code'] == 200) {
+              //console.log(body);
+              this.snackbar = true;
+            } else if (response.data['code'] == 31) {
+              alert("Authentication Error");
+            }
+          })
+          .catch(error => {
+            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
           });
-        }
-        return gJson;
       }
     }
   };
