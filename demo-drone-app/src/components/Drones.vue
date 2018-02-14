@@ -5,26 +5,20 @@
         <v-card-media
           class="white--text"
           height="200px"
-          src="/static/doc-images/cards/docks.jpg"
+          src="/static/drone_image_1.jpg"
         >
-          <v-container fill-height fluid>
-            <v-layout fill-height>
-              <v-flex xs12 align-end flexbox>
-                <span class="headline">Top 10 Australian beaches</span>
-              </v-flex>
-            </v-layout>
-          </v-container>
+          
         </v-card-media>
         <v-card-title>
           <div>
             <span class="grey--text">Number 10</span><br>
-            <span>Whitehaven Beach</span><br>
-            <span>Whitsunday Island, Whitsunday Islands</span>
+            <span>Number of Drones: 2</span><br>
+            <span>SAR Team: #14</span>
           </div>
         </v-card-title>
         <v-card-actions>
-          <v-btn flat color="orange">Share</v-btn>
-          <v-btn flat color="orange">Explore</v-btn>
+          <v-btn flat color="orange">Add Drone</v-btn>
+          <v-btn flat color="orange">Remove Drones</v-btn>
         </v-card-actions>
       </v-card>
       <v-card id="drone_TABLE">
@@ -100,7 +94,6 @@ export default {
       search: '',
       pagination: {},
       headers: [
-
         { text: 'Drone Number', value: 'droneNumber' },
         { text: 'Drone Type', value: 'droneType' },
         { text: 'Numer of Blades', value: 'numBlades' },
@@ -108,7 +101,7 @@ export default {
       ],
       items: [
         {
-          droneNumber: 11, //JSON.stringify(this.drone_data),
+          droneNumber: 11, 
           droneType: 'DJI Phantom 5',
           numBlades: 4,
           batteryPercent: 94.1,
@@ -118,12 +111,27 @@ export default {
           droneType: 'Mavic Air',
           numBlades: 8,
           batteryPercent: 89.1,
+        },
+        {
+          droneNumber: '12',
+          droneType: 'Karma GoPro',
+          numBlades: 4,
+          batteryPercent: 79.9,
+        },
+        {
+          droneNumber: '98',
+          droneType: 'Inspire Pro',
+          numBlades: 4,
+          batteryPercent: 50.2,
+        },
+        {
+          droneNumber: '178',
+          droneType: 'Maciv Pro Alpine',
+          numBlades: 3,
+          batteryPercent: 39.4,
         }
       ]
     }
-    drone_data: {}
-    alert('helloooooooo')
-    alert('the drone data is ' + JSON.stringify(this.drone_data))
   },
   methods: {
     getUserDrones() {
@@ -152,12 +160,17 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  border-top: 90px;
+  margin-top: 200px;
 }
 #drone_BIG_CARD {
-  margin-bottom: 100px;
+  border-top: 100px;
+  margin-top: 100px;
+  margin-bottom: 50px;
 }
 #drone_TABLE {
+  margin-top: 10px;
+
 }
 </style>
 
