@@ -95,6 +95,26 @@ export default {
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
+    },
+    // Details must be a dictionary with any combination
+    // of 'area', 'description', and 'title'. If you don't
+    // want to change a value, don't put it in the
+    // dictionary, just leave it out. Ex.:
+    // to change area, and title:
+    // {
+    //   'area': <area description>,
+    //   'title': 'New Title'
+    // }
+    // to change title and description:
+    // {
+    //   'title': 'New Title',
+    //   'description': 'New description.'
+    // }
+    edit_mission_details(details, success, failure) {
+      var url = this.base_url + '/edit_mission_details'
+      axios.post(url,details, {withCredentials:true})
+        .then(success)
+        .catch(failure);
     }
   }
 }
