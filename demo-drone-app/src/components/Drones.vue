@@ -1,5 +1,5 @@
 <template>
-  <v-layout>
+  <v-layout class="background">
     <v-flex xs12 sm6 offset-sm3>
       <v-card id="drone_BIG_CARD">
         <v-card-media
@@ -121,22 +121,22 @@ export default {
 
 <!-- styling for the component -->
 <style>
-#about {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  border-top: 90px;
-  margin-top: 200px;
+.background {
+  background: url(https://i.imgur.com/iuiH5Cu.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
+
 #drone_BIG_CARD {
-  border-top: 100px;
-  margin-top: 100px;
-  margin-bottom: 50px;
+  margin-top: 70px;
+  margin-bottom: 10px;
 }
 #drone_TABLE {
   margin-top: 10px;
+  margin-bottom: 20px;
+
 
 }
 </style>
