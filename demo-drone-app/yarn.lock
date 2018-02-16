@@ -5694,7 +5694,11 @@ vue@^2.5.3:
   version "2.5.13"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.13.tgz#95bd31e20efcf7a7f39239c9aa6787ce8cf578e1"
 
+<<<<<<< HEAD
 vuetify@^0.17.6:
+=======
+vuetify@^0.17.7:
+>>>>>>> drones
   version "0.17.7"
   resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-0.17.7.tgz#068c8210473643d45166ef9c5f6eb0ecf26bb5a5"
 
