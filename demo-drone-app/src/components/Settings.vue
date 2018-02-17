@@ -21,8 +21,8 @@
 							</v-layout>
 						</v-layout>
 						<v-flex>
-							<h3> Email: {{profile_info.username}} </h3>
-							<h3> Email: {{profile_info.email}} </h3>
+							<h3> Name: {{user_info.name}} </h3>
+							<h3> Email: {{user_info.email}} </h3>
 							<v-btn outline flat style="color:#253f87;" type="submit">Change Password</v-btn>
 						</v-flex>
 					</v-card-text>
@@ -78,7 +78,10 @@
 </style>
 
 <script>
+import API from '../mixins/API.js'
+
 export default {
+	mixins: [API],
 	data() {
 		return {
 			size:'75px',
@@ -88,8 +91,21 @@ export default {
 				username: 'Sam Crane',
 				email: 'samcrane8@gmail.com',
 				image: 'https://avatars0.githubusercontent.com/u/8029035?s=400&v=4'
-			}
+			},
+			user_info: {}
 		}
+	},
+	methods: {
+		_get_user_info() {
+			this.get_user_info(response => {
+				this.user_info = response.data
+			}, error => {
+				alert ('Could not get user info!')
+			});
+		}
+	},
+	mounted() {
+		this._get_user_info()
 	}
 }
 </script>
