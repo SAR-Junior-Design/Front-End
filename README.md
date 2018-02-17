@@ -1,4 +1,4 @@
-# sar7305
+# Drone-SAR Web Application
 
 ## Installing Yarn
 
