@@ -27,9 +27,6 @@
           <v-list-tile to="/settings">
             <v-list-tile-title> settings</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile to="/profile">
-            <v-list-tile-title> profile</v-list-tile-title>
-          </v-list-tile>
           <v-list-tile @click="_logoff()">
             <v-list-tile-title> sign out</v-list-tile-title>
           </v-list-tile>

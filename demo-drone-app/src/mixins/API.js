@@ -55,9 +55,10 @@ export default {
         .then(success)
         .catch(failure);
     },
-    register_drone(drone, success, failure) {
+    register_drone(description, success, failure) {
       var url = this.base_url + '/register_drone'
-      axios.post(url,drone, {withCredentials:true})
+      var body = {'description': description}
+      axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
