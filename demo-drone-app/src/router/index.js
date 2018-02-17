@@ -7,9 +7,7 @@ const routerOptions = [
   { path: '/newmission', component: 'NewMissionPage' },
   { path: '/settings', component: 'Settings'},
   { path: '/homepage', component: 'HomePage'},
-  { path: '/drones', component: 'Drones'},
-  { path: '/profile', component: 'Profile'}
-
+  { path: '/drones', component: 'Drones'}
 ]
 
 const routes = routerOptions.map(route => {
