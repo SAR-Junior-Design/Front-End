@@ -37,7 +37,7 @@ export default {
     },
     register_user(email, password, name, success, failure) {
       var body = {'email': email, 'password': password, 'name': name, 'account_type': "operator"}
-      var url = this.base_url + '/login'
+      var url = this.base_url + '/register_user'
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
