@@ -48,6 +48,13 @@ export default {
         .then(success)
         .catch(failure);
     },
+    get_user_info(success, failure) {
+      var url = this.base_url + '/get_user_info'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
+
     //DRONE API CALLS
     get_user_drones(success, failure){
       var url = this.base_url + '/get_user_drones'
