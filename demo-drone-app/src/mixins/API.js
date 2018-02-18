@@ -70,7 +70,7 @@ export default {
     },
     //MISSION API CALLS
     register_mission(title, area, description, success, failure) {
-      var body = {'email': email, 'password': password, 'name': name, 'account_type': "operator"}
+      var body = {'title': title, 'area': area, 'description': description}
       var url = this.base_url + '/register_mission'
       axios.post(url,body, {withCredentials:true})
         .then(success)

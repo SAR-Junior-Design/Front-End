@@ -163,16 +163,6 @@
           }
         }
       },
-      drawOn: function() {
-        this.canDraw = true;
-        this.draggable = false;
-        document.body.style.cursor= 'crosshair';
-
-        for (var i = 0; i < this.polygons.length; i++) {
-          this.polygons[i].setEditable(false);
-          this.polygons[i].setDraggable(false);
-        }
-      },
       mouseOff: function(e) {
         if (this.canDraw) {
           document.body.style.cursor= 'default';
@@ -183,10 +173,21 @@
           document.body.style.cursor= 'crosshair';
         }
       },
+      drawOn: function() {
+        this.canDraw = true;
+        this.draggable = false;
+
+        this.$refs.map.$mapObject.setOptions({ draggableCursor: 'crosshair' });
+
+        for (var i = 0; i < this.polygons.length; i++) {
+          this.polygons[i].setEditable(false);
+          this.polygons[i].setDraggable(false);
+        }
+      },
       drawOff: function() {
         this.canDraw = false;
         this.draggable = true;
-        document.body.style.cursor= 'default';
+        this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
         for (var i = 0; i < this.polygons.length; i++) {
           this.polygons[i].setEditable(true);
           this.polygons[i].setDraggable(true);
@@ -260,20 +261,27 @@
       },
       saveMission() {
         var geoJ = this.makeGeoJson();
-        var body = {'title': this.title, 'area': geoJ, 'description': this.description}
-        var url = "http://backend.searchandrescuedrones.us:5000/register_mission"
-        axios.post(url,body, {withCredentials:true})
-          .then((response) => {
+        this.register_mission(
+          this.title, geoJ, 
+          this.description, 
+          response => {
             if (response.data['code'] == 200) {
-              //console.log(body);
-              this.snackbar = true;
+              for (var i = 0; i < this.polygons.length; i++) {
+                this.polygons[i].setEditable(false);
+                this.polygons[i].setDraggable(false);
+              }
+              this.draggable = true;
+              this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
+              this.canDraw = false;
+              this.edit = !this.edit;
             } else if (response.data['code'] == 31) {
               alert("Authentication Error");
             }
-          })
-          .catch(error => {
+          }, 
+          error => {
             alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-          });
+          }
+        );
       }
     }
   };
