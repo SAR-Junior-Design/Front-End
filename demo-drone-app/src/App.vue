@@ -32,6 +32,11 @@
           </v-list-tile>
         </v-list>
       </v-menu>
+      <v-menu bottom left v-if="!logged_in">
+        <v-btn icon slot="activator" dark>
+          Login
+        </v-btn>
+      </v-menu>
     </v-toolbar>
 	  <router-view absolute v-on:login="login"></router-view>
   </v-app>

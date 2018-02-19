@@ -1,36 +1,85 @@
 <template>
   <v-content class="background">
     <section fill-height>
-      <v-container text-xs-center style="margin-top:15%;">
+      <v-container style="margin-top:10%;">
         <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
-        <v-layout row justify-center>
-          <!-- this is the sign up & login dialog buttons  -->
-          <v-flex xs4 ma-1>
-            <v-card style="background-color:#dadfe8;" max-width="500px">
-              <v-card-text>
-                <v-layout column>
-                  <v-flex class="text-xs-center" ma-1>
-                    <v-btn @click.native="signUpDialog = true" style="background-color:#1d561a;color:#ffffff">Sign Up</v-btn>
-                  </v-flex>
-                  <v-flex class="text-xs-center" ma-1>
-                    <v-btn @click.native="loginDialog = true" style="background-color:#1d561a;color:#ffffff">Already a Member?</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
-            </v-card>
-          </v-flex>
+        <v-layout row>
+          <v-layout column>
+            <v-flex mt-3>
+              <v-flex class="text-xs-left" style="color:#dadfe8">
+                <span style="font-size:30px;color:#dadfe8;">Plan. Your. Mission.</span>
+              </v-flex>
+              <v-flex class="text-xs-left" style="color:#dadfe8">
+                <span style="font-size:20px;color:#dadfe8;">Seemless, mission management.</span>
+              </v-flex>
+            </v-flex>
+          </v-layout>
+          <v-layout column style="float:right">
+            <v-flex ma-1>
+              <v-card style="background-color:#dadfe8;" max-width="500px">
+                <v-card-text>
+                  <v-layout column>
+                    <v-card style="background-color:#dadfe8;">
+                      <v-card-title>
+                        <v-flex class="text-xs-left" style="margin-top:0px;">
+                          <h2> Register </h2>
+                        </v-flex>
+                      </v-card-title>
+                      <v-card-text>
+                        <form @submit.prevent="userSignUp">
+                          <v-layout column>
+                            <v-flex>
+                              <v-text-field
+                                name="signUpUsername"
+                                label="Username"
+                                id="signUpUsername"
+                                type="username"
+                                v-model="signUpUsername"
+                                required></v-text-field>
+                            </v-flex>
+                            <v-flex>
+                              <v-text-field
+                                name="signUpEmail"
+                                label="Email"
+                                id="signUpEmail"
+                                type="email"
+                                v-model="signUpEmail"
+                                required></v-text-field>
+                            </v-flex>
+                            <v-flex>
+                              <v-text-field
+                                name="signUpPassword"
+                                label="Password"
+                                id="signUpPassword"
+                                type="password"
+                                v-model="signUpPassword"
+                                required></v-text-field>
+                            </v-flex>
+                            <v-flex>
+                              <v-text-field
+                                name="confirmPassword"
+                                label="Confirm Password"
+                                id="confirmPassword"
+                                v-model="passwordConfirm"
+                                :rules="[comparePasswords]"
+                                type="password"
+                                ></v-text-field>
+                            </v-flex>
+                            <v-flex class="text-xs-center">
+                              <v-btn style="background-color:#1d561a;color:#ffffff" type="submit">Join</v-btn>
+                            </v-flex>
+                          </v-layout>
+                        </form>
+                      </v-card-text>
+                    </v-card>
+                  </v-layout>
+                </v-card-text>
+              </v-card>
+            </v-flex>
+          </v-layout>
         </v-layout>
         <!-- this is the text -->
-        <v-layout row justify-center style="margin-top:5%">
-          <v-flex class="text-xs-center" fluid style="color:#dadfe8">
-            <span style="font-size:30px;color:#dadfe8;"> Search And Rescue Revamped </span>
-          </v-flex>
-        </v-layout>
-        <v-layout row justify-center>
-          <v-flex class="text-xs-center" fluid style="color:#dadfe8">
-            <span style="font-size:20px;color:#dadfe8;">Leave no one lost</span>
-          </v-flex>
-        </v-layout>
+
 
         <!-- Login Dialog -->
         <v-dialog v-model="loginDialog" max-width="500px">
@@ -77,59 +126,7 @@
 
         <!-- Sign Up Dialog -->
         <v-dialog v-model="signUpDialog" max-width="500px">
-          <v-card style="background-color:#dadfe8;">
-            <v-card-title>
-              <v-flex class="text-xs-center" style="margin-top:0px;">
-                <h2> Get Started </h2>
-              </v-flex>
-            </v-card-title>
-            <v-card-text>
-              <form @submit.prevent="userSignUp">
-                <v-layout column>
-                  <v-flex>
-                    <v-text-field
-                      name="signUpUsername"
-                      label="Username"
-                      id="signUpUsername"
-                      type="username"
-                      v-model="signUpUsername"
-                      required></v-text-field>
-                  </v-flex>
-                  <v-flex>
-                    <v-text-field
-                      name="signUpEmail"
-                      label="Email"
-                      id="signUpEmail"
-                      type="email"
-                      v-model="signUpEmail"
-                      required></v-text-field>
-                  </v-flex>
-                  <v-flex>
-                    <v-text-field
-                      name="signUpPassword"
-                      label="Password"
-                      id="signUpPassword"
-                      type="password"
-                      v-model="signUpPassword"
-                      required></v-text-field>
-                  </v-flex>
-                  <v-flex>
-                    <v-text-field
-                      name="confirmPassword"
-                      label="Confirm Password"
-                      id="confirmPassword"
-                      v-model="passwordConfirm"
-                      :rules="[comparePasswords]"
-                      type="password"
-                      ></v-text-field>
-                  </v-flex>
-                  <v-flex class="text-xs-center">
-                    <v-btn style="background-color:#1d561a;color:#ffffff" type="submit">Sign Up</v-btn>
-                  </v-flex>
-                </v-layout>
-              </form>
-            </v-card-text>
-          </v-card>
+
         </v-dialog>
         <!-- End of Sign Up Dialog -->
       </v-container>
