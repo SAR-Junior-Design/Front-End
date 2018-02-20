@@ -189,6 +189,7 @@
   });
   export default {
     name: 'NewMissionPage',
+    mixins: [API],
     data: function data() {
       return {
         center: {
@@ -206,6 +207,7 @@
 
         menuDate: false,
         menuStart: false,
+        menuEnd: false,
         pickerDate:null,
         pickerStart:null,
         pickerEnd:null,

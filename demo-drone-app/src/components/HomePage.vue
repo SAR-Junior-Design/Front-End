@@ -12,8 +12,8 @@
               </v-card-title>
               <v-card-text>
                 <v-layout row style="overflow-x: scroll;">
-                  <v-flex pa-3 class="text-xs-center" v-for="mission in userMissons" :key="mission.id">
-                    <v-card dark style="background-color:#1d561a">
+                  <v-flex pa-3 class="text-xs-center" v-for="mission in userMissions" :key="mission.id">
+                    <v-card dark style="background-color:#1d561a; height:100%;width:300px;">
                       <v-container fluid grid-list-lg>
                         <v-layout row>
                           <v-flex xs7>
@@ -166,12 +166,12 @@ export default {
   mixins: [API],
   data () {
     return {
-      userMissons: {
+      userMissions: {
         commanding: {
           title: 'No Active Missions Available'
         }
       },
-      userMissonsCount: 0,
+      userMissionsCount: 0,
 
     }
   },
@@ -191,7 +191,8 @@ export default {
       response => {
         if (response.status == 200) {
           if (response.data['commanding']) {
-            this.userMissons = response.data['commanding']
+            this.userMissions = response.data['commanding']
+            console.log(this.userMissions);
           }
           this.$emit('login')
           router.push('/homepage')
