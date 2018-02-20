@@ -3,54 +3,26 @@
 		<v-layout row>
 			<v-layout column style="margin-right:20px;">
 				<v-card>
-					<v-list>
-	          <v-list-tile v-for="item in items" :key="item.title" @click="">
-	            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+					<v-list style="background-color:#fafafa">
+						<v-list-tile>
+							<h4> Personal Settings </h4>
+						</v-list-tile>
+	          <v-list-tile 
+	          	style="background-color:#ffffff" 
+	          	v-model="current_item" 
+	          	v-for="item in items" 
+	          	:key="item.title" 
+	          	@click="current_item = item">
+	            <v-list-tile-title 
+	            	v-if="current_item.title==item.title"
+	            	style="font-weight:bold;">{{ item.title }}</v-list-tile-title>
+	            <v-list-tile-title v-if="current_item.title!=item.title">{{ item.title }}</v-list-tile-title>
 	          </v-list-tile>
 	        </v-list>
 	      </v-card>
 			</v-layout>
 			<v-layout column>
-				<v-card style="padding:15px;">
-					<v-flex style="border-bottom-style: solid;border-width: 1px;margin-bottom:20px;">
-						<span style="margin-left:5px;font-size:30px;"> PROFILE </span>
-					</v-flex>
-					<v-layout row>
-						<v-layout column>
-							<form>
-								<v-flex>
-									<v-text-field
-		                name="signUpUsername"
-		                label="Name"
-		                id="signUpUsername"
-		                type="username"
-		                v-model="user_info.name"
-		                required></v-text-field>
-		              <v-text-field
-		                name="signUpUsername"
-		                label="Name"
-		                id="signUpUsername"
-		                type="username"
-		                v-model="user_info.email"
-		                required></v-text-field>
-								</v-flex>
-								<v-flex>
-									<v-btn flat outline>
-										Save
-									</v-btn>
-								</v-flex>
-							</form>
-						</v-layout>
-						<v-layout column>
-							<v-flex class="text-xs-center">
-								<span style="font-size:20px;"> Profile Picture </span>
-							</v-flex>
-							<v-flex class="text-xs-center">
-								<img :src="profile_info.image" :width="size" :height="size"/>
-							</v-flex>
-						</v-layout>
-					</v-layout>
-				</v-card>
+				<component :user_info="user_info" :is="current_item.component"></component>
 			</v-layout>
 		</v-layout>
 	</v-container>
@@ -62,17 +34,23 @@
 
 <script>
 import API from '../mixins/API.js'
+import SettingsProfile from './settings/SettingsProfile.vue'
+import SettingsLicenses from './settings/SettingsLicenses.vue'
 
 export default {
 	mixins: [API],
+	components: {
+    'settings-profile': SettingsProfile,
+    'settings-licenses': SettingsLicenses
+  },
 	data() {
 		return {
 			size:'150px',
 			items: [
-				{'title': 'Profile'},
-				{'title': 'Licenses'},
-				{'title': 'Delete'}
+				{'title': 'Profile', 'color': 'black', 'component': 'settings-profile'},
+				{'title': 'Licenses', 'color': 'black', 'component': 'settings-licenses'}
 			],
+			current_item: {},
 			profile_info: {
 				image: 'https://avatars0.githubusercontent.com/u/8029035?s=400&v=4',
 				documents: [
@@ -90,10 +68,14 @@ export default {
 			}, error => {
 				alert ('Could not get user info!')
 			});
+		},
+		on_nav_click(item) {
+			this.current_item = this.item
 		}
 	},
 	mounted() {
 		this._get_user_info()
+		this.current_item = this.items[0]
 	}
 }
 </script>
