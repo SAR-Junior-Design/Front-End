@@ -345,7 +345,53 @@
         ]
       };
     },
+    beforeMount() {
+      this.mission_id = this.$route.query.id
+      this.fetch_mission_info()
+    },
     methods: {
+      fetch_mission_info() {
+        this.get_mission_info(
+          this.mission_id,
+          response => {
+            if (response.status == 200) {
+              this.title = response.data.title;
+              this.description = response.data.description;
+              var area = response.data.area;
+              var polygons_loaded_in = [];
+              console.log(area.features);
+              for(var i = 0; i < area.features.length; i++) {
+                var paths = [];
+                for (var a in area.features[i].geometry.coordinates) {
+                  paths.push({
+                  lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
+                  });
+                }
+                var poly = new google.maps.Polygon({
+                  paths: paths,
+                  id : i,
+                  strokeColor: '#FF0000',
+                  strokeOpacity: 0.8,
+                  strokeWeight: 2,
+                  fillColor: '#FF0000',
+                  fillOpacity: 0.35,
+                  editable:false,
+                  draggable:false
+                });
+                poly.setMap(this.$refs.map.$mapObject);
+                polygons_loaded_in.push(poly);
+              }
+              this.polygons = polygons_loaded_in;
+            } else if (response.data['code'] == 31) {
+              alert("Authentication Error");
+            }
+          },
+          error => {
+            console.log(error);
+            alert(error);
+          }
+        );
+      },
       mouseOver () {
         document.body.style.cursor= 'pointer';
       },
@@ -477,7 +523,7 @@
             gJson.features.push(temp);
           } else {
             for (var i = 0; i< this.polygons.length; i++) {
-              var thing = this.polygons[i].getPath();
+              var vertices = this.polygons[i].getPath();
               var temp = {
                     "type": "Feature",
                     "geometry":{
@@ -487,8 +533,8 @@
                     "properties":{}
                   }
               var temp2 = [];
-              thing.forEach(function(xy, i) {
-                temp2.push([xy.lng(), xy.lat()]);
+              vertices.forEach(function(xy, i) {
+                temp2.push([xy.lat(), xy.lng()]);
               });
               temp.geometry.coordinates = temp2;
               gJson.features.push(temp);
@@ -502,7 +548,6 @@
         this.edit_mission_details(
           body,
           response => {
-            console.log(response);
             if (response.data['code'] == 200) {
               for (var i = 0; i < this.polygons.length; i++) {
                 this.polygons[i].setEditable(false);
