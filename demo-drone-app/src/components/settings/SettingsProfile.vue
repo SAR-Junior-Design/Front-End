@@ -8,25 +8,32 @@
 				<form>
 					<v-flex>
 						<v-text-field
-              name="signUpUsername"
+              name="name"
               label="Name"
-              id="signUpUsername"
+              id="name"
               type="username"
               v-model="user_info.name"
               required></v-text-field>
             <v-text-field
-              name="signUpUsername"
-              label="Name"
-              id="signUpUsername"
-              type="username"
+              name="email"
+              label="Email"
+              id="email"
+              type="email"
               v-model="user_info.email"
               required></v-text-field>
 					</v-flex>
-					<v-flex>
-						<v-btn flat outline>
-							Save
-						</v-btn>
-					</v-flex>
+					<v-layout row>
+						<v-flex class="text-xs-center">
+							<v-btn flat outline @click="save_profile_changes()">
+								Save
+							</v-btn>
+						</v-flex>	
+						<v-flex class="text-xs-center">
+							<v-btn flat outline @click="">
+								Edit Picture
+							</v-btn>
+						</v-flex>
+					</v-layout>
 				</form>
 			</v-layout>
 			<v-layout column>
@@ -69,8 +76,23 @@ export default {
 		}
 	},
 	methods: {
+		save_profile_changes() {
+			var info = {'name': this.user_info.name, 'email': this.user_info.email}
+			this.update_user_info(info,
+			(response) => {
+        if (response.data['code'] == 200) {
+          alert('success!')
+        } else if (response.data['code'] == 31) {
+          throw error
+        }
+      },
+      error => {
+        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+      })
+		}
 	},
 	mounted() {
+		this.local_info = this.user_info
 	}
 }
 </script>

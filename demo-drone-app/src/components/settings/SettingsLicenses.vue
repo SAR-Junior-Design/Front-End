@@ -1,5 +1,5 @@
 <template>
-	<v-card style="margin:20px;">
+	<v-card>
 		<v-card-title>
 			<v-layout column>
 				<v-flex style="border-bottom-style: solid; border-width: 1px;">
@@ -8,10 +8,11 @@
 				<v-layout column>
 					<v-layout row
 						v-for="doc in profile_info.documents"
+						:key = "profile_info.type"
 						>
 						<v-flex style="margin-top:12px;">
 							<h3 v-if="doc.location != 'null'"> 
-								<a :href="doc.location"> {{doc.type}} </a>
+								<a target="_blank" :href="doc.location"> {{doc.type}} </a>
 							</h3>
 							<h3 v-if="doc.location == 'null'"> 
 								{{doc.type}}
