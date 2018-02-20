@@ -356,8 +356,8 @@
               this.title = response.data.title;
               this.description = response.data.description;
               var area = response.data.area;
+              console.log(area);
               var polygons_loaded_in = [];
-              console.log(area.features);
               for(var i = 0; i < area.features.length; i++) {
                 var paths = [];
                 for (var a in area.features[i].geometry.coordinates) {
@@ -474,12 +474,15 @@
           this.polygons[i].setDraggable(true);
         }
       },
-      swapNav (drone) {
-        if (drone != null) {
-          this.selected = drone;
+      drawLine: function (event) {
+        if(this.canDraw) {
+          this.paths.push({lng: event.latLng.lng(), lat: event.latLng.lat()});
+        } else {
+          for (var i = 0; i < this.polyPaths.length; i++) {
+            var poly = this.polygons[i];
+            this.polyPaths[i] = poly.getPaths();
+          }
         }
-        this.drawer = !this.drawer;
-        this.selected_drone_drawer = !this.selected_drone_drawer;
       },
       updateMap() {
         if (this.newCenter != "" && this.newCenter != null) {
