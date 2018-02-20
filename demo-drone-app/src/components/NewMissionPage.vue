@@ -79,10 +79,10 @@
         </v-text-field>
       </v-list>
       <v-menu
-        ref="menu"
+        ref="menuDate"
         lazy
         :close-on-content-click="false"
-        v-model="menu"
+        v-model="menuDate"
         transition="scale-transition"
         offset-y
         full-width
@@ -94,16 +94,63 @@
           label="Flight Date"
           v-model="pickerDate"
           readonly
+          style="margin:2%;"
         ></v-text-field>
         <v-date-picker
           ref="picker"
           v-model="pickerDate"
-          @change="save"
+          @change="saveDate"
           :min="new Date().toISOString().substr(0, 10)"
           :max="new Date().toISOString().substr(0, 10)"
         ></v-date-picker>
       </v-menu>
-      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" color="pink" dark absolute right>
+      <v-menu
+        ref="menuStart"
+        lazy
+        :close-on-content-click="false"
+        v-model="menuStart"
+        transition="scale-transition"
+        offset-y
+        full-width
+        :nudge-right="40"
+        max-width="290px"
+        min-width="290px"
+        :return-value.sync="pickerStart"
+      >
+        <v-text-field
+          slot="activator"
+          label="Flight Start Time"
+          v-model="pickerStart"
+          prepend-icon="access_time"
+          readonly
+          style="width:45%;float:left;"
+        ></v-text-field>
+        <v-time-picker v-model="pickerStart" @change="$refs.menuStart.save(time)"></v-time-picker>
+      </v-menu>
+      <v-menu
+        ref="menuEnd"
+        lazy
+        :close-on-content-click="false"
+        v-model="menuEnd"
+        transition="scale-transition"
+        offset-y
+        full-width
+        :nudge-right="40"
+        max-width="290px"
+        min-width="290px"
+        :return-value.sync="pickerEnd"
+      >
+        <v-text-field
+          slot="activator"
+          label="Flight End Time"
+          v-model="pickerEnd"
+          prepend-icon="access_time"
+          readonly
+          style="width:45%;float:left;"
+        ></v-text-field>
+        <v-time-picker v-model="pickerEnd" @change="$refs.menuEnd.save(time)"></v-time-picker>
+      </v-menu>
+      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" color="pink" dark style="margin-left:60%">
         Save Mission
       </v-btn>
     </v-navigation-drawer>
@@ -157,9 +204,11 @@
         location: "",
         description: "",
 
-        menu: false,
+        menuDate: false,
+        menuStart: false,
         pickerDate:null,
-        pickerTime:null,
+        pickerStart:null,
+        pickerEnd:null,
         paths: [],
         polyPaths: [],
         polygons:[],
@@ -170,13 +219,13 @@
       };
     },
     watch: {
-      menu (val) {
-        val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
+      menuDate (val) {
+        val && this.$nextTick(() => (this.$refs.picker.activePicker = 'MONTH'))
       }
     },
     methods: {
-      save (date) {
-        this.$refs.menu.save(date)
+      saveDate (date) {
+        this.$refs.menuDate.save(date)
       },
       closePolygon: function(event) {
         if(this.canDraw) {
