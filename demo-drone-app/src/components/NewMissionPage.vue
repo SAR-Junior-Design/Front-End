@@ -94,7 +94,7 @@
           label="Flight Date"
           v-model="pickerDate"
           readonly
-          style="margin:2%;"
+          style="margin:2%;width:96%;"
         ></v-text-field>
         <v-date-picker
           ref="picker"
