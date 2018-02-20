@@ -12,12 +12,12 @@
               </v-card-title>
               <v-card-text>
                 <v-layout row>
-                  <v-flex pa-3 class="text-xs-center" v-for="mission in userMissons" :key="mission">
+                  <v-flex pa-3 class="text-xs-center" v-for="mission in userMissons" :key="mission.id">
                     <v-card dark style="background-color:#1d561a">
                       <v-container fluid grid-list-lg>
                         <v-layout row>
                           <v-flex xs7>
-                            <div>
+                            <div @click="goToMission(mission.id)">
                               <div class="headline"> {{ mission.title }}</div>
                               <div>awaiting mission details...</div>
                             </div>
@@ -176,7 +176,9 @@ export default {
     }
   },
   methods: {
-
+    goToMission(mission) {
+      router.push('mission?id='+mission);
+    }
   },
   mounted() {
     this.get_user_missions(

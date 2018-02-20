@@ -78,7 +78,7 @@ export default {
     },
     //MISSION API CALLS
     register_mission(title, area, description, success, failure) {
-      var body = {'email': email, 'password': password, 'name': name, 'account_type': "operator"}
+      var body = {'title': title, 'area': area, 'description': description}
       var url = this.base_url + '/register_mission'
       axios.post(url,body, {withCredentials:true})
         .then(success)
@@ -94,6 +94,13 @@ export default {
     get_user_missions(success, failure){
       var url = this.base_url + '/get_user_missions'
       axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
+    get_mission_info(mission_id, success, failure){
+      var body = {'mission_id': mission_id}
+      var url = this.base_url + '/get_mission_info'
+      axios.post(url, body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
