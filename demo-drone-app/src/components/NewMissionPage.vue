@@ -123,7 +123,7 @@
           v-model="pickerStart"
           prepend-icon="access_time"
           readonly
-          style="width:45%;float:left;"
+          style="width:40%;float:left;margin:10px;"
         ></v-text-field>
         <v-time-picker v-model="pickerStart" @change="$refs.menuStart.save(time)"></v-time-picker>
       </v-menu>
@@ -146,7 +146,7 @@
           v-model="pickerEnd"
           prepend-icon="access_time"
           readonly
-          style="width:45%;float:left;"
+          style="width:40%;float:left;margin:10px;"
         ></v-text-field>
         <v-time-picker v-model="pickerEnd" @change="$refs.menuEnd.save(time)"></v-time-picker>
       </v-menu>
@@ -229,6 +229,11 @@
       saveDate (date) {
         this.$refs.menuDate.save(date)
       },
+      setEvent(poly, that){
+        google.maps.event.addListener(poly, 'dragend', function (event) {
+          that.polygons[poly.id].setPath(poly.getPath());
+        });
+      },
       closePolygon: function(event) {
         if(this.canDraw) {
           if(event.latLng.lng()==this.paths[0].lng) {
@@ -246,6 +251,7 @@
                 draggable:false
               });
               poly.setMap(this.$refs.map.$mapObject);
+              this.setEvent(poly, this);
               this.polygons.push(poly);
               this.paths = [];
             }
@@ -284,7 +290,7 @@
       },
       drawLine: function (event) {
         if(this.canDraw) {
-          this.paths.push({lng: event.latLng.lng(), lat: event.latLng.lat()});
+          this.paths.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
         } else {
           for (var i = 0; i < this.polyPaths.length; i++) {
             var poly = this.polygons[i];

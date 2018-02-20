@@ -192,7 +192,6 @@ export default {
         if (response.status == 200) {
           if (response.data['commanding']) {
             this.userMissions = response.data['commanding']
-            console.log(this.userMissions);
           }
           this.$emit('login')
           router.push('/homepage')

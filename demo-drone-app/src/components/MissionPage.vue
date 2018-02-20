@@ -349,6 +349,7 @@
     },
     methods: {
       fetch_mission_info() {
+      console.log(this.polygons);
         this.get_mission_info(
           this.mission_id,
           response => {
@@ -379,6 +380,7 @@
                 polygons_loaded_in.push(poly);
               }
               this.polygons = polygons_loaded_in;
+              console.log(this.polygons);
             } else if (response.data['code'] == 31) {
               alert("Authentication Error");
             }
@@ -404,6 +406,7 @@
           this.edit = !this.edit;
           this.edit_drawer = !this.edit_drawer;
           this.drawer = !this.drawer;
+          console.log(this.polygons);
 
         } else {
           if (drone != null) {
@@ -521,26 +524,30 @@
           } else {
             for (var i = 0; i< this.polygons.length; i++) {
               var vertices = this.polygons[i].getPath();
-              var temp = {
-                    "type": "Feature",
-                    "geometry":{
-                      "type": "Polygon", 
-                      "coordinates": []
-                    },
-                    "properties":{}
-                  }
-              var temp2 = [];
-              vertices.forEach(function(xy, i) {
-                temp2.push([xy.lat(), xy.lng()]);
-              });
-              temp.geometry.coordinates = temp2;
-              gJson.features.push(temp);
+              if (vertices!=undefined) {
+                var temp = {
+                      "type": "Feature",
+                      "geometry":{
+                        "type": "Polygon", 
+                        "coordinates": []
+                      },
+                      "properties":{}
+                    }
+                var temp2 = [];
+                vertices.forEach(function(xy, i) {
+                  temp2.push([xy.lat(), xy.lng()]);
+                });
+                temp.geometry.coordinates = temp2;
+                gJson.features.push(temp);
+              }
             }
           }
           return gJson;
       },
       saveMission() {
+        console.log(this.polygons);
         var geoJ = this.makeGeoJson();
+        console.log(this.polygons);
         var body = {'mission_id': this.mission_id, 'area': geoJ}
         this.edit_mission_details(
           body,
@@ -556,6 +563,7 @@
               this.drawer = ! this.drawer;
               this.canDraw = false;
               this.edit = !this.edit;
+              console.log(this.polygons);
             } else if (response.data['code'] == 31) {
               alert(response.data.message);
             }
