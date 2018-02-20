@@ -349,7 +349,6 @@
     },
     methods: {
       fetch_mission_info() {
-      console.log(this.polygons);
         this.get_mission_info(
           this.mission_id,
           response => {
@@ -357,7 +356,6 @@
               this.title = response.data.title;
               this.description = response.data.description;
               var area = response.data.area;
-              var polygons_loaded_in = [];
               for(var i = 0; i < area.features.length; i++) {
                 var paths = [];
                 for (var a in area.features[i].geometry.coordinates) {
@@ -378,10 +376,8 @@
                 });
                 poly.setMap(this.$refs.map.$mapObject);
                 this.setEvent(poly, this);
-                polygons_loaded_in.push(poly);
+                this.polygons.push(poly);
               }
-              this.polygons = polygons_loaded_in;
-              console.log(this.polygons);
             } else if (response.data['code'] == 31) {
               alert("Authentication Error");
             }
@@ -407,7 +403,6 @@
           this.edit = !this.edit;
           this.edit_drawer = !this.edit_drawer;
           this.drawer = !this.drawer;
-          console.log(this.polygons);
 
         } else {
           if (drone != null) {
@@ -437,7 +432,6 @@
       setEvent(poly, that){
         google.maps.event.addListener(poly, 'dragend', function (event) {
           that.polygons[poly.id].setPath(poly.getPath());
-        console.log(that.polygons[poly.id].getPath().getArray());
         });
       },
       closePolygon: function(event) {
@@ -519,7 +513,7 @@
               "type": "FeatureCollection",
               "features": []
             };
-          if (this.polyPaths.length == 0) {
+          if (this.polygons.length == 0) {
             var temp = {
                     "type": "Feature",
                     "geometry":{
@@ -532,6 +526,7 @@
           } else {
             for (var i = 0; i< this.polygons.length; i++) {
               var vertices = this.polygons[i].getPath();
+              console.log(vertices);
               if (vertices!=undefined) {
                 var temp = {
                       "type": "Feature",
@@ -553,9 +548,7 @@
           return gJson;
       },
       saveMission() {
-        console.log(this.polygons);
         var geoJ = this.makeGeoJson();
-        console.log(this.polygons);
         var body = {'mission_id': this.mission_id, 'area': geoJ}
         this.edit_mission_details(
           body,
@@ -571,7 +564,6 @@
               this.drawer = ! this.drawer;
               this.canDraw = false;
               this.edit = !this.edit;
-              console.log(this.polygons);
             } else if (response.data['code'] == 31) {
               alert(response.data.message);
             }
