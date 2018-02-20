@@ -346,7 +346,7 @@
                   }
               var temp2 = [];
               thing.forEach(function(xy, i) {
-                temp2.push([xy.lng(), xy.lat()]);
+                temp2.push([xy.lat(), xy.lng()]);
               });
               temp.geometry.coordinates = temp2;
               gJson.features.push(temp);
@@ -369,6 +369,7 @@
               this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
               this.canDraw = false;
               this.edit = !this.edit;
+              this.snackbar =true;
             } else if (response.data['code'] == 31) {
               alert("Authentication Error");
             }

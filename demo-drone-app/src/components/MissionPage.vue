@@ -377,6 +377,7 @@
                   draggable:false
                 });
                 poly.setMap(this.$refs.map.$mapObject);
+                this.setEvent(poly, this);
                 polygons_loaded_in.push(poly);
               }
               this.polygons = polygons_loaded_in;
@@ -433,6 +434,12 @@
           marker.setMap(this.$refs.map.$mapObject);
         }
       },
+      setEvent(poly, that){
+        google.maps.event.addListener(poly, 'dragend', function (event) {
+          that.polygons[poly.id].setPath(poly.getPath());
+        console.log(that.polygons[poly.id].getPath().getArray());
+        });
+      },
       closePolygon: function(event) {
         if(this.canDraw) {
           if(event.latLng.lng()==this.paths[0].lng) {
@@ -450,6 +457,7 @@
                 draggable:false
               });
               poly.setMap(this.$refs.map.$mapObject);
+              this.setEvent(poly, this);
               this.polygons.push(poly);
               this.paths = [];
             }
