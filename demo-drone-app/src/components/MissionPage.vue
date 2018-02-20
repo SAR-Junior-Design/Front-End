@@ -177,8 +177,6 @@
         </v-text-field>
       </v-list>
     </v-navigation-drawer>
-
-
     </v-layout>
   </v-layout>
 </template>
@@ -227,7 +225,7 @@
         newCenter: "",
         zoom: 3,
         mapType: 'hybrid',
-        scrollwheel: true,
+        scrollwheel: false,
         draggable: true,
         title: "Untitled Mission",
         location: "",
@@ -476,15 +474,12 @@
           this.polygons[i].setDraggable(true);
         }
       },
-      drawLine: function (event) {
-        if(this.canDraw) {
-          this.paths.push({lng: event.latLng.lng(), lat: event.latLng.lat()});
-        } else {
-          for (var i = 0; i < this.polyPaths.length; i++) {
-            var poly = this.polygons[i];
-            this.polyPaths[i] = poly.getPaths();
-          }
+      swapNav (drone) {
+        if (drone != null) {
+          this.selected = drone;
         }
+        this.drawer = !this.drawer;
+        this.selected_drone_drawer = !this.selected_drone_drawer;
       },
       updateMap() {
         if (this.newCenter != "" && this.newCenter != null) {

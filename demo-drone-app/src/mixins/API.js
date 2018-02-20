@@ -37,7 +37,7 @@ export default {
     },
     register_user(email, password, name, success, failure) {
       var body = {'email': email, 'password': password, 'name': name, 'account_type': "operator"}
-      var url = this.base_url + '/login'
+      var url = this.base_url + '/register_user'
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
@@ -48,6 +48,13 @@ export default {
         .then(success)
         .catch(failure);
     },
+    get_user_info(success, failure) {
+      var url = this.base_url + '/get_user_info'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
+
     //DRONE API CALLS
     get_user_drones(success, failure){
       var url = this.base_url + '/get_user_drones'
@@ -55,9 +62,10 @@ export default {
         .then(success)
         .catch(failure);
     },
-    register_drone(drone, success, failure) {
+    register_drone(description, success, failure) {
       var url = this.base_url + '/register_drone'
-      axios.post(url,drone, {withCredentials:true})
+      var body = {'description': description}
+      axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
