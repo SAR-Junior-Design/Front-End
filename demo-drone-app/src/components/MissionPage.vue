@@ -427,7 +427,13 @@
                 }
               });
           marker.setMap(this.$refs.map.$mapObject);
+          this.setMarkerEvent(marker, this.drones[i], this);
         }
+      },
+      setMarkerEvent(marker, drone, that){
+        google.maps.event.addListener(marker, 'click', function (event) {
+          that.swapNav(drone);
+        });
       },
       setEvent(poly, that){
         google.maps.event.addListener(poly, 'dragend', function (event) {
