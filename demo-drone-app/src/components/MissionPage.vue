@@ -356,7 +356,6 @@
               this.title = response.data.title;
               this.description = response.data.description;
               var area = response.data.area;
-              console.log(area);
               var polygons_loaded_in = [];
               for(var i = 0; i < area.features.length; i++) {
                 var paths = [];
@@ -476,7 +475,7 @@
       },
       drawLine: function (event) {
         if(this.canDraw) {
-          this.paths.push({lng: event.latLng.lng(), lat: event.latLng.lat()});
+          this.paths.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
         } else {
           for (var i = 0; i < this.polyPaths.length; i++) {
             var poly = this.polygons[i];

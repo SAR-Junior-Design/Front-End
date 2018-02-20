@@ -52,7 +52,7 @@
       v-model="drawer"
       light
       absolute
-      style="width:20%;"
+      style="width:30%;"
     >
     <v-toolbar flat>
       <v-list>
@@ -78,6 +78,31 @@
           v-model="description">
         </v-text-field>
       </v-list>
+      <v-menu
+        ref="menu"
+        lazy
+        :close-on-content-click="false"
+        v-model="menu"
+        transition="scale-transition"
+        offset-y
+        full-width
+        :nudge-right="40"
+        min-width="290px"
+      >
+        <v-text-field
+          slot="activator"
+          label="Flight Date"
+          v-model="pickerDate"
+          readonly
+        ></v-text-field>
+        <v-date-picker
+          ref="picker"
+          v-model="pickerDate"
+          @change="save"
+          :min="new Date().toISOString().substr(0, 10)"
+          :max="new Date().toISOString().substr(0, 10)"
+        ></v-date-picker>
+      </v-menu>
       <v-btn @click.stop="drawer = !drawer" @click="saveMission()" color="pink" dark absolute right>
         Save Mission
       </v-btn>
@@ -132,6 +157,9 @@
         location: "",
         description: "",
 
+        menu: false,
+        pickerDate:null,
+        pickerTime:null,
         paths: [],
         polyPaths: [],
         polygons:[],
@@ -141,7 +169,15 @@
         timeout: 6000,
       };
     },
+    watch: {
+      menu (val) {
+        val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
+      }
+    },
     methods: {
+      save (date) {
+        this.$refs.menu.save(date)
+      },
       closePolygon: function(event) {
         if(this.canDraw) {
           if(event.latLng.lng()==this.paths[0].lng) {
