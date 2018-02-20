@@ -54,6 +54,12 @@ export default {
         .then(success)
         .catch(failure);
     },
+    update_user_info(user_info, success, failure) {
+      var url = this.base_url + '/update_user_info'
+      axios.post(url,user_info, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
 
     //DRONE API CALLS
     get_user_drones(success, failure){
