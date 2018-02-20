@@ -14,47 +14,61 @@
               </v-flex>
             </v-flex>
           </v-layout>
-          <v-layout column style="float:right">
-            <v-flex ma-1>
+            <v-layout column>
               <v-card style="background-color:#dadfe8;">
-                <form @submit.prevent="userLogin"  @success="onLogin">
-                  <v-card-title>
-                    <v-flex class="text-xs-center" style="margin-top:0px;">
-                      <h2> Login </h2>
-                    </v-flex>
-                  </v-card-title>
-                  <v-card-text>
+                <v-card-title>
+                  <v-flex class="text-xs-left" style="margin-top:0px;">
+                    <h2> Register </h2>
+                  </v-flex>
+                </v-card-title>
+                <v-card-text>
+                  <form @submit.prevent="userSignUp">
                     <v-layout column>
                       <v-flex>
                         <v-text-field
-                          name="loginEmail"
+                          name="signUpUsername"
                           label="Username"
-                          id="loginEmail"
+                          id="signUpUsername"
                           type="username"
-                          v-model="loginEmail"
+                          v-model="signUpUsername"
                           required></v-text-field>
                       </v-flex>
                       <v-flex>
                         <v-text-field
-                          name="loginPassword"
-                          label="Password"
-                          id="loginPassword"
-                          type="password"
-                          v-model="loginPassword"
+                          name="signUpEmail"
+                          label="Email"
+                          id="signUpEmail"
+                          type="email"
+                          v-model="signUpEmail"
                           required></v-text-field>
                       </v-flex>
-                      <v-flex id="warning" class="text-xs-center" style="visibility:hidden;color:#ff0000;">
-                        <p> Member does not exist </p>
+                      <v-flex>
+                        <v-text-field
+                          name="signUpPassword"
+                          label="Password"
+                          id="signUpPassword"
+                          type="password"
+                          v-model="signUpPassword"
+                          required></v-text-field>
+                      </v-flex>
+                      <v-flex>
+                        <v-text-field
+                          name="confirmPassword"
+                          label="Confirm Password"
+                          id="confirmPassword"
+                          v-model="passwordConfirm"
+                          :rules="[comparePasswords]"
+                          type="password"
+                          ></v-text-field>
                       </v-flex>
                       <v-flex class="text-xs-center">
-                        <v-btn v-on:click="userLogin" style="background-color:#1d561a;color:#ffffff">Login</v-btn>
+                        <v-btn style="background-color:#1d561a;color:#ffffff" type="submit">Join</v-btn>
                       </v-flex>
                     </v-layout>
-                  </v-card-text>
-                </form>
+                  </form>
+                </v-card-text>
               </v-card>
-            </v-flex>
-          </v-layout>
+            </v-layout>
         </v-layout>
       </v-container>
     </section>
@@ -88,21 +102,18 @@ export default {
       signUpUsername: '',
       signUpEmail: '',
       signUpPassword: '',
-      loginEmail: '',
-      loginPassword: '',
       passwordConfirm: '',
-      loginDialog: false,
-      signUpDialog: false
     }
   },
   methods: {
-    userLogin() {
-      this.login(this.loginEmail, this.loginPassword,
-        response => {
+    userSignUp() {
+      if (this.comparePasswords !== true) {
+        return
+      }
+      this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername,
+        (response) => {
           if (response.data['code'] == 200) {
-            this.loginDialog = true;
-            this.signUpDialog = false;
-            this.$emit('login')
+            alert('signing up')
             router.push('/homepage')
           } else if (response.data['code'] == 31) {
             throw error
@@ -111,9 +122,6 @@ export default {
         error => {
           alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
         })
-    },
-    onLogin() {
-      router.push('/homepage')
     }
   },
   computed: {

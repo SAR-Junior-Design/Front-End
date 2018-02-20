@@ -32,6 +32,10 @@
           </v-list-tile>
         </v-list>
       </v-menu>
+      <v-toolbar-items class="hidden-sm-and-down" v-if="!logged_in">
+        <v-btn style="color:#dadfe8;" flat to="/login" >Login</v-btn>
+        <v-btn style="color:#dadfe8;" flat to="/" >Sign Up</v-btn>
+      </v-toolbar-items>
     </v-toolbar>
 	  <router-view absolute v-on:login="login"></router-view>
   </v-app>
