@@ -21,7 +21,7 @@
 							</v-layout>
 						</v-layout>
 						<v-flex>
-							<h3> Name: {{user_info.name}} </h3>
+							<h3> Name: {{user_info.name}} <span> edit name </span> </h3>
 							<h3> Email: {{user_info.email}} </h3>
 							<v-btn outline flat style="color:#253f87;" type="submit">Change Password</v-btn>
 						</v-flex>
@@ -50,6 +50,11 @@
 									<span style="font-size:30px;"> Licenses </span>
 								</v-flex>
 								<v-layout row>
+									<v-flex
+										v-for="doc in profile_info.documents"
+									>
+										<h3> {{doc.type}} </h3>
+									</v-flex>
 									<v-flex style="margin-top:12px;">
 										<h3 v-if="profile_info.part_107 != 'null'"> <a :href="profile_info.part_107"> Part 107 </a>
 										</h3>
