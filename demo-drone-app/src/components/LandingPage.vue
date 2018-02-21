@@ -5,7 +5,7 @@
         <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
         <v-layout row>
           <v-layout column>
-            <v-flex mt-3>
+            <v-flex style="margin-top:45%">
               <v-flex class="text-xs-left" style="color:#dadfe8">
                 <span style="font-size:30px;color:#dadfe8;">Plan. Your. Mission.</span>
               </v-flex>

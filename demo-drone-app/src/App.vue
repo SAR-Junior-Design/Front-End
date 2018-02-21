@@ -9,6 +9,7 @@
           SAR
         </router-link>
       </v-toolbar-title>
+      <v-spacer v-if="!logged_in"/>
       <v-toolbar-items class="hidden-xs-only">
         <v-btn
           flat
@@ -18,7 +19,7 @@
           <span style="color:#dadfe8;"> {{ item.title }} </span>
         </v-btn>
       </v-toolbar-items>
-      <v-spacer></v-spacer>
+      <v-spacer v-if="logged_in"/>
       <v-menu bottom left v-if="logged_in">
         <v-btn icon slot="activator" dark>
           <v-icon>more_vert</v-icon>
@@ -32,10 +33,6 @@
           </v-list-tile>
         </v-list>
       </v-menu>
-      <v-toolbar-items class="hidden-sm-and-down" v-if="!logged_in">
-        <v-btn style="color:#dadfe8;" flat to="/login" >Login</v-btn>
-        <v-btn style="color:#dadfe8;" flat to="/" >Sign Up</v-btn>
-      </v-toolbar-items>
     </v-toolbar>
 	  <router-view absolute v-on:login="login"></router-view>
   </v-app>
@@ -65,7 +62,7 @@ Vue.use(VueAxios, axios)
           { title: 'Drones', path: '/drones', icon: 'lock'}
         ],
         notLoggedIn: [
-
+          { title: 'Login', path: '/login', icon: 'home'}
         ],
         settings_menu: [
         	'profile',
