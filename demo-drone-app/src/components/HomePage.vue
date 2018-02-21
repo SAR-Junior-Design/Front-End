@@ -11,13 +11,13 @@
                 </v-flex>
               </v-card-title>
               <v-card-text>
-                <v-layout row>
-                  <v-flex pa-3 class="text-xs-center" v-for="mission in userMissons" :key="mission.id">
-                    <v-card dark style="background-color:#1d561a">
+                <v-layout row style="overflow-x: scroll;">
+                  <v-flex pa-3 class="text-xs-center" v-for="mission in userMissions" :key="mission.id">
+                    <v-card dark style="background-color:#1d561a; height:100%;width:300px;">
                       <v-container fluid grid-list-lg>
                         <v-layout row>
                           <v-flex xs7>
-                            <div @click="goToMission(mission.id)">
+                            <div @mouseover="mouseOver()" @mouseout="mouseOut()" @click="goToMission(mission.id)">
                               <div class="headline"> {{ mission.title }}</div>
                               <div>awaiting mission details...</div>
                             </div>
@@ -47,7 +47,7 @@
                 </v-flex>
               </v-card-title>
               <v-card-text>
-                <v-layout row>
+                <v-layout row style="overflow-x: scroll;">
                   <v-flex pa-3 class="text-xs-center" v-for="i in 3" :key="i">
                     <v-card dark style="background-color:#1d561a">
                       <v-container fluid grid-list-lg>
@@ -83,7 +83,7 @@
                 </v-flex>
               </v-card-title>
               <v-card-text>
-                <v-layout row>
+                <v-layout row style="overflow-x: scroll;">
                   <v-flex pa-3 class="text-xs-center" v-for="i in 5" :key="i">
                     <v-card dark style="background-color:#1d561a">
                       <v-container fluid grid-list-lg>
@@ -166,18 +166,24 @@ export default {
   mixins: [API],
   data () {
     return {
-      userMissons: {
+      userMissions: {
         commanding: {
           title: 'No Active Missions Available'
         }
       },
-      userMissonsCount: 0,
+      userMissionsCount: 0,
 
     }
   },
   methods: {
     goToMission(mission) {
       router.push('mission?id='+mission);
+    },
+    mouseOver() {
+      document.body.style.cursor= 'pointer';
+    },
+    mouseOut() {
+      document.body.style.cursor= 'default';
     }
   },
   mounted() {
@@ -185,7 +191,7 @@ export default {
       response => {
         if (response.status == 200) {
           if (response.data['commanding']) {
-            this.userMissons = response.data['commanding']
+            this.userMissions = response.data['commanding']
           }
           this.$emit('login')
           router.push('/homepage')

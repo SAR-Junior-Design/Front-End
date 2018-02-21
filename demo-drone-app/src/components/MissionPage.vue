@@ -356,7 +356,6 @@
               this.title = response.data.title;
               this.description = response.data.description;
               var area = response.data.area;
-              var polygons_loaded_in = [];
               for(var i = 0; i < area.features.length; i++) {
                 var paths = [];
                 for (var a in area.features[i].geometry.coordinates) {
@@ -376,9 +375,9 @@
                   draggable:false
                 });
                 poly.setMap(this.$refs.map.$mapObject);
-                polygons_loaded_in.push(poly);
+                this.setEvent(poly, this);
+                this.polygons.push(poly);
               }
-              this.polygons = polygons_loaded_in;
             } else if (response.data['code'] == 31) {
               alert("Authentication Error");
             }
@@ -428,7 +427,18 @@
                 }
               });
           marker.setMap(this.$refs.map.$mapObject);
+          this.setMarkerEvent(marker, this.drones[i], this);
         }
+      },
+      setMarkerEvent(marker, drone, that){
+        google.maps.event.addListener(marker, 'click', function (event) {
+          that.swapNav(drone);
+        });
+      },
+      setEvent(poly, that){
+        google.maps.event.addListener(poly, 'dragend', function (event) {
+          that.polygons[poly.id].setPath(poly.getPath());
+        });
       },
       closePolygon: function(event) {
         if(this.canDraw) {
@@ -447,6 +457,7 @@
                 draggable:false
               });
               poly.setMap(this.$refs.map.$mapObject);
+              this.setEvent(poly, this);
               this.polygons.push(poly);
               this.paths = [];
             }
@@ -508,7 +519,7 @@
               "type": "FeatureCollection",
               "features": []
             };
-          if (this.polyPaths.length == 0) {
+          if (this.polygons.length == 0) {
             var temp = {
                     "type": "Feature",
                     "geometry":{
@@ -521,20 +532,23 @@
           } else {
             for (var i = 0; i< this.polygons.length; i++) {
               var vertices = this.polygons[i].getPath();
-              var temp = {
-                    "type": "Feature",
-                    "geometry":{
-                      "type": "Polygon", 
-                      "coordinates": []
-                    },
-                    "properties":{}
-                  }
-              var temp2 = [];
-              vertices.forEach(function(xy, i) {
-                temp2.push([xy.lat(), xy.lng()]);
-              });
-              temp.geometry.coordinates = temp2;
-              gJson.features.push(temp);
+              console.log(vertices);
+              if (vertices!=undefined) {
+                var temp = {
+                      "type": "Feature",
+                      "geometry":{
+                        "type": "Polygon", 
+                        "coordinates": []
+                      },
+                      "properties":{}
+                    }
+                var temp2 = [];
+                vertices.forEach(function(xy, i) {
+                  temp2.push([xy.lat(), xy.lng()]);
+                });
+                temp.geometry.coordinates = temp2;
+                gJson.features.push(temp);
+              }
             }
           }
           return gJson;

@@ -79,10 +79,10 @@
         </v-text-field>
       </v-list>
       <v-menu
-        ref="menu"
+        ref="menuDate"
         lazy
         :close-on-content-click="false"
-        v-model="menu"
+        v-model="menuDate"
         transition="scale-transition"
         offset-y
         full-width
@@ -94,16 +94,63 @@
           label="Flight Date"
           v-model="pickerDate"
           readonly
+          style="margin:2%;width:96%;"
         ></v-text-field>
         <v-date-picker
           ref="picker"
           v-model="pickerDate"
-          @change="save"
+          @change="saveDate"
           :min="new Date().toISOString().substr(0, 10)"
           :max="new Date().toISOString().substr(0, 10)"
         ></v-date-picker>
       </v-menu>
-      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" color="pink" dark absolute right>
+      <v-menu
+        ref="menuStart"
+        lazy
+        :close-on-content-click="false"
+        v-model="menuStart"
+        transition="scale-transition"
+        offset-y
+        full-width
+        :nudge-right="40"
+        max-width="290px"
+        min-width="290px"
+        :return-value.sync="pickerStart"
+      >
+        <v-text-field
+          slot="activator"
+          label="Flight Start Time"
+          v-model="pickerStart"
+          prepend-icon="access_time"
+          readonly
+          style="width:40%;float:left;margin:10px;"
+        ></v-text-field>
+        <v-time-picker v-model="pickerStart" @change="$refs.menuStart.save(time)"></v-time-picker>
+      </v-menu>
+      <v-menu
+        ref="menuEnd"
+        lazy
+        :close-on-content-click="false"
+        v-model="menuEnd"
+        transition="scale-transition"
+        offset-y
+        full-width
+        :nudge-right="40"
+        max-width="290px"
+        min-width="290px"
+        :return-value.sync="pickerEnd"
+      >
+        <v-text-field
+          slot="activator"
+          label="Flight End Time"
+          v-model="pickerEnd"
+          prepend-icon="access_time"
+          readonly
+          style="width:40%;float:left;margin:10px;"
+        ></v-text-field>
+        <v-time-picker v-model="pickerEnd" @change="$refs.menuEnd.save(time)"></v-time-picker>
+      </v-menu>
+      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" color="pink" dark style="margin-left:60%">
         Save Mission
       </v-btn>
     </v-navigation-drawer>
@@ -142,6 +189,7 @@
   });
   export default {
     name: 'NewMissionPage',
+    mixins: [API],
     data: function data() {
       return {
         center: {
@@ -157,9 +205,12 @@
         location: "",
         description: "",
 
-        menu: false,
+        menuDate: false,
+        menuStart: false,
+        menuEnd: false,
         pickerDate:null,
-        pickerTime:null,
+        pickerStart:null,
+        pickerEnd:null,
         paths: [],
         polyPaths: [],
         polygons:[],
@@ -170,13 +221,18 @@
       };
     },
     watch: {
-      menu (val) {
-        val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
+      menuDate (val) {
+        val && this.$nextTick(() => (this.$refs.picker.activePicker = 'MONTH'))
       }
     },
     methods: {
-      save (date) {
-        this.$refs.menu.save(date)
+      saveDate (date) {
+        this.$refs.menuDate.save(date)
+      },
+      setEvent(poly, that){
+        google.maps.event.addListener(poly, 'dragend', function (event) {
+          that.polygons[poly.id].setPath(poly.getPath());
+        });
       },
       closePolygon: function(event) {
         if(this.canDraw) {
@@ -195,6 +251,7 @@
                 draggable:false
               });
               poly.setMap(this.$refs.map.$mapObject);
+              this.setEvent(poly, this);
               this.polygons.push(poly);
               this.paths = [];
             }
@@ -233,7 +290,7 @@
       },
       drawLine: function (event) {
         if(this.canDraw) {
-          this.paths.push({lng: event.latLng.lng(), lat: event.latLng.lat()});
+          this.paths.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
         } else {
           for (var i = 0; i < this.polyPaths.length; i++) {
             var poly = this.polygons[i];
@@ -289,7 +346,7 @@
                   }
               var temp2 = [];
               thing.forEach(function(xy, i) {
-                temp2.push([xy.lng(), xy.lat()]);
+                temp2.push([xy.lat(), xy.lng()]);
               });
               temp.geometry.coordinates = temp2;
               gJson.features.push(temp);
@@ -312,6 +369,7 @@
               this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
               this.canDraw = false;
               this.edit = !this.edit;
+              this.snackbar =true;
             } else if (response.data['code'] == 31) {
               alert("Authentication Error");
             }
