@@ -284,8 +284,8 @@
                 "energy_remaining" : 80
               },
               "location" : {
-                latitude: 24,
-                longitude: -89
+                latitude: 26,
+                longitude: -79.35
               },
               "altitude" : 99,
               "connection" : "IS_CONNECTION",
@@ -300,8 +300,8 @@
                 "energy_remaining" : 99
               },
               "location" : {
-                latitude: 33,
-                longitude: -80
+                latitude: 25.7,
+                longitude: -79.4
               },
               "altitude" : 99,
               "connection" : "NO_CONNECTION",
@@ -316,8 +316,8 @@
                 "energy_remaining" : 30
               },
               "location" : {
-                latitude: 34,
-                longitude: -80
+                latitude: 25.2,
+                longitude: -80.25
               },
               "altitude" : 99,
               "connection" : "IS_CONNECTION",
@@ -332,8 +332,8 @@
                 "energy_remaining" : 10
               },
               "location" : {
-                latitude: 33,
-                longitude: -81
+                latitude: 25.3,
+                longitude: -80.1
               },
               "altitude" : 99,
               "connection" : "NO_CONNECTION",
@@ -507,7 +507,7 @@
                   this.center.lng = parseFloat(newLon);
                   this.center.lat = parseFloat(newLat);
                   this.$refs.map.panTo(this.center);
-                  this.zoom = 10;
+                  this.zoom = 8;
                 }
               }
             }
