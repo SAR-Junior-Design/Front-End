@@ -4,7 +4,7 @@ import Router from 'vue-router'
 const routerOptions = [
   { path: '/', component: 'LandingPage' },
   { path: '/login', component: 'Login'},
-  { path: '/mission', component: 'MissionPage' },
+  { path: '/map', component: 'MapPage' },
   { path: '/newmission', component: 'NewMissionPage' },
   { path: '/settings', component: 'Settings'},
   { path: '/homepage', component: 'HomePage'},

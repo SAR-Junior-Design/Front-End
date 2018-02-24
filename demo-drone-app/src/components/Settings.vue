@@ -1,96 +1,62 @@
 <template>
-	<v-container style="margin-top:50px;">
+	<v-container style="margin-top:70px;">
 		<v-layout row>
-			<v-layout column>
-				<v-card style="margin:20px;">
-					<v-card-text>
-						<v-flex style="border-bottom-style: solid; border-width: 1px;">
-							<span style="font-size:30px;"> PROFILE </span>
-						</v-flex>
-						<v-layout row style="margin:20px;">
-							<v-flex>
-								<img :src="profile_info.image" :width="size" :height="size"/>
-							</v-flex>
-							<v-layout column>
-								<v-flex class="text-xs-left">
-									<span style="font-size:15px;"> Change Picture </span>
-								</v-flex>
-								<v-flex>
-									<v-btn outline flat style="color:#253f87;" type="submit">Choose File</v-btn>
-								</v-flex>
-							</v-layout>
-						</v-layout>
-						<v-flex>
-							<h3> Name: {{user_info.name}} </h3>
-							<h3> Email: {{user_info.email}} </h3>
-							<v-btn outline flat style="color:#253f87;" type="submit">Change Password</v-btn>
-						</v-flex>
-					</v-card-text>
-				</v-card>
-
-				<v-card style="margin:20px;">
-					<v-card-title>
-						<v-flex style="border-bottom-style: solid; border-width: 1px;">
-							<span style="font-size:30px;"> ACCOUNT </span>
-						</v-flex>
-						<v-layout row style="margin:20px;">
-							<v-flex>
-								<h4> INSERT ACCOUNT INFORMATION </h4>
-							</v-flex>
-						</v-layout>
-					</v-card-title>
-				</v-card>
-
+			<v-layout column style="margin-right:20px;">
+				<v-card>
+					<v-list style="background-color:#fafafa">
+						<v-list-tile>
+							<h4> Personal Settings </h4>
+						</v-list-tile>
+	          <v-list-tile 
+	          	style="background-color:#ffffff" 
+	          	v-model="current_item" 
+	          	v-for="item in items" 
+	          	:key="item.title" 
+	          	@click="current_item = item">
+	            <v-list-tile-title 
+	            	v-if="current_item.title==item.title"
+	            	style="font-weight:bold;">{{ item.title }}</v-list-tile-title>
+	            <v-list-tile-title v-if="current_item.title!=item.title">{{ item.title }}</v-list-tile-title>
+	          </v-list-tile>
+	        </v-list>
+	      </v-card>
 			</v-layout>
-				<v-layout column style="margin-left:20px;">
-					<v-card style="margin:20px;">
-						<v-card-title>
-							<v-flex style="border-bottom-style: solid; border-width: 1px;">
-								<span style="font-size:30px;"> Personal Details </span>
-							</v-flex>
-							<v-flex>
-								<h3> Address: {{profile_info.address}} </h3>
-								<h3> Date of Birth: {{profile_info.date_of_birth}} </h3>
-								<v-btn outline flat style="color:#253f87;" type="submit">Change Password</v-btn>
-							</v-flex>
-						</v-card-title>
-					</v-card>
-					<v-card style="margin:20px;">
-						<v-card-title>
-							<v-flex style="border-bottom-style: solid; border-width: 1px;">
-								<span style="font-size:30px;"> Preferences </span>
-							</v-flex>
-						</v-card-title>
-					</v-card>
-					<v-card style="margin:20px;">
-						<v-card-text>
-							<v-flex style="border-bottom-style: solid; border-width: 1px;">
-								<span style="font-size:30px;"> Security </span>
-							</v-flex>
-						</v-card-text>
-					</v-card>
-				</v-layout>
+			<v-layout column>
+				<component :user_info="user_info" :is="current_item.component"></component>
+			</v-layout>
 		</v-layout>
 	</v-container>
 </template>
 
 <style>
+
 </style>
 
 <script>
 import API from '../mixins/API.js'
+import SettingsProfile from './settings/SettingsProfile.vue'
+import SettingsLicenses from './settings/SettingsLicenses.vue'
 
 export default {
 	mixins: [API],
+	components: {
+    'settings-profile': SettingsProfile,
+    'settings-licenses': SettingsLicenses
+  },
 	data() {
 		return {
-			size:'75px',
+			size:'150px',
+			items: [
+				{'title': 'Profile', 'color': 'black', 'component': 'settings-profile'},
+				{'title': 'Licenses', 'color': 'black', 'component': 'settings-licenses'}
+			],
+			current_item: {},
 			profile_info: {
-				date_of_birth: '1996-10-12',
-				address: '5525 New Wellington Close',
-				username: 'Sam Crane',
-				email: 'samcrane8@gmail.com',
-				image: 'https://avatars0.githubusercontent.com/u/8029035?s=400&v=4'
+				image: 'https://avatars0.githubusercontent.com/u/8029035?s=400&v=4',
+				documents: [
+					{ type: 'part_107', location: 'https://drive.google.com/file/d/1j8jXiXbI05VogHVKivfavdZgbaD0yrwP/view?usp=sharing'},
+					{ type: 'part_333', location: 'https://drive.google.com/file/d/1j8jXiXbI05VogHVKivfavdZgbaD0yrwP/view?usp=sharing'}
+				]
 			},
 			user_info: {}
 		}
@@ -102,10 +68,14 @@ export default {
 			}, error => {
 				alert ('Could not get user info!')
 			});
+		},
+		on_nav_click(item) {
+			this.current_item = this.item
 		}
 	},
 	mounted() {
 		this._get_user_info()
+		this.current_item = this.items[0]
 	}
 }
 </script>

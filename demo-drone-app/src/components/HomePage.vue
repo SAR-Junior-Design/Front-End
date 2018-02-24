@@ -177,7 +177,7 @@ export default {
   },
   methods: {
     goToMission(mission) {
-      router.push('mission?id='+mission);
+      router.push('map?id='+mission);
     },
     mouseOver() {
       document.body.style.cursor= 'pointer';
