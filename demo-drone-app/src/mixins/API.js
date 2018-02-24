@@ -117,6 +117,12 @@ export default {
         .then(success)
         .catch(failure);
     },
+    get_missions(success, failure){
+      var url = this.base_url + '/get_missions'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
     // Details must be a dictionary with any combination
     // of 'area', 'description', and 'title'. If you don't
     // want to change a value, don't put it in the

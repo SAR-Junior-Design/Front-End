@@ -76,11 +76,8 @@
 
 import Vue from 'vue';
 import Vuetify from 'vuetify'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
 import router from '@/router'
 import API from '../mixins/API.js'
-
 
 export default {
   name: 'Login',

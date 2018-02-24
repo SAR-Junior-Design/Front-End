@@ -60,7 +60,7 @@ Vue.use(VueAxios, axios)
         menuItems: [
         ],
         userMenu: [
-        	{ title: 'Mission', path: '/mission', icon: 'home'},
+        	{ title: 'Mission', path: '/missions', icon: 'home'},
           { title: 'New Mission', path: '/newmission', icon: 'lock'},
           { title: 'Drones', path: '/drones', icon: 'lock'}
         ],
