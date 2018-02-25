@@ -1,5 +1,5 @@
 <template>
-	<v-content style="margin-top:70px;">
+	<v-content style="margin-top:70px;" class="mission_body">
 		<v-layout row>
 			<v-layout column>
 				<v-card style="margin:20px;">
@@ -116,6 +116,14 @@
 					          			{{props.item.description}}
 					          		</h4>
 					          	</v-flex>
+					          	<v-flex>
+					          		<h4>
+					          			Start Date/Time: {{props.item.starts_at}}
+					          		</h4>
+					          		<h4>
+					          			End Date/Time: {{props.item.ends_at}}
+					          		</h4>
+					          	</v-flex>
 					          	<v-flex v-if="is_gov_official">
 					          		<h4>
 					          			<v-select
@@ -157,6 +165,14 @@
 		</v-layout>
 	</v-content>
 </template>
+
+<style>
+	@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
+
+	.mission_body {
+		font-family: 'Roboto', sans-serif;
+	}
+</style>
 
 
 <script>

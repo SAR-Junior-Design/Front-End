@@ -113,6 +113,8 @@ Vue.use(VueAxios, axios)
 
   @require '../../node_modules/vuetify/src/stylus/settings/_colors'
   @import url("https://fonts.googleapis.com/css?family=Barlow")
+  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
+
 
   $theme := {
     primary: $red.darken-2
@@ -126,6 +128,7 @@ Vue.use(VueAxios, axios)
 
   body {
     margin: 0;
+    font-family: 'Roboto', sans-serif;
   }
 
 </style>
