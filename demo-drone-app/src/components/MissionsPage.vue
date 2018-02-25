@@ -88,9 +88,12 @@
 	          	<tr @click="props.expanded = !props.expanded">
 		            <td class="text-xs-left">{{ props.item.title }}</td>
 		            <td class="text-xs-center">{{ props.item.commander }}</td>
+		            <td class="text-xs-center">{{ props.item.num_drones }}</td>
 		            <td class="text-xs-center">{{ props.item.starts_at }}</td>
 		            <td class="text-xs-center"> 
-		            	<v-icon right color="green">check_circle</v-icon>
+		            	<v-icon v-if="_state(props.item.clearance) == 'BLOCKED'" right color="red">block</v-icon>
+		            	<v-icon v-if="_state(props.item.clearance) == 'PENDING'" right color="yellow">error</v-icon>
+		            	<v-icon v-if="_state(props.item.clearance) == 'APPROVED'" right color="green">check_circle</v-icon>
 		            </td>
 		          </tr>
 	          </template>
@@ -140,6 +143,7 @@ export default {
       headers: [        
         { text: 'Title', align: 'left', value: 'title' },
         { text: 'Commander', align: 'center', value: 'commander'},
+        { text: 'Drones', align: 'center', value: 'Drones#'},
         { text: 'Start Date', align: 'center', value: 'starts_at'},
         { text: 'Approval Status', align: 'center', value: 'legal_status'}
       ],
@@ -151,6 +155,12 @@ export default {
     }
   },
   methods: {
+  	_state(clearance) {
+  		if (clearance == null){
+  			return false
+  		}
+  		return clearance["state"]
+  	},
     getMissions() {
       this.get_missions(
         response => {
