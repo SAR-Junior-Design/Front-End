@@ -3,7 +3,78 @@
 		<v-layout row>
 			<v-layout column>
 				<v-card style="margin:20px;">
-					<v-flex> guy </v-flex>
+					<v-card-title>
+						<v-flex>
+							<h3>
+								FILTERS
+							</h3>
+						</v-flex>
+					</v-card-title>
+					<v-card-text>
+						<v-flex>
+							<v-menu
+				        ref="menuDate"
+				        lazy
+				        :close-on-content-click="false"
+				        v-model="start_menu"
+				        transition="scale-transition"
+				        offset-y
+				        full-width
+				        :nudge-right="40"
+				        min-width="290px"
+				      >
+				        <v-text-field
+				          slot="activator"
+				          label="Start Date"
+				          v-model="start_date"
+				          readonly
+				          style="margin:2%;width:96%;"
+				        ></v-text-field>
+				        <v-date-picker
+				          ref="picker"
+				          v-model="start_date"
+				          @change=""
+				          :min="new Date().toISOString().substr(0, 10)"
+				          :max="new Date().toISOString().substr(0, 10)"
+				        ></v-date-picker>
+				      </v-menu>
+				    </v-flex>
+				    <v-flex>
+							<v-menu
+				        ref="menuDate"
+				        lazy
+				        :close-on-content-click="false"
+				        v-model="end_menu"
+				        transition="scale-transition"
+				        offset-y
+				        full-width
+				        :nudge-right="40"
+				        min-width="290px"
+				      >
+				        <v-text-field
+				          slot="activator"
+				          label="End Date"
+				          v-model="end_date"
+				          readonly
+				          style="margin:2%;width:96%;"
+				        ></v-text-field>
+				        <v-date-picker
+				          ref="picker"
+				          v-model="end_date"
+				          @change=""
+				          :min="new Date().toISOString().substr(0, 10)"
+				          :max="new Date().toISOString().substr(0, 10)"
+				        ></v-date-picker>
+				      </v-menu>
+				    </v-flex>
+					</v-card-text>
+				</v-card>
+				<v-card style="margin-left:20px;margin-right:20px;">
+					<v-flex class="text-xs-center">
+						<v-btn flat outline style="margin:10px;">
+							NEW MISSION
+						</v-btn>
+					</v-flex>
 				</v-card>
 			</v-layout>
 			<v-layout column>
@@ -14,34 +85,36 @@
 	            v-bind:search="search"
 	          >
 	          <template slot="items" slot-scope="props">
-
-	            <td class="text-xs-right">{{ props.item.title }}</td>
-	            <td class="text-xs-right">{{ props.item.description }}</td>
-	            <td class="text-xs-right">{{ props.item.commander }}</td>
-
-	              <v-edit-dialog
-	                @open="tmp = props.item.iron"
-	                @save="props.item.iron = tmp || props.item.iron"
-	                large
-	                lazy
-	              >
-	                <div>{{ props.item.iron }}</div>
-	                <div slot="input" class="mt-3 title">Update Iron</div>
-	                <v-text-field
-	                  slot="input"
-	                  label="Edit"
-	                  v-model="tmp"
-	                  single-line
-	                  counter
-	                  autofocus
-	                  :rules="[max25chars]"
-	                ></v-text-field>
-	              </v-edit-dialog>
-	            </td>
+	          	<tr @click="props.expanded = !props.expanded">
+		            <td class="text-xs-left">{{ props.item.title }}</td>
+		            <td class="text-xs-center">{{ props.item.commander }}</td>
+		            <td class="text-xs-center">{{ props.item.starts_at }}</td>
+		            <td class="text-xs-center"> 
+		            	<v-icon right color="green">check_circle</v-icon>
+		            </td>
+		          </tr>
 	          </template>
 	          <template slot="pageText" slot-scope="{ pageStart, pageStop }">
 	            From {{ pageStart }} to {{ pageStop }}
 	          </template>
+	          <template slot="expand" slot-scope="props">
+			        <v-card flat>
+			          <v-card-title>
+			          	<v-flex>
+			          		<h2>
+			          			Title: {{props.item.title}}
+			          		</h2>
+			          	</v-flex>
+			          </v-card-title>
+			          <v-card-text>
+			          	<v-flex>
+			          		<h4>
+			          			{{props.item.description}}
+			          		</h4>
+			          	</v-flex>
+			          </v-card-text>
+			        </v-card>
+			      </template>
 	        </v-data-table>
 	      </v-card>
 			</v-layout>
@@ -65,11 +138,16 @@ export default {
       search: '',
       pagination: {},
       headers: [        
-        { text: 'Title', value: 'title' },
-        { text: 'Description', value: 'description' },
-        { text: 'Commander', value: 'commander'}
+        { text: 'Title', align: 'left', value: 'title' },
+        { text: 'Commander', align: 'center', value: 'commander'},
+        { text: 'Start Date', align: 'center', value: 'starts_at'},
+        { text: 'Approval Status', align: 'center', value: 'legal_status'}
       ],
-      items: []
+      items: [],
+      start_date: null,
+      start_menu: false,
+      end_date: null,
+      end_menu: false
     }
   },
   methods: {

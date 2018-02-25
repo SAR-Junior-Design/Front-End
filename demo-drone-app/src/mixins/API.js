@@ -11,7 +11,8 @@ Vue.use(VueAxios, axios)
 export default {
   data () {
   	return {
-  		base_url: 'http://backend.searchandrescuedrones.us:5000'
+  		//base_url: 'http://backend.searchandrescuedrones.us:5000'
+      base_url: 'http://localhost:5000'
   	}
   },
   methods: {
@@ -83,8 +84,9 @@ export default {
         .catch(failure);
     },
     //MISSION API CALLS
-    register_mission(title, area, description, success, failure) {
-      var body = {'title': title, 'area': area, 'description': description}
+    register_mission(title, area, description, starts_at, ends_at, success, failure) {
+      var body = {'title': title, 'area': area, 'description': description,
+                  'starts_at': starts_at, 'ends_at': ends_at}
       var url = this.base_url + '/register_mission'
       axios.post(url,body, {withCredentials:true})
         .then(success)
