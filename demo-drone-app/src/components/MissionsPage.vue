@@ -71,7 +71,8 @@
 				</v-card>
 				<v-card style="margin-left:20px;margin-right:20px;">
 					<v-flex class="text-xs-center">
-						<v-btn flat outline style="margin:10px;">
+						<v-btn flat outline style="margin:10px;"
+							@click="newMission()">
 							NEW MISSION
 						</v-btn>
 					</v-flex>
@@ -91,7 +92,7 @@
 		            <td class="text-xs-center">{{ props.item.num_drones }}</td>
 		            <td class="text-xs-center">{{ props.item.starts_at }}</td>
 		            <td class="text-xs-center"> 
-		            	<v-icon v-if="_state(props.item.clearance) == 'BLOCKED'" right color="red">block</v-icon>
+		            	<v-icon v-if="_state(props.item.clearance) == 'DECLINED'" right color="red">block</v-icon>
 		            	<v-icon v-if="_state(props.item.clearance) == 'PENDING'" right color="yellow">error</v-icon>
 		            	<v-icon v-if="_state(props.item.clearance) == 'APPROVED'" right color="green">check_circle</v-icon>
 		            </td>
@@ -102,20 +103,52 @@
 	          </template>
 	          <template slot="expand" slot-scope="props">
 			        <v-card flat>
-			          <v-card-title>
-			          	<v-flex>
-			          		<h2>
-			          			Title: {{props.item.title}}
-			          		</h2>
-			          	</v-flex>
-			          </v-card-title>
-			          <v-card-text>
-			          	<v-flex>
-			          		<h4>
-			          			{{props.item.description}}
-			          		</h4>
-			          	</v-flex>
-			          </v-card-text>
+			        	<v-card-text>
+			          	<v-layout row>
+			          		<v-layout column>
+			          			<v-flex>
+					          		<h2>
+					          			{{props.item.title}}
+					          		</h2>
+					          	</v-flex>
+					          	<v-flex>
+					          		<h4>
+					          			{{props.item.description}}
+					          		</h4>
+					          	</v-flex>
+					          	<v-flex v-if="is_gov_official">
+					          		<h4>
+					          			<v-select
+								            :items="clearance_states"
+								            v-model="props.item.clearance.state"
+								            label="Set Clearance"
+								            v-on:input="update_clearance(props.item)"
+								            single-line
+								            bottom
+								          ></v-select>
+					          		</h4>
+					          	</v-flex>
+					          </v-layout>
+					          <v-layout column>
+						          <v-flex style="margin:10px;">
+						          	<gmap-map
+										      ref="map"
+										      class="map-panel"
+										      :center="center"
+										      :zoom="zoom"
+										      :map-type-id="mapType"
+										      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+										      style="width:100%;height:150px;">
+										    </gmap-map>
+						          </v-flex>
+					          	<v-flex class="text-xs-center">
+					          		<v-btn @click="goToMission(props.item.id)">
+					          			OPEN MAP
+					          		</v-btn>
+					          	</v-flex>
+					          </v-layout>
+				          </v-layout>
+				        </v-card-text>
 			        </v-card>
 			      </template>
 	        </v-data-table>
@@ -127,52 +160,92 @@
 
 
 <script>
-import Vue from 'vue';
-import Vuetify from 'vuetify'
-import router from '@/router'
-import API from '../mixins/API.js'
+	import * as VueGoogleMaps from 'vue2.1-google-maps';
+	import Vue from 'vue';
+	import Vuetify from 'vuetify'
+	import router from '@/router'
+	import API from '../mixins/API.js'
 
-export default {
-	mixins: [API],
-  data () {
-    return {
-      max25chars: (v) => v.length <= 25 || 'Input too long!',
-      tmp: '',
-      search: '',
-      pagination: {},
-      headers: [        
-        { text: 'Title', align: 'left', value: 'title' },
-        { text: 'Commander', align: 'center', value: 'commander'},
-        { text: 'Drones', align: 'center', value: 'Drones#'},
-        { text: 'Start Date', align: 'center', value: 'starts_at'},
-        { text: 'Approval Status', align: 'center', value: 'legal_status'}
-      ],
-      items: [],
-      start_date: null,
-      start_menu: false,
-      end_date: null,
-      end_menu: false
+	Vue.use(VueGoogleMaps, {
+    load: {
+      installComponents: true,
+      key: 'AIzaSyCtbjOc1SD9ozYtUVzrtxd0PDxRpN-0JGs',
     }
-  },
-  methods: {
-  	_state(clearance) {
-  		if (clearance == null){
-  			return false
-  		}
-  		return clearance["state"]
-  	},
-    getMissions() {
-      this.get_missions(
-        response => {
-          this.items = response.data
-      },
-      error => {
-        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
-      })
-    }
-  },
-  mounted () {
-    this.getMissions();
-  }  
-}
+  });
+
+	export default {
+		mixins: [API],
+	  data () {
+	    return {
+	    	center: {
+          lat: 0,
+          lng: -30
+        },
+        newCenter: "",
+        zoom: 3,
+        mapType: 'hybrid',
+        scrollwheel: false,
+        draggable: false,
+	      max25chars: (v) => v.length <= 25 || 'Input too long!',
+	      tmp: '',
+	      search: '',
+	      pagination: {},
+	      headers: [        
+	        { text: 'Title', align: 'left', value: 'title' },
+	        { text: 'Commander', align: 'center', value: 'commander'},
+	        { text: 'Drones', align: 'center', value: 'Drones#'},
+	        { text: 'Start Date', align: 'center', value: 'starts_at'},
+	        { text: 'Approval Status', align: 'center', value: 'legal_status'}
+	      ],
+	      items: [],
+	      start_date: null,
+	      start_menu: false,
+	      end_date: null,
+	      end_menu: false,
+	      clearance_states: [
+	      	'APPROVED',
+	      	'DECLINED'
+	      ],
+	      is_gov_official: false
+	    }
+	  },
+	  methods: {
+	  	_state(clearance) {
+	  		if (clearance == null){
+	  			return false
+	  		}
+	  		return clearance["state"]
+	  	},
+	    getMissions() {
+	      this.get_missions(
+	        response => {
+	          this.items = response.data
+	      },
+	      error => {
+	        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
+	      })
+	    },
+	    update_clearance(item) {
+	    	// alert(item.clearance.state)
+	    },
+	    goToMission(mission) {
+      router.push('map?id='+mission);
+    	},
+    	newMission(){
+				router.push('/newmission')
+    	}
+	  },
+	  mounted () {
+	    this.getMissions();
+	    this.is_government_official(response => {
+	    	if (response.data == 'True') {
+    				this.is_gov_official = true
+    			} else {
+    				this.is_gov_official = false
+    			}
+	    }, error => {
+	    	alert ('Error Connecting to servers!')
+	    })
+	  }  
+	}
 </script>

@@ -2,7 +2,7 @@
 	<v-card>
 		<v-card-title>
 			<v-layout column>
-				<v-flex style="border-bottom-style: solid; border-width: 1px;">
+				<v-flex>
 					<span style="font-size:30px;"> Licenses </span>
 				</v-flex>
 				<v-layout column>

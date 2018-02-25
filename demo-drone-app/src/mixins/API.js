@@ -23,6 +23,12 @@ export default {
         .then(success)
         .catch(failure);
     },
+    is_government_official(success, failure) {
+      var url = this.base_url + '/is_government_official'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+      },
     login(email, password, success, failure) {
     	var body = {'email': email, 'password': password}
       var url = this.base_url + '/login'
