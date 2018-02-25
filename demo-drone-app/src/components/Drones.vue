@@ -1,76 +1,120 @@
-<template>
-  <v-layout class="background">
-    <v-flex xs12 sm6 offset-sm3>
-      <v-card id="drone_BIG_CARD">
-        <v-card-media
-          class="white--text"
-          height="200px"
-          src="/static/drone_image_1.jpg"
-        >
-          
-        </v-card-media>
-        <v-card-title>
-          <div>
-            <span class="grey--text">Number 10</span><br>
-            <span>Number of Drones: 2</span><br>
-            <span>SAR Team: #14</span>
-          </div>
-        </v-card-title>
-        <v-card-actions>
-          <v-btn flat color="orange">Add Drone</v-btn>
-          <v-btn flat color="orange">Remove Drones</v-btn>
-        </v-card-actions>
-      </v-card>
-      <v-card id="drone_TABLE">
-        <v-card-title>
-          Drones
-          <v-spacer></v-spacer>
-          <v-text-field
-            append-icon="search"
-            label="Search"
-            single-line
-            hide-details
-            v-model="search"
-          ></v-text-field>
-        </v-card-title>
-        <v-data-table
-            v-bind:headers="headers"
-            v-bind:items="items"
-            v-bind:search="search"
+<template>                          
+    <v-layout class="background">
+      <v-flex xs12 sm6 offset-sm3>
+        <v-card id="drone_ADD">
+          <template>
+            <v-container fluid>
+              <v-layout row wrap>
+                <v-flex xs6>
+                  <v-subheader>Manufacturer</v-subheader>
+                </v-flex>
+                <v-flex xs6>
+                  <v-select
+                    :items="items"
+                    v-model="e1"
+                    label="Select"
+                    single-line
+                    bottom
+                  ></v-select>
+                </v-flex>
+                <v-flex xs6>
+                  <v-subheader>Type</v-subheader>
+                </v-flex>
+                <v-flex xs6>
+                    <v-container fluid>
+                      <v-radio-group v-model="radios" :mandatory="true">
+                        <v-radio label="Hover" value="radio-1"></v-radio>
+                        <v-radio label="Glide" value="radio-2"></v-radio>
+                      </v-radio-group>
+                    </v-container>
+                </v-flex>
+                <v-flex xs6>
+                  <v-subheader>Number of Blades</v-subheader>
+                </v-flex>
+                <v-flex xs6>
+                  <v-select
+                    label="Select"
+                    :items="items"
+                    v-model="e3"
+                    item-value="text"
+                  ></v-select>
+                </v-flex>
+                <v-flex xs6>
+                  <v-subheader>Color</v-subheader>
+                </v-flex>
+                <v-flex xs6>
+                  <v-select
+                    label="Select"
+                    :items="items"
+                    v-model="e4"
+                  ></v-select>
+                <div>
+                  <v-btn color="error">Add Drone</v-btn>
+                </div>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </template>
+        </v-card>
+        <v-card id="drone_TABLE">
+          <v-card-title>
+            Connected Drones
+            <v-spacer></v-spacer>
+            <v-text-field
+              append-icon="search"
+              label="Search"
+              single-line
+              hide-details
+              v-model="search"
+            ></v-text-field>
+          </v-card-title>
+          <v-data-table
+            :headers="headers"
+            :items="items"
+            :search="search"
+            v-model="selected"
+            item-key="name"
+            select-all
+            class="elevation-1"
+            hide-actions
           >
-          <template slot="items" slot-scope="props">
-
-            <td class="text-xs-right">{{ props.item.id }}</td>
-            <td class="text-xs-right">{{ props.item.description }}</td>
-
-              <v-edit-dialog
-                @open="tmp = props.item.iron"
-                @save="props.item.iron = tmp || props.item.iron"
-                large
-                lazy
-              >
-                <div>{{ props.item.iron }}</div>
-                <div slot="input" class="mt-3 title">Update Iron</div>
-                <v-text-field
-                  slot="input"
-                  label="Edit"
-                  v-model="tmp"
-                  single-line
-                  counter
-                  autofocus
-                  :rules="[max25chars]"
-                ></v-text-field>
-              </v-edit-dialog>
-            </td>
+          <template slot="headerCell" slot-scope="props">
+            <v-tooltip bottom>
+              <span slot="activator">
+                {{ props.header.text }}
+              </span>
+              <span>
+                {{ props.header.text }}
+              </span>
+            </v-tooltip>
           </template>
-          <template slot="pageText" slot-scope="{ pageStart, pageStop }">
-            From {{ pageStart }} to {{ pageStop }}
-          </template>
-        </v-data-table>
-      </v-card>
-    </v-flex>
-  </v-layout>
+            <template slot="items" slot-scope="props">
+              <tr @click="props.expanded = !props.expanded">
+                <td>
+                  <v-checkbox
+                    primary
+                    v-model="props.selected"
+                  ></v-checkbox>
+                </td>
+                <td>{{ props.item.name }}</td>
+                <td class="text-xs-right">{{ props.item.id }}</td>
+                <td class="text-xs-right">{{ props.item.description }}</td>
+              </tr>
+            </template>
+            <template slot="expand" slot-scope="props">
+              <v-card flat>
+                <v-card-text>Peek-a-boo, it's Ladd bruh!</v-card-text>
+              </v-card>
+            </template>
+            <v-alert slot="no-results" :value="true" color="error" icon="warning">
+              Your search for "{{ search }}" found no results.
+            </v-alert>
+          </v-data-table>
+        </v-card>
+      </v-flex>
+    </v-layout>
 </template>
+
 
 <script>
 
@@ -81,7 +125,6 @@ import VueAxios from 'vue-axios'
 import router from '@/router'
 import API from '../mixins/API.js'
 
-
 export default {
   name: 'Login',
   mixins: [API],
@@ -91,7 +134,12 @@ export default {
       tmp: '',
       search: '',
       pagination: {},
-      headers: [        
+      headers: [   
+        {
+          align:'left',
+          sortable: false,
+          value: 'name'
+        },     
         { text: 'Drone ID', value: 'id' },
         { text: 'Description', value: 'description' },
       ],
@@ -128,16 +176,13 @@ export default {
   -o-background-size: cover;
   background-size: cover;
 }
-
-#drone_BIG_CARD {
-  margin-top: 70px;
+#drone_ADD {
+  margin-top: 80px;
   margin-bottom: 10px;
 }
 #drone_TABLE {
   margin-top: 10px;
-  margin-bottom: 20px;
-
-
+  margin-bottom: 10px;
 }
 </style>
 
