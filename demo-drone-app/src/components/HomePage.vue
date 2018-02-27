@@ -12,10 +12,10 @@
               </v-card-title>
               <v-card-text>
                 <v-layout row>
-                  <v-flex pa-3 class="text-xs-center" v-for="mission in userMissons" :key="mission">
+                  <v-flex pa-3 class="text-xs-center" v-for="mission in userMissons" :key="mission.id">
                     <v-card dark style="background-color:#1d561a">
                       <v-container fluid grid-list-lg>
-                        <v-layout row>
+                        <v-layout row v-if="activeMissionsAvailable === 1">
                           <v-flex xs7>
                             <div>
                               <div class="headline"> {{ mission.title }}</div>
@@ -29,6 +29,13 @@
                               contain
                             ></v-card-media>
                           </v-flex>
+                        </v-layout>
+                        <v-layout row v-else-if="activeMissionsAvailable === 0">
+                            <v-flex xs12>
+                                <div>
+                                  <div class="headline"> {{ mission.title }} </div>
+                                </div>
+                            </v-flex>
                         </v-layout>
                       </v-container>
                     </v-card>
@@ -48,13 +55,13 @@
               </v-card-title>
               <v-card-text>
                 <v-layout row>
-                  <v-flex pa-3 class="text-xs-center" v-for="i in 3" :key="i">
+                  <v-flex pa-3 class="text-xs-center" v-for="mission in userMissons" :key="mission.id">
                     <v-card dark style="background-color:#1d561a">
                       <v-container fluid grid-list-lg>
-                        <v-layout row>
+                        <v-layout row v-if="activeMissionsAvailable == 1">
                           <v-flex xs7>
                             <div>
-                              <div class="headline"> Mission {{i}}</div>
+                              <div class="headline"> {{ mission.title }}</div>
                               <div>awaiting mission details...</div>
                             </div>
                           </v-flex>
@@ -65,6 +72,13 @@
                               contain
                             ></v-card-media>
                           </v-flex>
+                        </v-layout>
+                        <v-layout row v-else>
+                            <v-flex xs12>
+                                <div>
+                                  <div class="headline"> {{ mission.title }} </div>
+                                </div>
+                            </v-flex>
                         </v-layout>
                       </v-container>
                     </v-card>
@@ -117,7 +131,7 @@
             <v-card style="background-color:#dadfe8;">
               <v-card-title>
                 <v-flex class="text-xs-left" style="margin-top:0px;">
-                  <h2> Team Mememers </h2>
+                  <h2> Team Members </h2>
                 </v-flex>
               </v-card-title>
               <v-card-text>
@@ -172,6 +186,7 @@ export default {
         }
       },
       userMissonsCount: 0,
+      activeMissionsAvailable: 0,
 
     }
   },
@@ -184,6 +199,7 @@ export default {
         if (response.status == 200) {
           if (response.data['commanding']) {
             this.userMissons = response.data['commanding']
+            activeMissionsAvailable = 1
           }
           this.$emit('login')
           router.push('/homepage')
