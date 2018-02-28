@@ -12,6 +12,7 @@ export default {
   data () {
   	return {
   		base_url: 'http://backend.searchandrescuedrones.us:5000'
+      //base_url: 'http://localhost:5000'
   	}
   },
   methods: {
@@ -22,6 +23,12 @@ export default {
         .then(success)
         .catch(failure);
     },
+    is_government_official(success, failure) {
+      var url = this.base_url + '/is_government_official'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+      },
     login(email, password, success, failure) {
     	var body = {'email': email, 'password': password}
       var url = this.base_url + '/login'
@@ -83,8 +90,9 @@ export default {
         .catch(failure);
     },
     //MISSION API CALLS
-    register_mission(title, area, description, success, failure) {
-      var body = {'title': title, 'area': area, 'description': description}
+    register_mission(title, area, description, starts_at, ends_at, success, failure) {
+      var body = {'title': title, 'area': area, 'description': description,
+                  'starts_at': starts_at, 'ends_at': ends_at}
       var url = this.base_url + '/register_mission'
       axios.post(url,body, {withCredentials:true})
         .then(success)
@@ -114,6 +122,12 @@ export default {
       var body = {'drone_id': drone_id, 'mission_id': mission_id, 'operator_id': operator_id}
       var url = this.base_url + '/add_drone_to_mission'
       axios.post(url,body, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
+    get_missions(success, failure){
+      var url = this.base_url + '/get_missions'
+      axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
