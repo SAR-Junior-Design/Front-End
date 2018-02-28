@@ -356,9 +356,13 @@
       },
       saveMission() {
         var geoJ = this.makeGeoJson();
+        var start = this.pickerDate + ' ' + this.pickerStart;
+        var end = this.pickerDate + ' ' + this.pickerEnd;
         this.register_mission(
           this.title, geoJ, 
           this.description,
+          start,
+          end,
           response => {
             if (response.data['code'] == 200) {
               for (var i = 0; i < this.polygons.length; i++) {
