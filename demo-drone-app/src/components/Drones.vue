@@ -1,26 +1,14 @@
 <template>                          
     <v-layout class="background">
-      <v-flex xs12 sm6 offset-sm3>
+      <v-flex xs10 sm8 offset-sm2>
         <v-card id="drone_ADD">
           <template>
             <v-container fluid>
               <v-layout row wrap>
-                <v-flex xs6>
-                  <v-subheader>Manufacturer</v-subheader>
-                </v-flex>
-                <v-flex xs6>
-                  <v-select
-                    :items="items"
-                    v-model="e1"
-                    label="Select"
-                    single-line
-                    bottom
-                  ></v-select>
-                </v-flex>
-                <v-flex xs6>
+                <v-flex xs12 >
                   <v-subheader>Type</v-subheader>
                 </v-flex>
-                <v-flex xs6>
+                <v-flex>
                     <v-container fluid>
                       <v-radio-group v-model="radios" :mandatory="true">
                         <v-radio label="Hover" value="radio-1"></v-radio>
@@ -28,32 +16,38 @@
                       </v-radio-group>
                     </v-container>
                 </v-flex>
-                <v-flex xs6>
-                  <v-subheader>Number of Blades</v-subheader>
-                </v-flex>
-                <v-flex xs6>
+                <v-flex xs12 >
                   <v-select
-                    label="Select"
-                    :items="items"
-                    v-model="e3"
+                    label="Manufacturer"
+                    :items="manufacturer_op"
+                    v-model="e0"
                     item-value="text"
+                    autocomplete
                   ></v-select>
                 </v-flex>
-                <v-flex xs6>
-                  <v-subheader>Color</v-subheader>
-                </v-flex>
-                <v-flex xs6>
+                <v-flex xs12 >
                   <v-select
-                    label="Select"
-                    :items="items"
-                    v-model="e4"
+                    label="Number of Blades"
+                    :items="num_blades_op"
+                    v-model="e1"
+                    item-value="text"
+                    single-line
+                    autocomplete
                   ></v-select>
-                <div>
-                  <v-btn color="error">Add Drone</v-btn>
-                </div>
+                </v-flex>
+                <v-flex xs12 >
+                  <v-select
+                    label="Color"
+                    :items="color_op"
+                    v-model="e2"
+                    autocomplete
+                  ></v-select>
                 </v-flex>
               </v-layout>
             </v-container>
+            <div id="add_drone_button">
+              <v-btn color="error">Add Drone</v-btn>
+            </div>
           </template>
         </v-card>
         <v-card id="drone_TABLE">
@@ -68,6 +62,9 @@
               v-model="search"
             ></v-text-field>
           </v-card-title>
+          <div>
+            <v-btn color="info">Remove Selected</v-btn>
+          </div>
           <v-data-table
             :headers="headers"
             :items="items"
@@ -130,6 +127,20 @@ export default {
   mixins: [API],
   data () {
     return {
+      e0: null,
+      e1: null,
+      e2: null, 
+      manufacturer_op: [
+        'AeroVironment', "Ambarella", "DJI", "GoPro", "Parrot", "Yuneec", 
+        "3D Robotics", "CUSTOM BUILD"
+      ],
+      num_blades_op: [
+        '1', '2', '3', '4', '5', '6', '7', '8', '9', "10+"
+      ],
+      color_op: [
+        'White', 'Black', 'Grey', 'Blue', 'Red', 'Orange'
+      ],
+
       max25chars: (v) => v.length <= 25 || 'Input too long!',
       tmp: '',
       search: '',
@@ -143,7 +154,7 @@ export default {
         { text: 'Drone ID', value: 'id' },
         { text: 'Description', value: 'description' },
       ],
-      items: []
+      items: []//////{text: 'state 1'}///////]
     }
   },
   methods: {
@@ -176,13 +187,13 @@ export default {
   -o-background-size: cover;
   background-size: cover;
 }
-#drone_ADD {
-  margin-top: 80px;
-  margin-bottom: 10px;
-}
 #drone_TABLE {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+#drone_ADD {
+  margin-top: 65px; 
+  padding-bottom: 10px;
 }
 </style>
 
