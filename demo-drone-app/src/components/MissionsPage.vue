@@ -137,8 +137,10 @@
 					          		</h4>
 					          	</v-flex>
 					          </v-layout>
-					          <v-layout column>
-						          <v-flex style="margin:10px;">
+					          <v-layout column align-center>
+						          <v-flex 
+						          class="text-xs-center"
+						          style="margin:10px;">
 						          	<gmap-map
 										      ref="map"
 										      class="map-panel"
@@ -146,7 +148,7 @@
 										      :zoom="zoom"
 										      :map-type-id="mapType"
 										      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
-										      style="width:100%;height:150px;">
+										      style="width:350px;height:200px;">
 										    </gmap-map>
 						          </v-flex>
 					          	<v-flex class="text-xs-center">
