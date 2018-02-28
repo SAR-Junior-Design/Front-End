@@ -1,76 +1,140 @@
-<template>
-  <v-layout class="background">
-    <v-flex xs12 sm6 offset-sm3>
-      <v-card id="drone_BIG_CARD">
-        <v-card-media
-          class="white--text"
-          height="200px"
-          src="/static/drone_image_1.jpg"
-        >
-          
-        </v-card-media>
-        <v-card-title>
+<template>                          
+    <v-layout class="background">
+      <v-flex xs10 sm8 offset-sm2>
+        <v-card id="drone_ADD">
+          <template>
+            <v-form v-model="valid" ref="form" lazy-validation>
+            <v-container fluid>
+              <v-layout row wrap>
+                <v-flex xs12 >
+                  <v-subheader>Type</v-subheader>
+                </v-flex>
+                <v-flex>
+                    <v-container fluid>
+                      <v-radio-group 
+                        v-model="radios" 
+                        :mandatory="true" 
+                        required 
+                        :rules="[v => !!v || 'You must specify a Type!']"
+                      >
+                        <v-radio label="Hover" value="radio-1"></v-radio>
+                        <v-radio label="Glide" value="radio-2"></v-radio>
+                      </v-radio-group>
+                    </v-container>
+                </v-flex>
+                <v-flex xs12 >
+                  <v-select
+                    label="Manufacturer"
+                    :items="manufacturer_op"
+                    item-value="text"
+                    autocomplete
+                    required
+                    v-model="e0"
+                    :rules="[v => !!v || 'You must specify a Manufacturer!']"
+                  ></v-select>
+                </v-flex>
+                <v-flex xs12 >
+                  <v-select
+                    label="Number of Blades"
+                    :items="num_blades_op"
+                    item-value="text"
+                    single-line
+                    autocomplete
+                    required
+                    v-model="e1"
+                    :rules="[v => !!v || 'You must specify the Number of Blades!']"
+                  ></v-select>
+                </v-flex>
+                <v-flex xs12 >
+                  <v-select
+                    label="Color"
+                    :items="color_op"
+                    autocomplete
+                    required
+                    v-model="e2"
+                    :rules="[v => !!v || 'You must specify a color!']"
+                  ></v-select>
+                </v-flex>
+              </v-layout>
+            </v-container>
+            <div id="add_drone_button" >
+              <v-btn 
+                @click="submit"
+                :disabled="!valid"
+              > Add Drones 
+              </v-btn>
+            </div>
+          </v-form>
+          </template>
+        </v-card>
+        <v-card id="drone_TABLE">
+          <v-card-title>
+            Connected Drones
+            <v-spacer></v-spacer>
+            <v-text-field
+              append-icon="search"
+              label="Search"
+              single-line
+              hide-details
+              v-model="search"
+            ></v-text-field>
+          </v-card-title>
           <div>
-            <span class="grey--text">Number 10</span><br>
-            <span>Number of Drones: 2</span><br>
-            <span>SAR Team: #14</span>
+            <v-btn color="info">Remove Selected</v-btn>
           </div>
-        </v-card-title>
-        <v-card-actions>
-          <v-btn flat color="orange">Add Drone</v-btn>
-          <v-btn flat color="orange">Remove Drones</v-btn>
-        </v-card-actions>
-      </v-card>
-      <v-card id="drone_TABLE">
-        <v-card-title>
-          Drones
-          <v-spacer></v-spacer>
-          <v-text-field
-            append-icon="search"
-            label="Search"
-            single-line
-            hide-details
-            v-model="search"
-          ></v-text-field>
-        </v-card-title>
-        <v-data-table
-            v-bind:headers="headers"
-            v-bind:items="items"
-            v-bind:search="search"
+          <v-data-table
+            :headers="headers"
+            :items="items"
+            :search="search"
+            v-model="selected"
+            item-key="id"
+            select-all
+            class="elevation-1"
+            hide-actions
           >
-          <template slot="items" slot-scope="props">
+            <template slot="items" slot-scope="props">
+              <tr>
+                <td>
+                  <v-checkbox
+                    primary
+                    v-model="props.selected"
+                  ></v-checkbox>
+                </td>
+                <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.id }}</td>
+                <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.description }}</td>
+              </tr>
+            </template>
+            <template slot="expand" slot-scope="props">
+              <v-card flat>
+                <v-card-text>Peek-a-boo, it's Ladd bruh!</v-card-text>
+              </v-card>
+            </template>
+            <v-alert slot="no-results" :value="true" color="error" icon="warning">
+              Your search for "{{ search }}" found no results.
+            </v-alert>
+          </v-data-table>
+        </v-card>
+      </v-flex>
 
-            <td class="text-xs-right">{{ props.item.id }}</td>
-            <td class="text-xs-right">{{ props.item.description }}</td>
+      <v-btn block color="primary" @click.native="snackbar = true" dark>Show Snackbar</v-btn>
+        </v-card-text>
+        <v-snackbar
+          :timeout="timeout"
+          :top="y === 'top'"
+          :bottom="y === 'bottom'"
+          :right="x === 'right'"
+          :left="x === 'left'"
+          :multi-line="mode === 'multi-line'"
+          :vertical="mode === 'vertical'"
+          v-model="snackbar"
+        >
+      {{ text }}
+      <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
+    </v-snackbar>
 
-              <v-edit-dialog
-                @open="tmp = props.item.iron"
-                @save="props.item.iron = tmp || props.item.iron"
-                large
-                lazy
-              >
-                <div>{{ props.item.iron }}</div>
-                <div slot="input" class="mt-3 title">Update Iron</div>
-                <v-text-field
-                  slot="input"
-                  label="Edit"
-                  v-model="tmp"
-                  single-line
-                  counter
-                  autofocus
-                  :rules="[max25chars]"
-                ></v-text-field>
-              </v-edit-dialog>
-            </td>
-          </template>
-          <template slot="pageText" slot-scope="{ pageStart, pageStop }">
-            From {{ pageStart }} to {{ pageStop }}
-          </template>
-        </v-data-table>
-      </v-card>
-    </v-flex>
-  </v-layout>
+    </v-layout>
 </template>
+
 
 <script>
 
@@ -84,15 +148,39 @@ export default {
   mixins: [API],
   data () {
     return {
+      manufacturer_op: [
+        'AeroVironment', "Ambarella", "DJI", "GoPro", "Parrot", "Yuneec", 
+        "3D Robotics", "CUSTOM BUILD"
+      ],
+      num_blades_op: [
+        '1', '2', '3', '4', '5', '6', '7', '8', '9', "10+"
+      ],
+      color_op: [
+        'White', 'Black', 'Grey', 'Blue', 'Red', 'Orange'
+      ],
+
       max25chars: (v) => v.length <= 25 || 'Input too long!',
       tmp: '',
       search: '',
       pagination: {},
-      headers: [        
+      headers: [     
         { text: 'Drone ID', value: 'id' },
         { text: 'Description', value: 'description' },
       ],
-      items: []
+      items: [],//////{text: 'state 1'}///////]
+      selected: [],
+      radios: null,
+      valid: false,
+      e0: null,
+      e1: null,
+      e2: null,
+
+      snackbar: false,
+      y: 'top',
+      x: null,
+      mode: '',
+      timeout: 6000,
+      text: 'Drone Succesfully Added!'
     }
   },
   methods: {
@@ -107,11 +195,34 @@ export default {
       error => {
         alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
       })
+    },
+    toggleAll () {
+      if (this.selected.length) this.selected = []
+      else this.selected = this.items.slice()
+    },
+    changeSort (column) {
+      if (this.pagination.sortBy === column) {
+        this.pagination.descending = !this.pagination.descending
+      } else {
+        this.pagination.sortBy = column
+        this.pagination.descending = false
+      }
+    },
+    mouseOverM () {
+      document.body.style.cursor= 'default';
+    },
+    submit () {
+      if (this.$refs.form.validate()) {
+        console.log("IT FINALLY WORKED");
+        this.snackbar = true;
+      }
     }
+
+
   },
   mounted () {
     this.getUserDrones();
-  }   
+  }
 }
 
 </script>
@@ -125,16 +236,13 @@ export default {
   -o-background-size: cover;
   background-size: cover;
 }
-
-#drone_BIG_CARD {
-  margin-top: 70px;
-  margin-bottom: 10px;
-}
 #drone_TABLE {
   margin-top: 10px;
-  margin-bottom: 20px;
-
-
+  margin-bottom: 10px;
+}
+#drone_ADD {
+  margin-top: 70px; 
+  padding-bottom: 10px;
 }
 </style>
 
