@@ -43,11 +43,11 @@
                     autocomplete
                   ></v-select>
                 </v-flex>
-                <div id="add_drone_button">
-                  <v-btn color="error">Add Drone</v-btn>
-                </div>
               </v-layout>
             </v-container>
+            <div id="add_drone_button">
+              <v-btn color="error">Add Drone</v-btn>
+            </div>
           </template>
         </v-card>
         <v-card id="drone_TABLE">
@@ -193,6 +193,7 @@ export default {
 }
 #drone_ADD {
   margin-top: 65px; 
+  padding-bottom: 10px;
 }
 </style>
 
