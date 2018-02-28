@@ -358,7 +358,7 @@
         var geoJ = this.makeGeoJson();
         this.register_mission(
           this.title, geoJ, 
-          this.description, 
+          this.description,
           response => {
             if (response.data['code'] == 200) {
               for (var i = 0; i < this.polygons.length; i++) {
