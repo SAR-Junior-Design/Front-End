@@ -1,7 +1,7 @@
 <template>
 	<v-card style="padding:15px;">
-		<v-flex style="border-bottom-style: solid;border-width: 1px;margin-bottom:20px;">
-			<span style="margin-left:5px;font-size:30px;"> PROFILE </span>
+		<v-flex style="margin-bottom:20px;">
+			<span style="margin-left:0px;font-size:30px;"> PROFILE </span>
 		</v-flex>
 		<v-layout row>
 			<v-layout column>
