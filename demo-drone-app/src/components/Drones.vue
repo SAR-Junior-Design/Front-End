@@ -11,7 +11,12 @@
                 </v-flex>
                 <v-flex>
                     <v-container fluid>
-                      <v-radio-group v-model="radios" :mandatory="true">
+                      <v-radio-group 
+                        v-model="radios" 
+                        :mandatory="true" 
+                        required 
+                        :rules="[v => !!v || 'You must specify a Type!']"
+                      >
                         <v-radio label="Hover" value="radio-1"></v-radio>
                         <v-radio label="Glide" value="radio-2"></v-radio>
                       </v-radio-group>
@@ -21,21 +26,23 @@
                   <v-select
                     label="Manufacturer"
                     :items="manufacturer_op"
-                    v-model="e0"
                     item-value="text"
                     autocomplete
                     required
+                    v-model="e0"
+                    :rules="[v => !!v || 'You must specify a Manufacturer!']"
                   ></v-select>
                 </v-flex>
                 <v-flex xs12 >
                   <v-select
                     label="Number of Blades"
                     :items="num_blades_op"
-                    v-model="e1"
                     item-value="text"
                     single-line
                     autocomplete
                     required
+                    v-model="e1"
+                    :rules="[v => !!v || 'You must specify the Number of Blades!']"
                   ></v-select>
                 </v-flex>
                 <v-flex xs12 >
@@ -44,11 +51,13 @@
                     :items="color_op"
                     autocomplete
                     required
+                    v-model="e2"
+                    :rules="[v => !!v || 'You must specify a color!']"
                   ></v-select>
                 </v-flex>
               </v-layout>
             </v-container>
-            <div id="add_drone_button">
+            <div id="add_drone_button" >
               <v-btn 
                 @click="submit"
                 :disabled="!valid"
@@ -106,6 +115,23 @@
           </v-data-table>
         </v-card>
       </v-flex>
+
+      <v-btn block color="primary" @click.native="snackbar = true" dark>Show Snackbar</v-btn>
+        </v-card-text>
+        <v-snackbar
+          :timeout="timeout"
+          :top="y === 'top'"
+          :bottom="y === 'bottom'"
+          :right="x === 'right'"
+          :left="x === 'left'"
+          :multi-line="mode === 'multi-line'"
+          :vertical="mode === 'vertical'"
+          v-model="snackbar"
+        >
+      {{ text }}
+      <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
+    </v-snackbar>
+
     </v-layout>
 </template>
 
@@ -122,10 +148,6 @@ export default {
   mixins: [API],
   data () {
     return {
-      valid: {
-        e0: {required},
-        e1: {required}
-      },
       manufacturer_op: [
         'AeroVironment', "Ambarella", "DJI", "GoPro", "Parrot", "Yuneec", 
         "3D Robotics", "CUSTOM BUILD"
@@ -147,7 +169,18 @@ export default {
       ],
       items: [],//////{text: 'state 1'}///////]
       selected: [],
-      radios: []
+      radios: null,
+      valid: false,
+      e0: null,
+      e1: null,
+      e2: null,
+
+      snackbar: false,
+      y: 'top',
+      x: null,
+      mode: '',
+      timeout: 6000,
+      text: 'Drone Succesfully Added!'
     }
   },
   methods: {
@@ -180,7 +213,8 @@ export default {
     },
     submit () {
       if (this.$refs.form.validate()) {
-        console.log("IT FINALLY WORKED")
+        console.log("IT FINALLY WORKED");
+        this.snackbar = true;
       }
     }
 
@@ -207,7 +241,7 @@ export default {
   margin-bottom: 10px;
 }
 #drone_ADD {
-  margin-top: 65px; 
+  margin-top: 70px; 
   padding-bottom: 10px;
 }
 </style>
