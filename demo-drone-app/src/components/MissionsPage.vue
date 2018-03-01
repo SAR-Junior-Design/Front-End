@@ -149,6 +149,11 @@
 										      :map-type-id="mapType"
 										      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
 										      style="width:350px;height:200px;">
+										      <gmap-polyline v-if="props.items.paths.length > 0"
+									          :path="props.items.paths"
+									          :editable="false"
+									          ref="polyline">
+										      </gmap-polyline>
 										    </gmap-map>
 						          </v-flex>
 					          	<v-flex class="text-xs-center">
@@ -244,7 +249,8 @@
         x: null,
         mode: '',
         timeout: 6000,
-        text: 'Clearance updated.'
+        text: 'Clearance updated.',
+        mapLoaded: false
 	    }
 	  },
 	  methods: {
@@ -258,11 +264,48 @@
 	      this.get_missions(
 	        response => {
 	          this.items = response.data
-	      },
-	      error => {
-	        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
+
+	          for (var j = 0; j < this.items.length; j++){
+	          	var area = this.items[j].area
+	          	var polygons = []
+	            for(var i = 0; i < area.features.length; i++) {
+	              var paths = [];
+	              for (var a in area.features[i].geometry.coordinates) {
+	                paths.push({
+	                lat:area.features[i].geometry.coordinates[a][0][0],lng:area.features[i].geometry.coordinates[a][1][0]
+	                });
+	              }
+	              alert(JSON.stringify(paths))
+	              var poly = new google.maps.Polygon({
+	                paths: paths,
+	                id : i,
+	                strokeColor: '#FF0000',
+	                strokeOpacity: 0.8,
+	                strokeWeight: 2,
+	                fillColor: '#FF0000',
+	                fillOpacity: 0.35,
+	                editable:false,
+	                draggable:false
+	              });
+	              poly.setMap(this.$refs.map.$mapObject);
+	              this.setEvent(poly, this);
+	              //this.polygons.push(poly);
+	              polygons.push(poly);
+	            }
+	            this.items[j]['polygons'] = polygons
+	            this.items[j]['paths'] = []
+	          }
+		      },
+		      error => {
+		        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
+		        console.log(error)
 	      })
 	    },
+      setEvent(poly, that){
+        google.maps.event.addListener(poly, 'dragend', function (event) {
+          that.polygons[poly.id].setPath(poly.getPath());
+        });
+      },
 	    update_clearance(item) {
 	    	this.edit_clearance(
 	    		item.id, item.clearance.state,
@@ -280,7 +323,7 @@
 				router.push('/newmission')
     	}
 	  },
-	  mounted () {
+	  beforeMount () {
 	    this.getMissions();
 	    this.is_government_official(response => {
 	    	if (response.data == 'True') {
@@ -291,6 +334,12 @@
 	    }, error => {
 	    	alert ('Error Connecting to servers!')
 	    })
-	  }  
+	  },
+	  mounted:function() {
+	    this.map = this.$refs.map.$mapObject;
+	    this.$refs.map.$mapCreated.then(() => {
+                        this.mapLoaded=true
+      })
+    }
 	}
 </script>
