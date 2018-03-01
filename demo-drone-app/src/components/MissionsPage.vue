@@ -86,7 +86,7 @@
 	            v-bind:search="search"
 	          >
 	          <template slot="items" slot-scope="props">
-	          	<tr @click="props.expanded = !props.expanded">
+	          	<tr @click.prevent="props.expanded = !props.expanded">
 		            <td class="text-xs-left">{{ props.item.title }}</td>
 		            <td class="text-xs-center">{{ props.item.commander }}</td>
 		            <td class="text-xs-center">{{ props.item.num_drones }}</td>
@@ -144,16 +144,16 @@
 						          	<gmap-map
 										      ref="map"
 										      class="map-panel"
-										      :center="center"
+										      :center="props.item.center"
 										      :zoom="zoom"
 										      :map-type-id="mapType"
-										      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+										      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: true, zoomControl: true}"
 										      style="width:350px;height:200px;">
-										      <gmap-polyline v-if="props.items.paths.length > 0"
-									          :path="props.items.paths"
+										      <gmap-polygon v-if="props.item.paths.length > 0"
+									          :path="props.item.paths"
 									          :editable="false"
 									          ref="polyline">
-										      </gmap-polyline>
+										      </gmap-polygon>
 										    </gmap-map>
 						          </v-flex>
 					          	<v-flex class="text-xs-center">
@@ -206,23 +206,19 @@
 	Vue.use(VueGoogleMaps, {
     load: {
       installComponents: true,
-      key: 'AIzaSyCtbjOc1SD9ozYtUVzrtxd0PDxRpN-0JGs',
+      key: 'AIzaSyCtbjOc1SD9ozYtUVzrtxd0PDxRpN-0JGs'
     }
   });
 
 	export default {
+		name: 'MissionsPage',
 		mixins: [API],
 	  data () {
 	    return {
-	    	center: {
-          lat: 0,
-          lng: -30
-        },
         newCenter: "",
         zoom: 3,
         mapType: 'hybrid',
         scrollwheel: false,
-        draggable: false,
 	      max25chars: (v) => v.length <= 25 || 'Input too long!',
 	      tmp: '',
 	      search: '',
@@ -267,33 +263,23 @@
 
 	          for (var j = 0; j < this.items.length; j++){
 	          	var area = this.items[j].area
-	          	var polygons = []
+	            this.items[j].polygons = []
+	            this.items[j].paths = []
+	            var paths = []
+	            var avg_lat = 0
+	            var avg_long = 0
+	            var num_coords = area.features[0].geometry.coordinates.length
 	            for(var i = 0; i < area.features.length; i++) {
-	              var paths = [];
-	              for (var a in area.features[i].geometry.coordinates) {
-	                paths.push({
-	                lat:area.features[i].geometry.coordinates[a][0][0],lng:area.features[i].geometry.coordinates[a][1][0]
-	                });
-	              }
-	              alert(JSON.stringify(paths))
-	              var poly = new google.maps.Polygon({
-	                paths: paths,
-	                id : i,
-	                strokeColor: '#FF0000',
-	                strokeOpacity: 0.8,
-	                strokeWeight: 2,
-	                fillColor: '#FF0000',
-	                fillOpacity: 0.35,
-	                editable:false,
-	                draggable:false
-	              });
-	              poly.setMap(this.$refs.map.$mapObject);
-	              this.setEvent(poly, this);
-	              //this.polygons.push(poly);
-	              polygons.push(poly);
-	            }
-	            this.items[j]['polygons'] = polygons
-	            this.items[j]['paths'] = []
+			          for (var a in area.features[i].geometry.coordinates) {
+			            paths.push({
+			            lat:area.features[i].geometry.coordinates[a][1],lng:area.features[i].geometry.coordinates[a][0]
+			            });
+			            avg_lat += area.features[i].geometry.coordinates[a][1]
+			            avg_long += area.features[i].geometry.coordinates[a][0]
+			          }
+			        }
+			        this.items[j].paths = paths
+			        this.items[j].center = {lat: avg_lat/num_coords, lng: avg_long/num_coords}
 	          }
 		      },
 		      error => {
@@ -324,7 +310,6 @@
     	}
 	  },
 	  beforeMount () {
-	    this.getMissions();
 	    this.is_government_official(response => {
 	    	if (response.data == 'True') {
     				this.is_gov_official = true
@@ -334,12 +319,9 @@
 	    }, error => {
 	    	alert ('Error Connecting to servers!')
 	    })
+	    this.getMissions()
 	  },
-	  mounted:function() {
-	    this.map = this.$refs.map.$mapObject;
-	    this.$refs.map.$mapCreated.then(() => {
-                        this.mapLoaded=true
-      })
-    }
+	  mounted () {
+	  }
 	}
 </script>
