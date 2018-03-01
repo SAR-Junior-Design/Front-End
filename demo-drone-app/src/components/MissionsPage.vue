@@ -145,9 +145,9 @@
 										      ref="map"
 										      class="map-panel"
 										      :center="props.item.center"
-										      :zoom="zoom"
+										      :zoom="props.item.zoom"
 										      :map-type-id="mapType"
-										      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: true, zoomControl: true}"
+										      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: false, zoomControl: true}"
 										      style="width:350px;height:200px;">
 										      <gmap-polygon v-if="props.item.paths.length > 0"
 									          :path="props.item.paths"
@@ -216,7 +216,7 @@
 	  data () {
 	    return {
         newCenter: "",
-        zoom: 3,
+        zoom: 4,
         mapType: 'hybrid',
         scrollwheel: false,
 	      max25chars: (v) => v.length <= 25 || 'Input too long!',
@@ -267,19 +267,41 @@
 	            this.items[j].paths = []
 	            var paths = []
 	            var avg_lat = 0
-	            var avg_long = 0
+	            var lat_range = {min: 200, max: -200, range: 0}
+	            var avg_lng = 0
+	            var lng_range = {min: 200, max: -200, range: 0}
 	            var num_coords = area.features[0].geometry.coordinates.length
 	            for(var i = 0; i < area.features.length; i++) {
 			          for (var a in area.features[i].geometry.coordinates) {
 			            paths.push({
 			            lat:area.features[i].geometry.coordinates[a][1],lng:area.features[i].geometry.coordinates[a][0]
 			            });
+			            //avg_lat
 			            avg_lat += area.features[i].geometry.coordinates[a][1]
-			            avg_long += area.features[i].geometry.coordinates[a][0]
+			            if (area.features[i].geometry.coordinates[a][1] > lat_range.max) {
+			            	lat_range.max = area.features[i].geometry.coordinates[a][1]
+			            }
+			            if (area.features[i].geometry.coordinates[a][1] < lat_range.min) {
+			            	lat_range.min = area.features[i].geometry.coordinates[a][1]
+			            }
+			            //avg_lng
+			            if (area.features[i].geometry.coordinates[a][0] > lng_range.max) {
+			            	lng_range.max = area.features[i].geometry.coordinates[a][0]
+			            }
+			            if (area.features[i].geometry.coordinates[a][0] < lng_range.min) {
+			            	lng_range.min = area.features[i].geometry.coordinates[a][0]
+			            }
+			            avg_lng += area.features[i].geometry.coordinates[a][0]
 			          }
 			        }
+			        lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+			        lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+			        var range = Math.max(lat_range.range, lng_range.range)
+			        var zoom_coefficient = 2
+			        alert(range)
+			        this.items[j].zoom = -1.334127704 * Math.log(range) + 6.704632038
 			        this.items[j].paths = paths
-			        this.items[j].center = {lat: avg_lat/num_coords, lng: avg_long/num_coords}
+			        this.items[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
 	          }
 		      },
 		      error => {
