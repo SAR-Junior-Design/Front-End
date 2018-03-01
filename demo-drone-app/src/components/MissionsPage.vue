@@ -165,6 +165,20 @@
 	      </v-card>
 			</v-layout>
 		</v-layout>
+		<v-snackbar
+      :timeout="timeout"
+      :top="y === 'top'"
+      :bottom="y === 'bottom'"
+      :right="x === 'right'"
+      :left="x === 'left'"
+      :multi-line="mode === 'multi-line'"
+      :vertical="mode === 'vertical'"
+      v-model="snackbar"
+      color="white"
+    >
+      <span style="color:black"> {{ text }} </span>
+      <v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
+    </v-snackbar>
 	</v-content>
 </template>
 
@@ -224,7 +238,13 @@
 	      	'APPROVED',
 	      	'DECLINED'
 	      ],
-	      is_gov_official: false
+	      is_gov_official: false,
+	      snackbar: false,
+        y: 'top',
+        x: null,
+        mode: '',
+        timeout: 6000,
+        text: 'Clearance updated.'
 	    }
 	  },
 	  methods: {
@@ -244,7 +264,14 @@
 	      })
 	    },
 	    update_clearance(item) {
-	    	// alert(item.clearance.state)
+	    	this.edit_clearance(
+	    		item.id, item.clearance.state,
+	    		response => {
+	    			this.snackbar = true
+	    		},
+	    		error => {
+	    			alert('Error connecting to servers!')
+	    		})
 	    },
 	    goToMission(mission) {
       router.push('map?id='+mission);

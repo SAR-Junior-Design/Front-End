@@ -150,6 +150,13 @@ export default {
       axios.post(url,details, {withCredentials:true})
         .then(success)
         .catch(failure);
+    },
+    edit_clearance(mission_id,new_clearance_state, success, failure) {
+      var url = this.base_url + '/edit_clearance'
+      var body = {'mission_id' : mission_id, 'new_clearance_state': new_clearance_state}
+      axios.post(url,body, {withCredentials:true})
+        .then(success)
+        .catch(failure);
     }
   }
 }
