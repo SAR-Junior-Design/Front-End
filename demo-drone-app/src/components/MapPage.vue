@@ -221,19 +221,19 @@
         <v-expansion-panel-content>
           <div slot="header">Scheduled Flight Date</div>
           <v-card>
-            <v-card-text class="grey lighten-3">unknown</v-card-text>
+            <v-card-text class="grey lighten-3">{{date}}</v-card-text>
           </v-card>
         </v-expansion-panel-content>
         <v-expansion-panel-content>
           <div slot="header">Start Time</div>
           <v-card>
-            <v-card-text class="grey lighten-3">unknown</v-card-text>
+            <v-card-text class="grey lighten-3">{{starts}}</v-card-text>
           </v-card>
         </v-expansion-panel-content>
         <v-expansion-panel-content>
           <div slot="header">End Time</div>
           <v-card>
-            <v-card-text class="grey lighten-3">unknown</v-card-text>
+            <v-card-text class="grey lighten-3">{{ends}}</v-card-text>
           </v-card>
         </v-expansion-panel-content>
     </v-expansion-panel>
@@ -307,6 +307,10 @@
         edit_drawer: false,
         flight_drawer: false,
         selected_drone_drawer: false,
+
+        date: null,
+        starts: null,
+        ends: null,
 
         selected: {
               "id" : '',
@@ -424,6 +428,10 @@
               this.title = response.data.title;
               this.description = response.data.description;
               var area = response.data.area;
+              var timeArray = response.data.starts_at.split(" ");
+              this.starts = timeArray[1];
+              this.date = timeArray[0];
+              this.ends = response.data.ends_at.split(" ")[1];
               for(var i = 0; i < area.features.length; i++) {
                 var paths = [];
                 for (var a in area.features[i].geometry.coordinates) {
@@ -619,7 +627,6 @@
           } else {
             for (var i = 0; i< this.polygons.length; i++) {
               var vertices = this.polygons[i].getPath();
-              console.log(vertices);
               if (vertices!=undefined) {
                 var temp = {
                       "type": "Feature",
