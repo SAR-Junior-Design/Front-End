@@ -86,7 +86,7 @@
 	            v-bind:search="search"
 	          >
 	          <template slot="items" slot-scope="props">
-	          	<tr @click="props.expanded = !props.expanded">
+	          	<tr @click.prevent="props.expanded = !props.expanded">
 		            <td class="text-xs-left">{{ props.item.title }}</td>
 		            <td class="text-xs-center">{{ props.item.commander }}</td>
 		            <td class="text-xs-center">{{ props.item.num_drones }}</td>
@@ -144,11 +144,16 @@
 						          	<gmap-map
 										      ref="map"
 										      class="map-panel"
-										      :center="center"
-										      :zoom="zoom"
+										      :center="props.item.center"
+										      :zoom="props.item.zoom"
 										      :map-type-id="mapType"
-										      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+										      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: false, zoomControl: true}"
 										      style="width:350px;height:200px;">
+										      <gmap-polygon v-if="props.item.paths.length > 0"
+									          :path="props.item.paths"
+									          :editable="false"
+									          ref="polyline">
+										      </gmap-polygon>
 										    </gmap-map>
 						          </v-flex>
 					          	<v-flex class="text-xs-center">
@@ -165,6 +170,20 @@
 	      </v-card>
 			</v-layout>
 		</v-layout>
+		<v-snackbar
+      :timeout="timeout"
+      :top="y === 'top'"
+      :bottom="y === 'bottom'"
+      :right="x === 'right'"
+      :left="x === 'left'"
+      :multi-line="mode === 'multi-line'"
+      :vertical="mode === 'vertical'"
+      v-model="snackbar"
+      color="white"
+    >
+      <span style="color:black"> {{ text }} </span>
+      <v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
+    </v-snackbar>
 	</v-content>
 </template>
 
@@ -187,23 +206,19 @@
 	Vue.use(VueGoogleMaps, {
     load: {
       installComponents: true,
-      key: 'AIzaSyCtbjOc1SD9ozYtUVzrtxd0PDxRpN-0JGs',
+      key: 'AIzaSyCtbjOc1SD9ozYtUVzrtxd0PDxRpN-0JGs'
     }
   });
 
 	export default {
+		name: 'MissionsPage',
 		mixins: [API],
 	  data () {
 	    return {
-	    	center: {
-          lat: 0,
-          lng: -30
-        },
         newCenter: "",
-        zoom: 3,
+        zoom: 4,
         mapType: 'hybrid',
         scrollwheel: false,
-        draggable: false,
 	      max25chars: (v) => v.length <= 25 || 'Input too long!',
 	      tmp: '',
 	      search: '',
@@ -224,7 +239,14 @@
 	      	'APPROVED',
 	      	'DECLINED'
 	      ],
-	      is_gov_official: false
+	      is_gov_official: false,
+	      snackbar: false,
+        y: 'top',
+        x: null,
+        mode: '',
+        timeout: 6000,
+        text: 'Clearance updated.',
+        mapLoaded: false
 	    }
 	  },
 	  methods: {
@@ -238,13 +260,70 @@
 	      this.get_missions(
 	        response => {
 	          this.items = response.data
-	      },
-	      error => {
-	        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
+
+	          for (var j = 0; j < this.items.length; j++){
+	          	var area = this.items[j].area
+	            this.items[j].polygons = []
+	            this.items[j].paths = []
+	            var paths = []
+	            var avg_lat = 0
+	            var lat_range = {min: 200, max: -200, range: 0}
+	            var avg_lng = 0
+	            var lng_range = {min: 200, max: -200, range: 0}
+	            var num_coords = area.features[0].geometry.coordinates.length
+	            for(var i = 0; i < area.features.length; i++) {
+			          for (var a in area.features[i].geometry.coordinates) {
+			            paths.push({
+			            lat:area.features[i].geometry.coordinates[a][1],lng:area.features[i].geometry.coordinates[a][0]
+			            });
+			            //avg_lat
+			            avg_lat += area.features[i].geometry.coordinates[a][1]
+			            if (area.features[i].geometry.coordinates[a][1] > lat_range.max) {
+			            	lat_range.max = area.features[i].geometry.coordinates[a][1]
+			            }
+			            if (area.features[i].geometry.coordinates[a][1] < lat_range.min) {
+			            	lat_range.min = area.features[i].geometry.coordinates[a][1]
+			            }
+			            //avg_lng
+			            if (area.features[i].geometry.coordinates[a][0] > lng_range.max) {
+			            	lng_range.max = area.features[i].geometry.coordinates[a][0]
+			            }
+			            if (area.features[i].geometry.coordinates[a][0] < lng_range.min) {
+			            	lng_range.min = area.features[i].geometry.coordinates[a][0]
+			            }
+			            avg_lng += area.features[i].geometry.coordinates[a][0]
+			          }
+			        }
+			        lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+			        lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+			        var range = Math.max(lat_range.range, lng_range.range)
+			        var zoom_coefficient = 2
+			        //alert(range)
+			        //y = -1.420533814 ln(x) + 6.8957137
+			        this.items[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+			        this.items[j].paths = paths
+			        this.items[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+	          }
+		      },
+		      error => {
+		        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
+		        console.log(error)
 	      })
 	    },
+      setEvent(poly, that){
+        google.maps.event.addListener(poly, 'dragend', function (event) {
+          that.polygons[poly.id].setPath(poly.getPath());
+        });
+      },
 	    update_clearance(item) {
-	    	// alert(item.clearance.state)
+	    	this.edit_clearance(
+	    		item.id, item.clearance.state,
+	    		response => {
+	    			this.snackbar = true
+	    		},
+	    		error => {
+	    			alert('Error connecting to servers!')
+	    		})
 	    },
 	    goToMission(mission) {
       router.push('map?id='+mission);
@@ -253,8 +332,7 @@
 				router.push('/newmission')
     	}
 	  },
-	  mounted () {
-	    this.getMissions();
+	  beforeMount () {
 	    this.is_government_official(response => {
 	    	if (response.data == 'True') {
     				this.is_gov_official = true
@@ -264,6 +342,9 @@
 	    }, error => {
 	    	alert ('Error Connecting to servers!')
 	    })
-	  }  
+	    this.getMissions()
+	  },
+	  mounted () {
+	  }
 	}
 </script>
