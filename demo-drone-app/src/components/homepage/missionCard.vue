@@ -9,7 +9,7 @@
             <div class="text-xs-center" style="font-size:25px;"> {{ this.mission.title }}</div>
             <v-divider></v-divider>
             <div><b>Commander:</b> {{ this.mission.commander }}</div>
-            <div><b>Clearence:</b> {{ this.mission.clearance.state }}</div>
+            <div v-if='this.clearanceExists()'><b>Clearence:</b> {{ this.mission.clearance.state }}</div>
             <div><b>Start Date:</b> {{ this.mission.starts_at }}</div>
             <div><b>Drones Online:</b> {{ this.mission.num_drones }}</div>
             <div><b>Description:</b> {{ this.mission.description }}</div>
@@ -44,6 +44,9 @@ export default {
     },
     mouseOut() {
       document.body.style.cursor= 'default';
+    },
+    clearanceExists () {
+      return typeof this.mission.clearance !== 'undefined';
     }
 	}
 }
