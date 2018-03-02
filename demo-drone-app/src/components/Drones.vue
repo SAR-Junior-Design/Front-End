@@ -13,7 +13,6 @@
                     <v-container fluid>
                       <v-radio-group 
                         v-model="radios" 
-                        :mandatory="true" 
                         required 
                         :rules="[v => !!v || 'You must specify a Type!']"
                       >
@@ -59,6 +58,7 @@
             </v-container>
             <div id="add_drone_button" >
               <v-btn 
+                v-on:click = "registerDrone"
                 @click="submit"
                 :disabled="!valid"
               > Add Drones 
@@ -180,7 +180,8 @@ export default {
       x: null,
       mode: '',
       timeout: 6000,
-      text: 'Drone Succesfully Added!'
+      text: 'Drone Succesfully Added!',
+      drone_id: null
     }
   },
   methods: {
@@ -196,6 +197,18 @@ export default {
         alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
       })
     },
+    registerDrone() {
+      this.register_drone(this.e0, 
+        response => {
+          if (response.data['code'] == 200) {
+            this.drone_id = true;
+          } else if (response.data['code'] == 31) {
+            throw error;
+          }
+        })
+    },
+
+    
     toggleAll () {
       if (this.selected.length) this.selected = []
       else this.selected = this.items.slice()
@@ -217,7 +230,6 @@ export default {
         this.snackbar = true;
       }
     }
-
 
   },
   mounted () {
