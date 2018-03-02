@@ -2,36 +2,18 @@
   <v-content class="background">
     <section fill-height>
       <v-container text-xs-center style="margin-top:5%;">
-        <v-layout row justify-center>
+        <v-layout row>
           <v-flex xs12 class="text-xs-center" ma-1>
             <v-card style="background-color:#dadfe8;">
               <v-card-title>
                 <v-flex class="text-xs-left" style="margin-top:0px;">
-                  <h2> Active Missions </h2>
+                  <h2> Active Missions ({{userMissions.length}}) </h2>
                 </v-flex>
               </v-card-title>
               <v-card-text>
                 <v-layout row style="overflow-x: scroll;">
-                  <v-flex pa-3 class="text-xs-center" v-for="mission in userMissions" :key="mission.id">
-                    <v-card dark style="background-color:#1d561a; height:100%;width:300px;">
-                      <v-container fluid grid-list-lg>
-                        <v-layout row>
-                          <v-flex xs7>
-                            <div @mouseover="mouseOver()" @mouseout="mouseOut()" @click="goToMission(mission.id)">
-                              <div class="headline"> {{ mission.title }}</div>
-                              <div>awaiting mission details...</div>
-                            </div>
-                          </v-flex>
-                          <v-flex xs5>
-                            <v-card-media
-                              :src="require('@/assets/missionRadar.png')"
-                              height="125px"
-                              contain
-                            ></v-card-media>
-                          </v-flex>
-                        </v-layout>
-                      </v-container>
-                    </v-card>
+                  <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in userMissions" :key="index">
+                    <component :mission="currentMission" is="missionTemplate"></component>
                   </v-flex>
                 </v-layout>
               </v-card-text>
@@ -158,12 +140,16 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from '@/router'
 import API from '../mixins/API.js'
+import missionCard from './homepage/missionCard.vue'
 
 Vue.use(VueAxios, axios)
 
 export default {
   name: 'Login',
   mixins: [API],
+	components: {
+    'missionTemplate': missionCard
+  },
   data () {
     return {
       userMissions: {
@@ -172,6 +158,8 @@ export default {
         }
       },
       userMissionsCount: 0,
+      currentMission: {}
+
 
     }
   },
@@ -187,14 +175,10 @@ export default {
     }
   },
   mounted() {
-    this.get_user_missions(
+    this.get_missions(
       response => {
         if (response.status == 200) {
-          if (response.data['commanding']) {
-            this.userMissions = response.data['commanding']
-          }
-          this.$emit('login')
-          router.push('/homepage')
+          this.userMissions = response.data;
         } else {
           throw error
         }
