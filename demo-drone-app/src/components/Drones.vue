@@ -58,9 +58,9 @@
             </v-container>
             <div id="add_drone_button" >
               <v-btn 
-                v-on:click = "registerDrone"
                 @click="submit"
                 :disabled="!valid"
+                v-on:click="registerDrone()"
               > Add Drones 
               </v-btn>
             </div>
@@ -106,7 +106,7 @@
             </template>
             <template slot="expand" slot-scope="props">
               <v-card flat>
-                <v-card-text>Peek-a-boo, it's Ladd bruh!</v-card-text>
+                <v-card-text>Any more DRONE INFO can be displayed here!</v-card-text>
               </v-card>
             </template>
             <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -181,7 +181,10 @@ export default {
       mode: '',
       timeout: 6000,
       text: 'Drone Succesfully Added!',
-      drone_id: null
+
+      drone_id: null,
+      validADD: false
+
     }
   },
   methods: {
@@ -200,9 +203,10 @@ export default {
     registerDrone() {
       this.register_drone(this.e0, 
         response => {
-          if (response.data['code'] == 200) {
+          if (response.status == 200) {
             this.drone_id = true;
-          } else if (response.data['code'] == 31) {
+            this.getUserDrones();
+            console.log          } else if (response.data['code'] == 31) {
             throw error;
           }
         })
