@@ -40,22 +40,23 @@
       </v-btn>
     </v-toolbar>        
     </v-layout>
+
+      <v-layout row>
+        <v-btn fixed style="left:1%;top:89%; background-color:#1d561a;color:#ffffff;" @click= "swapNav('overView')">Overview</v-btn>
+        <v-btn fixed style="left:10%;top:89%; background-color:#1d561a;color:#ffffff;" @click= "swapNav('droneSwap')">Drones</v-btn>
+      </v-layout>
+
         <v-navigation-drawer
           disable-resize-watcher
           v-model="drawer"
           absolute
-          style="top:9.5%;height:90.5%;"
+          height='80%'
+          class = "sideNav"
         >
         <v-toolbar flat>
           <v-list>
             <v-list-tile>
               <v-list-tile-title class="title" v-model='title'>{{title}}</v-list-tile-title>
-              <v-tooltip right>
-                <v-btn icon @click= "swapNav('edit')" slot="activator">
-                  <v-icon>'settings'</v-icon>
-                </v-btn>
-                <span>Edit Flight Details</span>
-              </v-tooltip>
             </v-list-tile>
           </v-list>
         </v-toolbar>
@@ -94,7 +95,8 @@
           disable-resize-watcher
           v-model="selected_drone_drawer"
           absolute
-          style="top:9.5%;width:20%;height:90.5%;"
+          height='80%'
+          class="sideNav"
         >
         <v-toolbar flat>
           <v-list>
@@ -104,7 +106,7 @@
               </v-list-tile-title>
             </v-list-tile>
           </v-list>
-          <v-btn icon @click= "swapNav(null)">
+          <v-btn icon @click= "swapNav('droneSwap')">
             <v-icon>'compare_arrows'</v-icon>
           </v-btn>
         </v-toolbar>
@@ -135,12 +137,58 @@
           </v-card>
       </v-navigation-drawer>
 
+      <v-navigation-drawer
+        disable-resize-watcher
+        v-model="edit_drawer"
+        light
+        absolute
+        height='80%'
+        class="sideNav"
+      >
+      <v-toolbar flat>
+        <v-list>
+          <v-list-tile>
+            <v-list-tile-title class="title">
+              Flight Details
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+        <v-menu offset-y open-on-hover>
+          <v-btn icon slot="activator">
+            <v-icon>'menu'</v-icon>
+          </v-btn>
+          <v-list>
+            <v-list-tile @click="saveMission()">
+              <v-list-tile-title>Update Mission</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile @click="swapNav('overView')">
+              <v-list-tile-title>Back</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+      </v-toolbar>
+
+        <v-list dense class="pt-0" style="margin:2%;">
+          <v-text-field 
+            label="Mission Title"
+            v-model="title">
+          </v-text-field>
+          <v-text-field 
+            label="Description"
+            multi-line
+            v-model="description">
+          </v-text-field>
+        </v-list>
+      </v-navigation-drawer>
+
+
     <v-navigation-drawer
       disable-resize-watcher
-      v-model="edit_drawer"
+      v-model="flight_drawer"
       light
       absolute
-      style="top:9.5%;height:90.5%;"
+      height='80%'
+      class="sideNav"
     >
     <v-toolbar flat>
       <v-list>
@@ -148,40 +196,58 @@
           <v-list-tile-title class="title">
             Flight Details
           </v-list-tile-title>
+            <v-tooltip right>
+              <v-btn icon @click= "swapNav('edit')" slot="activator">
+                <v-icon>'settings'</v-icon>
+              </v-btn>
+              <span>Edit Flight Details</span>
+            </v-tooltip>
         </v-list-tile>
       </v-list>
-      <v-menu offset-y open-on-hover>
-        <v-btn icon slot="activator">
-          <v-icon>'menu'</v-icon>
-        </v-btn>
-        <v-list>
-          <v-list-tile @click="saveMission()">
-            <v-list-tile-title>Update Mission</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile @click="swapNav('edit')">
-            <v-list-tile-title>Back</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu>
     </v-toolbar>
-
-      <v-list dense class="pt-0" style="margin:2%;">
-        <v-text-field 
-          label="Mission Title"
-          v-model="title">
-        </v-text-field>
-        <v-text-field 
-          label="Description"
-          multi-line
-          v-model="description">
-        </v-text-field>
-      </v-list>
+    <v-expansion-panel expand popout>
+        <v-expansion-panel-content>
+          <div slot="header">Mission Title</div>
+          <v-card>
+            <v-card-text class="grey lighten-3">{{title}}</v-card-text>
+          </v-card>
+        </v-expansion-panel-content>
+        <v-expansion-panel-content>
+          <div slot="header">Mission Description</div>
+          <v-card>
+            <v-card-text class="grey lighten-3">{{description}}</v-card-text>
+          </v-card>
+        </v-expansion-panel-content>
+        <v-expansion-panel-content>
+          <div slot="header">Scheduled Flight Date</div>
+          <v-card>
+            <v-card-text class="grey lighten-3">{{date}}</v-card-text>
+          </v-card>
+        </v-expansion-panel-content>
+        <v-expansion-panel-content>
+          <div slot="header">Start Time</div>
+          <v-card>
+            <v-card-text class="grey lighten-3">{{starts}}</v-card-text>
+          </v-card>
+        </v-expansion-panel-content>
+        <v-expansion-panel-content>
+          <div slot="header">End Time</div>
+          <v-card>
+            <v-card-text class="grey lighten-3">{{ends}}</v-card-text>
+          </v-card>
+        </v-expansion-panel-content>
+    </v-expansion-panel>
     </v-navigation-drawer>
+
+
     </v-layout>
   </v-layout>
 </template>
 
 <style>
+  .sideNav {
+    top:64px;
+  }
   .map-panel {
     height:100%;
     width:100%;
@@ -239,6 +305,13 @@
 
         drawer: true,
         edit_drawer: false,
+        flight_drawer: false,
+        selected_drone_drawer: false,
+
+        date: null,
+        starts: null,
+        ends: null,
+
         selected: {
               "id" : '',
               "battery_info" : {
@@ -256,7 +329,6 @@
               "velocity" : { "x" : '', "y" : '', "z" : ''}
           },
         items: '',
-        selected_drone_drawer: false,
         headers2: [
           {
             text: 'header',
@@ -284,8 +356,8 @@
                 "energy_remaining" : 80
               },
               "location" : {
-                latitude: 24,
-                longitude: -89
+                latitude: 26,
+                longitude: -79.35
               },
               "altitude" : 99,
               "connection" : "IS_CONNECTION",
@@ -300,8 +372,8 @@
                 "energy_remaining" : 99
               },
               "location" : {
-                latitude: 33,
-                longitude: -80
+                latitude: 25.7,
+                longitude: -79.4
               },
               "altitude" : 99,
               "connection" : "NO_CONNECTION",
@@ -316,8 +388,8 @@
                 "energy_remaining" : 30
               },
               "location" : {
-                latitude: 34,
-                longitude: -80
+                latitude: 25.2,
+                longitude: -80.25
               },
               "altitude" : 99,
               "connection" : "IS_CONNECTION",
@@ -332,8 +404,8 @@
                 "energy_remaining" : 10
               },
               "location" : {
-                latitude: 33,
-                longitude: -81
+                latitude: 25.3,
+                longitude: -80.1
               },
               "altitude" : 99,
               "connection" : "NO_CONNECTION",
@@ -356,6 +428,10 @@
               this.title = response.data.title;
               this.description = response.data.description;
               var area = response.data.area;
+              var timeArray = response.data.starts_at.split(" ");
+              this.starts = timeArray[1];
+              this.date = timeArray[0];
+              this.ends = response.data.ends_at.split(" ")[1];
               for(var i = 0; i < area.features.length; i++) {
                 var paths = [];
                 for (var a in area.features[i].geometry.coordinates) {
@@ -401,15 +477,34 @@
             this.polygons[i].setDraggable(true);
           }
           this.edit = !this.edit;
-          this.edit_drawer = !this.edit_drawer;
-          this.drawer = !this.drawer;
+          
+          this.edit_drawer = true;
+          this.drawer = false;
+          this.flight_drawer = false;
+          this.selected_drone_drawer = false;
+
+        } else if (drone == 'droneSwap') {
+          this.edit = false;
+          this.edit_drawer = false;
+          this.drawer = true;
+          this.flight_drawer = false;
+          this.selected_drone_drawer = false;
+
+        } else if (drone == "overView") {
+          this.edit = false;
+          this.edit_drawer = false;
+          this.drawer = false;
+          this.flight_drawer = true;
+          this.selected_drone_drawer = false;
 
         } else {
           if (drone != null) {
             this.selected = drone;
           }
-          this.drawer = !this.drawer;
-          this.selected_drone_drawer = !this.selected_drone_drawer;
+          this.edit_drawer = false;
+          this.drawer = false;
+          this.flight_drawer = false;
+          this.selected_drone_drawer = true;
         }
       },
       addDrone () {
@@ -507,7 +602,7 @@
                   this.center.lng = parseFloat(newLon);
                   this.center.lat = parseFloat(newLat);
                   this.$refs.map.panTo(this.center);
-                  this.zoom = 10;
+                  this.zoom = 8;
                 }
               }
             }
@@ -532,7 +627,6 @@
           } else {
             for (var i = 0; i< this.polygons.length; i++) {
               var vertices = this.polygons[i].getPath();
-              console.log(vertices);
               if (vertices!=undefined) {
                 var temp = {
                       "type": "Feature",
@@ -566,10 +660,12 @@
               }
               this.draggable = true;
               this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
-              this.edit_drawer = ! this.edit_drawer;
-              this.drawer = ! this.drawer;
               this.canDraw = false;
               this.edit = !this.edit;
+              this.edit_drawer = false;
+              this.drawer = false;
+              this.flight_drawer = true;
+              this.selected_drone_drawer = false;
             } else if (response.data['code'] == 31) {
               alert(response.data.message);
             }

@@ -102,7 +102,7 @@ export default {
       signUpUsername: '',
       signUpEmail: '',
       signUpPassword: '',
-      passwordConfirm: '',
+      passwordConfirm: ''
     }
   },
   methods: {

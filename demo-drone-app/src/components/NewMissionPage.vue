@@ -1,22 +1,24 @@
 <template>
-  <v-layout style="width:100%;height:100%;" fixed>
-    <gmap-map
-      ref="map"
-      class="map-panel"
-      :center="center"
-      :zoom="zoom"
-      :map-type-id="mapType"
-      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
-      @click="drawLine($event)"
-      @mouseout="mouseOff($event)"
-      @mouseover="mouseOn($event)">
-      <gmap-polyline v-if="paths.length > 0"
-          :path="paths"
-          :editable="true"
-          ref="polyline"
-          @click="closePolygon($event)">
-      </gmap-polyline>
-    </gmap-map>
+  <v-layout>
+    <v-layout style="width:100%;height:100%;" fixed @click="drawer = false">
+      <gmap-map
+        ref="map"
+        class="map-panel"
+        :center="center"
+        :zoom="zoom"
+        :map-type-id="mapType"
+        :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+        @click="drawLine($event)"
+        @mouseout="mouseOff($event)"
+        @mouseover="mouseOn($event)">
+        <gmap-polyline v-if="paths.length > 0"
+            :path="paths"
+            :editable="true"
+            ref="polyline"
+            @click="closePolygon($event)">
+        </gmap-polyline>
+      </gmap-map>
+    </v-layout>
     <v-layout>
       <v-btn @click.stop="drawer = !drawer"
         dark
@@ -24,6 +26,7 @@
         top
         left
         style="background-color:#1d561a;margin-top:60px;"
+        v-if="!drawer"
         fab
       >
         <v-icon>compare_arrows</v-icon>
@@ -48,11 +51,10 @@
     </v-toolbar>        
     </v-layout>
     <v-navigation-drawer
-      temporary
       v-model="drawer"
       light
       absolute
-      style="width:30%;"
+      style="width:30%;height:95%; top:64px;"
     >
     <v-toolbar flat>
       <v-list>
@@ -86,7 +88,7 @@
         transition="scale-transition"
         offset-y
         full-width
-        :nudge-right="40"
+        :nudge-right="140"
         min-width="290px"
       >
         <v-text-field
@@ -94,27 +96,34 @@
           label="Flight Date"
           v-model="pickerDate"
           readonly
-          style="margin:2%;width:96%;"
+          prepend-icon="event"
+          style="margin:2%;width:40%;"
         ></v-text-field>
-        <v-date-picker
-          ref="picker"
-          v-model="pickerDate"
-          @change="saveDate"
-          :min="new Date().toISOString().substr(0, 10)"
-          :max="new Date().toISOString().substr(0, 10)"
-        ></v-date-picker>
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <v-date-picker
+                ref="picker"
+                v-model="pickerDate"
+                @change="saveDate"
+                color ="green darken-4"
+              ></v-date-picker>
+            </div>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn dark style="background-color:#1d561a" @click="menuDate = false">OK</v-btn>
+          </v-card-actions>
+        </v-card>
       </v-menu>
       <v-menu
         ref="menuStart"
+        persistent
         lazy
         :close-on-content-click="false"
         v-model="menuStart"
         transition="scale-transition"
-        offset-y
         full-width
-        :nudge-right="40"
-        max-width="290px"
-        min-width="290px"
+        :nudge-right="140"
         :return-value.sync="pickerStart"
       >
         <v-text-field
@@ -125,19 +134,27 @@
           readonly
           style="width:40%;float:left;margin:10px;"
         ></v-text-field>
-        <v-time-picker v-model="pickerStart" @change="$refs.menuStart.save(time)"></v-time-picker>
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <v-time-picker v-model="pickerStart" color ="green darken-4"></v-time-picker>
+            </div>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn dark style="background-color:#1d561a" @click="menuStart = false">OK</v-btn>
+          </v-card-actions>
+        </v-card>
       </v-menu>
+
       <v-menu
         ref="menuEnd"
+        persistent
         lazy
         :close-on-content-click="false"
         v-model="menuEnd"
         transition="scale-transition"
-        offset-y
         full-width
-        :nudge-right="40"
-        max-width="290px"
-        min-width="290px"
+        :nudge-right="140"
         :return-value.sync="pickerEnd"
       >
         <v-text-field
@@ -148,9 +165,19 @@
           readonly
           style="width:40%;float:left;margin:10px;"
         ></v-text-field>
-        <v-time-picker v-model="pickerEnd" @change="$refs.menuEnd.save(time)"></v-time-picker>
+      <v-card>
+        <v-card-title primary-title>
+          <div>
+            <v-time-picker v-model="pickerEnd" color ="green darken-4"></v-time-picker>
+          </div>
+        </v-card-title>
+        <v-card-actions>
+          <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+        
       </v-menu>
-      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" color="pink" dark style="margin-left:60%">
+      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="background-color:#1d561a; margin-left:60%">
         Save Mission
       </v-btn>
     </v-navigation-drawer>
@@ -193,11 +220,11 @@
     data: function data() {
       return {
         center: {
-          lat: 0,
-          lng: -30
+          lat: 33.778,
+          lng: -84.396
         },
         newCenter: "",
-        zoom: 3,
+        zoom: 15,
         mapType: 'hybrid',
         scrollwheel: true,
         draggable: true,
@@ -219,11 +246,6 @@
         snackbar: false,
         timeout: 6000,
       };
-    },
-    watch: {
-      menuDate (val) {
-        val && this.$nextTick(() => (this.$refs.picker.activePicker = 'MONTH'))
-      }
     },
     methods: {
       saveDate (date) {
@@ -356,9 +378,13 @@
       },
       saveMission() {
         var geoJ = this.makeGeoJson();
+        var start = this.pickerDate + ' ' + this.pickerStart;
+        var end = this.pickerDate + ' ' + this.pickerEnd;
         this.register_mission(
           this.title, geoJ, 
           this.description,
+          start,
+          end,
           response => {
             if (response.data['code'] == 200) {
               for (var i = 0; i < this.polygons.length; i++) {
