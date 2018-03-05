@@ -1,4 +1,4 @@
-<template>                          
+<template>                   
     <v-layout class="background">
       <v-flex xs10 sm8 offset-sm2>
         <v-card id="drone_ADD">
@@ -259,6 +259,9 @@ export default {
 #drone_ADD {
   margin-top: 70px; 
   padding-bottom: 10px;
+}
+#testing {
+  margin-top: 70px;
 }
 </style>
 
