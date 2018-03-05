@@ -61,6 +61,15 @@
                           type="password"
                           ></v-text-field>
                       </v-flex>
+                      <v-flex>
+                        <v-text-field
+                          name="faaNumber"
+                          label="FAA Number"
+                          id="faaNumber"
+                          v-model="faaNumber"
+                          required></v-text-field>
+                      </v-flex>
+                      <a href="https://aircraft.faa.gov/e.gov/NN/?AspxAutoDetectCookieSupport=1" style="text-align:center;">Need an FAA Number?</a>
                       <v-flex class="text-xs-center">
                         <v-btn style="background-color:#1d561a;color:#ffffff" type="submit">Join</v-btn>
                       </v-flex>
@@ -103,6 +112,7 @@ export default {
       signUpEmail: '',
       signUpPassword: '',
       passwordConfirm: '',
+      faaNumber: ''
     }
   },
   methods: {
