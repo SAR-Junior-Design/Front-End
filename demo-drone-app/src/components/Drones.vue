@@ -1,4 +1,4 @@
-<template>                          
+<template>                   
     <v-layout class="background">
       <v-flex xs10 sm8 offset-sm2>
         <v-card id="drone_ADD">
@@ -13,7 +13,6 @@
                     <v-container fluid>
                       <v-radio-group 
                         v-model="radios" 
-                        :mandatory="true" 
                         required 
                         :rules="[v => !!v || 'You must specify a Type!']"
                       >
@@ -61,6 +60,7 @@
               <v-btn 
                 @click="submit"
                 :disabled="!valid"
+                v-on:click="registerDrone()"
               > Add Drones 
               </v-btn>
             </div>
@@ -106,7 +106,7 @@
             </template>
             <template slot="expand" slot-scope="props">
               <v-card flat>
-                <v-card-text>Peek-a-boo, it's Ladd bruh!</v-card-text>
+                <v-card-text>Any more DRONE INFO can be displayed here!</v-card-text>
               </v-card>
             </template>
             <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -180,7 +180,11 @@ export default {
       x: null,
       mode: '',
       timeout: 6000,
-      text: 'Drone Succesfully Added!'
+      text: 'Drone Succesfully Added!',
+
+      drone_id: null,
+      validADD: false
+
     }
   },
   methods: {
@@ -196,6 +200,19 @@ export default {
         alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
       })
     },
+    registerDrone() {
+      this.register_drone(this.e0, 
+        response => {
+          if (response.status == 200) {
+            this.drone_id = true;
+            this.getUserDrones();
+            console.log          } else if (response.data['code'] == 31) {
+            throw error;
+          }
+        })
+    },
+
+    
     toggleAll () {
       if (this.selected.length) this.selected = []
       else this.selected = this.items.slice()
@@ -217,7 +234,6 @@ export default {
         this.snackbar = true;
       }
     }
-
 
   },
   mounted () {
@@ -243,6 +259,9 @@ export default {
 #drone_ADD {
   margin-top: 70px; 
   padding-bottom: 10px;
+}
+#testing {
+  margin-top: 70px;
 }
 </style>
 
