@@ -4,119 +4,35 @@
       <v-container text-xs-center style="margin-top:5%;">
         <v-layout row>
           <v-flex xs12 class="text-xs-center" ma-1>
-            <v-card style="background-color:#dadfe8;">
-              <v-card-title>
-                <v-flex class="text-xs-left" style="margin-top:0px;">
-                  <h2> Active Missions ({{userMissions.length}}) </h2>
-                </v-flex>
-              </v-card-title>
-              <v-card-text>
-                <v-layout row style="overflow-x: scroll;">
-                  <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in userMissions" :key="index">
-                    <component :mission="currentMission" is="missionTemplate"></component>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-        <v-layout row justify-center>
-          <v-flex xs12 class="text-xs-center" ma-1>
-            <v-card style="background-color:#dadfe8;">
-              <v-card-title>
-                <v-flex class="text-xs-left" style="margin-top:0px;">
-                  <h2> Past Missions </h2>
-                </v-flex>
-              </v-card-title>
-              <v-card-text>
-                <v-layout row style="overflow-x: scroll;">
-                  <v-flex pa-3 class="text-xs-center" v-for="i in 3" :key="i">
-                    <v-card dark style="background-color:#1d561a">
-                      <v-container fluid grid-list-lg>
-                        <v-layout row>
-                          <v-flex xs7>
-                            <div>
-                              <div class="headline"> Mission {{i}}</div>
-                              <div>awaiting mission details...</div>
-                            </div>
-                          </v-flex>
-                          <v-flex xs5>
-                            <v-card-media
-                              :src="require('@/assets/missionRadar.png')"
-                              height="125px"
-                              contain
-                            ></v-card-media>
-                          </v-flex>
-                        </v-layout>
-                      </v-container>
-                    </v-card>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-        <v-layout row justify-center>
-          <v-flex xs12 class="text-xs-center" ma-1>
-            <v-card style="background-color:#dadfe8;">
-              <v-card-title>
-                <v-flex class="text-xs-left" style="margin-top:0px;">
-                  <h2> Drones Online </h2>
-                </v-flex>
-              </v-card-title>
-              <v-card-text>
-                <v-layout row style="overflow-x: scroll;">
-                  <v-flex pa-3 class="text-xs-center" v-for="i in 5" :key="i">
-                    <v-card dark style="background-color:#1d561a">
-                      <v-container fluid grid-list-lg>
-                        <v-layout column>
-                          <v-layout row>
-                            <v-flex>
-                              <div>
-                                <v-card-media
-                                  :src="require('@/assets/drone.png')"
-                                  height="50px"
-                                  contain
-                                ></v-card-media>
-                              </div>
-                              <div>
-                                <div class="headline"> Drone {{i}}</div>
-                                <div>awaiting drone details...</div>
-                              </div>
-                            </v-flex>
-                          </v-layout>
-                        </v-layout>
-                      </v-container>
-                    </v-card>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-        <v-layout row justify-center>
-          <v-flex xs12 class="text-xs-center" ma-1>
-            <v-card style="background-color:#dadfe8;">
-              <v-card-title>
-                <v-flex class="text-xs-left" style="margin-top:0px;">
-                  <h2> Team Mememers </h2>
-                </v-flex>
-              </v-card-title>
-              <v-card-text>
-                <v-layout row>
-                  <v-flex pa-3 class="text-xs-center" v-for="i in 6" :key="i">
-                    <v-card pa-2 dark style="background-color:#1d561a">
-                      <v-card-title>
-                        <v-flex class="text-xs-center" style="margin-top:0px;">
-                          <h2> Team Member {{i}} </h2>
+            <v-tabs fixed centered>
+              <v-tabs-bar class="light-green darken-4" dark>
+                <v-tabs-slider class="light-green darken-2"></v-tabs-slider>
+                <v-tabs-item
+                  v-for="item in items"
+                  :key="item.id"
+                  :href="'#tab-' + item.id"
+                >
+                  {{ item.title }}
+                </v-tabs-item>
+              </v-tabs-bar>
+              <v-tabs-items>
+                <v-tabs-content
+                  v-for="item in items"
+                  :key="item"
+                  :id="'tab-' + item.id"
+                >
+                  <v-card flat>
+                    <v-card-text>
+                      <v-layout row style="overflow-x: scroll;">
+                        <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in userMissions" :key="index">
+                          <component :mission="currentMission" is="missionTemplate"></component>
                         </v-flex>
-                      </v-card-title>
-                      <v-card-text class="px-0">awaiting member details...</v-card-text>
-                    </v-card>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
-            </v-card>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-tabs-content>
+              </v-tabs-items>
+            </v-tabs>
           </v-flex>
         </v-layout>
       </v-container>
@@ -158,7 +74,29 @@ export default {
         }
       },
       userMissionsCount: 0,
-      currentMission: {}
+      currentMission: {},
+        items: [
+            {
+                title: "Active Missions",
+                text: "This is the first text",
+                id: 1
+            },
+            {
+                title: "Past Missions",
+                text: "This is the second text",
+                id: 2
+            },
+            {
+                title: "Drones",
+                text: "This is the third text",
+                id: 3
+            },
+            {
+                title: "Team Members",
+                test: "This is the fourth text",
+                id: 4
+            }
+        ],
 
 
     }
