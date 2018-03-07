@@ -274,7 +274,7 @@
 	            for(var i = 0; i < area.features.length; i++) {
 			          for (var a in area.features[i].geometry.coordinates) {
 			            paths.push({
-			            lat:area.features[i].geometry.coordinates[a][1],lng:area.features[i].geometry.coordinates[a][0]
+			            lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
 			            });
 			            //avg_lat
 			            avg_lat += area.features[i].geometry.coordinates[a][1]
