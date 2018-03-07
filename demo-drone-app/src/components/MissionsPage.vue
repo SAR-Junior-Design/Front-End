@@ -277,21 +277,21 @@
 			            lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
 			            });
 			            //avg_lat
-			            avg_lat += area.features[i].geometry.coordinates[a][1]
-			            if (area.features[i].geometry.coordinates[a][1] > lat_range.max) {
-			            	lat_range.max = area.features[i].geometry.coordinates[a][1]
+			            avg_lat += area.features[i].geometry.coordinates[a][0]
+			            if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+			            	lat_range.max = area.features[i].geometry.coordinates[a][0]
 			            }
-			            if (area.features[i].geometry.coordinates[a][1] < lat_range.min) {
-			            	lat_range.min = area.features[i].geometry.coordinates[a][1]
+			            if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+			            	lat_range.min = area.features[i].geometry.coordinates[a][0]
 			            }
 			            //avg_lng
-			            if (area.features[i].geometry.coordinates[a][0] > lng_range.max) {
-			            	lng_range.max = area.features[i].geometry.coordinates[a][0]
+			            if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+			            	lng_range.max = area.features[i].geometry.coordinates[a][1]
 			            }
-			            if (area.features[i].geometry.coordinates[a][0] < lng_range.min) {
-			            	lng_range.min = area.features[i].geometry.coordinates[a][0]
+			            if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+			            	lng_range.min = area.features[i].geometry.coordinates[a][1]
 			            }
-			            avg_lng += area.features[i].geometry.coordinates[a][0]
+			            avg_lng += area.features[i].geometry.coordinates[a][1]
 			          }
 			        }
 			        lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
