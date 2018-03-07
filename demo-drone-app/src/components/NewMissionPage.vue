@@ -1,6 +1,5 @@
 <template>
-  <v-layout>
-    <v-layout style="width:100%;height:100%;" fixed @click="drawer = false">
+  <v-layout style="width:100%;height:100%;" fixed>
       <gmap-map
         ref="map"
         class="map-panel"
@@ -18,7 +17,6 @@
             @click="closePolygon($event)">
         </gmap-polyline>
       </gmap-map>
-    </v-layout>
     <v-layout>
       <v-btn @click.stop="drawer = !drawer"
         dark
@@ -311,6 +309,9 @@
         }
       },
       drawLine: function (event) {
+        if (this.drawer) {
+        this.drawer = false;
+        }
         if(this.canDraw) {
           this.paths.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
         } else {
