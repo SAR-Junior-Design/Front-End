@@ -18,7 +18,7 @@
               <v-tabs-items>
                 <v-tabs-content
                   v-for="item in items"
-                  :key="item"
+                  :key="item.id"
                   :id="'tab-' + item.id"
                 >
                   <v-card flat>
