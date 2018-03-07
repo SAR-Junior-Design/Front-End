@@ -347,72 +347,7 @@
             value: 'id'
           }
         ],
-        "drones" : [
-            {
-              "id" : 'A7543bck-sdfijewr',
-              "battery_info" : {
-                "voltage" : 99,
-                "current_consumption" : 99,
-                "energy_remaining" : 80
-              },
-              "location" : {
-                latitude: 26,
-                longitude: -79.35
-              },
-              "altitude" : 99,
-              "connection" : "IS_CONNECTION",
-              "CURRENT_BEHAVIOR" : "SEARCHING",
-              "velocity" : { "x" : 99, "y" : 99, "z" : 99}
-          },
-          {
-              "id" : 'Z1239djm-knbqueen',
-              "battery_info" : {
-                "voltage" : 99,
-                "current_consumption" : 99,
-                "energy_remaining" : 99
-              },
-              "location" : {
-                latitude: 25.7,
-                longitude: -79.4
-              },
-              "altitude" : 99,
-              "connection" : "NO_CONNECTION",
-              "CURRENT_BEHAVIOR" : "RETURNING",
-              "velocity" : { "x" : 99, "y" : 99, "z" : 99}
-          },
-          {
-              "id" : 'F5687hyu-ftdhuimbv',
-              "battery_info" : {
-                "voltage" : 99,
-                "current_consumption" : 99,
-                "energy_remaining" : 30
-              },
-              "location" : {
-                latitude: 25.2,
-                longitude: -80.25
-              },
-              "altitude" : 99,
-              "connection" : "IS_CONNECTION",
-              "CURRENT_BEHAVIOR" : "RETURNING",
-              "velocity" : { "x" : 99, "y" : 99, "z" : 99}
-          },
-          {
-              "id" : 'D5743kju-rtdshvcxs',
-              "battery_info" : {
-                "voltage" : 99,
-                "current_consumption" : 99,
-                "energy_remaining" : 10
-              },
-              "location" : {
-                latitude: 25.3,
-                longitude: -80.1
-              },
-              "altitude" : 99,
-              "connection" : "NO_CONNECTION",
-              "CURRENT_BEHAVIOR" : "SEARCHING",
-              "velocity" : { "x" : 99, "y" : 99, "z" : 99}
-          }
-        ]
+        "drones" : []
       };
     },
     beforeMount() {
@@ -649,7 +584,7 @@
       },
       saveMission() {
         var geoJ = this.makeGeoJson();
-        var body = {'mission_id': this.mission_id, 'area': geoJ}
+        var body = {'mission_id': this.mission_id, 'area': geoJ, 'title': this.title, 'description': this.description}
         this.edit_mission_details(
           body,
           response => {
