@@ -114,7 +114,7 @@
             v-model="selected"
             item-key="id"
             select-all
-            hide-actions
+            :rows-per-page-items="rowsPerPageItems"
           >
             <template slot="items" slot-scope="props">
               <tr>
@@ -199,19 +199,6 @@
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
-        <v-menu offset-y open-on-hover>
-          <v-btn icon slot="activator">
-            <v-icon>'menu'</v-icon>
-          </v-btn>
-          <v-list>
-            <v-list-tile @click="saveMission()">
-              <v-list-tile-title>Update Mission</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile @click="swapNav('overView')">
-              <v-list-tile-title>Back</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
       </v-toolbar>
 
         <v-list dense class="pt-0" style="margin:2%;">
@@ -225,6 +212,8 @@
             v-model="description">
           </v-text-field>
         </v-list>
+        <v-btn style="background-color:#1d561a;color:#ffffff" @click="saveMission()">Update Mission</v-btn>
+        <v-btn style="background-color:#1d561a;color:#ffffff" @click="swapNav('overView')">Back</v-btn>
       </v-navigation-drawer>
 
 
@@ -329,10 +318,9 @@
     mixins: [API],
     data: function data() {
       return {
-
-fav: true,
       menu: false,
       userID: null,
+      rowsPerPageItems: [5],
 
         mission_id: '',
         center: {
