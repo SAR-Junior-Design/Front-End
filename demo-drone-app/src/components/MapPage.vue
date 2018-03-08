@@ -70,16 +70,19 @@
           <template slot="items" slot-scope="props">
           <v-tooltip top>
             <v-icon  v-if= "props.item.connection == 'IS_CONNECTION'" slot="activator">wifi</v-icon>
+            <v-icon  v-else-if= "props.item.connection == 'null'" slot="activator">visibility_off</v-icon>
             <v-icon  v-else slot="activator">signal_wifi_off</v-icon>
             <span>{{props.item.connection}}</span>
           </v-tooltip>
           <v-tooltip top>
             <v-icon  v-if= "props.item.CURRENT_BEHAVIOR == 'SEARCHING'" slot="activator">location_searching</v-icon>
+            <v-icon  v-else-if= "props.item.CURRENT_BEHAVIOR == 'null'" slot="activator">visibility_off</v-icon>
             <v-icon  v-else slot="activator">home</v-icon>
             <span>{{props.item.CURRENT_BEHAVIOR}}</span>
           </v-tooltip>
           <v-tooltip top>
-            <v-icon  v-if= "props.item.battery_info.energy_remaining < 50" slot="activator">battery_alert</v-icon>
+            <v-icon  v-if= "props.item.battery_info.energy_remaining == 'null'" slot="activator">visibility_off</v-icon>
+            <v-icon  v-else-if= "props.item.battery_info.energy_remaining < 50" slot="activator">battery_alert</v-icon>
             <v-icon  v-else slot="activator">battery_full</v-icon>
             <span>{{props.item.battery_info.energy_remaining}}%</span>
           </v-tooltip>
@@ -88,7 +91,50 @@
             </tr>
           </template>
         </v-data-table>
-        <v-btn style="background-color:#1d561a;color:#ffffff" @click="addDrone()">add drone</v-btn>
+    <v-menu
+      offset-x
+      :close-on-content-click="false"
+      :nudge-width="200"
+      v-model="menu"
+    >
+      <v-btn style="background-color:#1d561a;color:#ffffff" slot="activator">Add Drone</v-btn>
+      <v-card>
+        <v-list>
+          <v-list-tile>
+            <v-list-tile-content>
+              <v-list-tile-title>Registered Drones</v-list-tile-title>
+              <v-list-tile-sub-title>Select a drone to add to your mission.</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+        <v-divider></v-divider>
+          <v-data-table
+            :headers="headers"
+            :items="myDrones"
+            v-model="selected"
+            item-key="id"
+            select-all
+            :rows-per-page-items="rowsPerPageItems"
+          >
+            <template slot="items" slot-scope="props">
+              <tr>
+                <td>
+                  <v-checkbox
+                    primary
+                    v-model="props.selected"
+                  ></v-checkbox>
+                </td>
+                <td>{{ props.item.id }}</td>
+              </tr>
+            </template>
+          </v-data-table>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="menu = false">Cancel</v-btn>
+          <v-btn color="primary" flat @click="addDrone()">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-menu>
       </v-navigation-drawer>
 
         <v-navigation-drawer
@@ -113,23 +159,23 @@
          <v-card>
             <v-card-title primary-title>
               <div>
-                <h3>ID: {{selected.id}}</h3><br>
+                <h3>ID: {{currentSelectedDrone.id}}</h3><br>
                 <h3>Flight Details</h3>
                 <p class="firstHeader"> Battery </p>
                 
-                <p class="secondHeader"> Power Remaining: {{selected.battery_info.current_consumption}}%</p>
-                <p class="secondHeader"> Voltage: {{selected.battery_info.voltage}} V</p>
+                <p class="secondHeader"> Power Remaining: {{currentSelectedDrone.battery_info.current_consumption}}%</p>
+                <p class="secondHeader"> Voltage: {{currentSelectedDrone.battery_info.voltage}} V</p>
 
                 <p class="firstHeader"> Speed </p>
-                <p class="secondHeader">x: {{selected.velocity.x}} m/s</p>
-                <p class="secondHeader">y: {{selected.velocity.y}} m/s</p>
-                <p class="secondHeader">z: {{selected.velocity.z}} m/s</p>
+                <p class="secondHeader">x: {{currentSelectedDrone.velocity.x}} m/s</p>
+                <p class="secondHeader">y: {{currentSelectedDrone.velocity.y}} m/s</p>
+                <p class="secondHeader">z: {{currentSelectedDrone.velocity.z}} m/s</p>
 
                 <h3>Navigation</h3>
                 <p class="firstHeader"> Location </p>
-                <p class="secondHeader">Latitude: {{selected.location.latitude}} </p>
-                <p class="secondHeader">Longitude: {{selected.location.longitude}} </p>
-                <p class="secondHeader">Altitude: {{selected.altitude}} m</p>
+                <p class="secondHeader">Latitude: {{currentSelectedDrone.location.latitude}} </p>
+                <p class="secondHeader">Longitude: {{currentSelectedDrone.location.longitude}} </p>
+                <p class="secondHeader">Altitude: {{currentSelectedDrone.altitude}} m</p>
 
                 <h3>Visuals</h3>
               </div>
@@ -153,19 +199,6 @@
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
-        <v-menu offset-y open-on-hover>
-          <v-btn icon slot="activator">
-            <v-icon>'menu'</v-icon>
-          </v-btn>
-          <v-list>
-            <v-list-tile @click="saveMission()">
-              <v-list-tile-title>Update Mission</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile @click="swapNav('overView')">
-              <v-list-tile-title>Back</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
       </v-toolbar>
 
         <v-list dense class="pt-0" style="margin:2%;">
@@ -179,6 +212,8 @@
             v-model="description">
           </v-text-field>
         </v-list>
+        <v-btn style="background-color:#1d561a;color:#ffffff" @click="saveMission()">Update Mission</v-btn>
+        <v-btn style="background-color:#1d561a;color:#ffffff" @click="swapNav('overView')">Back</v-btn>
       </v-navigation-drawer>
 
 
@@ -283,6 +318,10 @@
     mixins: [API],
     data: function data() {
       return {
+      menu: false,
+      userID: null,
+      rowsPerPageItems: [5],
+
         mission_id: '',
         center: {
           lat: 0,
@@ -312,7 +351,7 @@
         starts: null,
         ends: null,
 
-        selected: {
+        currentSelectedDrone: {
               "id" : '',
               "battery_info" : {
                 "voltage" : '',
@@ -347,14 +386,86 @@
             value: 'id'
           }
         ],
-        "drones" : []
+        "drones" : [],
+        "myDrones" : [],
+        "selected": [],
       };
     },
     beforeMount() {
       this.mission_id = this.$route.query.id
-      this.fetch_mission_info()
+      this.fetch_mission_info();
+      this.getMissionDrones();
+      this.getUserID();
+    },
+    mounted () {
+      this.getUserDrones();
     },
     methods: {
+      toggleAll () {
+        if (this.selected.length) this.selected = []
+        else this.selected = this.items.slice()
+      },
+      getMissionDrones() {
+        this.get_mission_drones(
+          this.mission_id,
+          response => {
+            if (response.status == 200) {
+              this.drones = [];
+              if (true) {
+                var arr = Object.keys(response.data);
+                for (var i = 0; i < arr.length; i++) {
+                  this.drones.push(
+                    {
+                      "id" : arr[i],
+                      "battery_info" : {
+                        "voltage" : 'null',
+                        "current_consumption" : 'null',
+                        "energy_remaining" : 'null'
+                      },
+                      "location" : {
+                        latitude: 'null',
+                        longitude: 'null'
+                      },
+                      "altitude" : 'null',
+                      "connection" : 'null',
+                      "CURRENT_BEHAVIOR" : 'null',
+                      "velocity" : { "x" : 'null', "y" : 'null', "z" : 'null'}
+                    }
+                  );
+                }
+              }
+            } else if (response.data['code'] == 31) {
+              alert(response.data.message);
+            }
+          },
+          error => {
+            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+          }
+        );
+      },
+      getUserID() {
+        this.get_user_info(
+          response => {
+            this.userID = response.data.id
+          },
+          error => {
+            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
+          }
+        )
+      },
+      getUserDrones() {
+        this.get_user_drones(
+          response => {
+            this.drone_data = response.data
+            for(var i=0; i<this.drone_data.length; i++) {
+              this.myDrones.push(this.drone_data[i])
+            }
+          },
+          error => {
+            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
+          }
+        )
+      },
       fetch_mission_info() {
         this.get_mission_info(
           this.mission_id,
@@ -394,7 +505,6 @@
             }
           },
           error => {
-            console.log(error);
             alert(error);
           }
         );
@@ -434,7 +544,7 @@
 
         } else {
           if (drone != null) {
-            this.selected = drone;
+            this.currentSelectedDrone = drone;
           }
           this.edit_drawer = false;
           this.drawer = false;
@@ -443,6 +553,25 @@
         }
       },
       addDrone () {
+        for(var i=0; i< this.selected.length; i++) {
+          this.add_drone_to_mission(
+            this.selected[i].id,
+            this.mission_id,
+            this.userID,
+            response => {
+              if (response.data['code'] == 200) {
+                this.getMissionDrones();
+              } else if (response.data['code'] == 31) {
+                alert(response.data.message);
+              }
+            },
+            error => {
+              alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+            });
+        }
+        this.menu = false;
+      },
+      updateDroneMarkers () {
         for (var i = 0; i < this.drones.length; i++) {
           var marker = new google.maps.Marker({
                 position: {
