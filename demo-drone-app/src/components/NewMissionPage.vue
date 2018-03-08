@@ -49,6 +49,7 @@
     </v-toolbar>        
     </v-layout>
     <v-navigation-drawer
+      disable-resize-watcher
       v-model="drawer"
       light
       absolute
