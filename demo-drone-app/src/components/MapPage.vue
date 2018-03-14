@@ -566,9 +566,12 @@
           this.selected_drone_drawer = false;
 
         } else if (drone == "overView") {
-          for (var i = 0; i < this.polygons.length; i++) {
-            this.polygons[i].setEditable(false);
-            this.polygons[i].setDraggable(false);
+          if (this.edit) {
+            for (var i = 0; i < this.polygons.length; i++) {
+              this.polygons[i].setMap(null);
+            }
+            this.polygons=[];
+            this.fetch_mission_info();
           }
           this.edit = false;
           this.edit_drawer = false;
