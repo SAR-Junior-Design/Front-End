@@ -30,12 +30,12 @@
       </v-tooltip>
     <div v-if="edit">
       <v-btn @click="drawOn()" flat v-if="!canDraw">
-        <v-icon>'edit'</v-icon>
+        <v-icon>edit</v-icon>
         Draw Search Area
       </v-btn>
     </div>
       <v-btn @click="drawOff()" flat v-if="canDraw">
-        <v-icon>'pan_tool'</v-icon>
+        <v-icon>pan_tool</v-icon>
         Edit Map
       </v-btn>
     </v-toolbar>        
@@ -153,7 +153,7 @@
             </v-list-tile>
           </v-list>
           <v-btn icon @click= "swapNav('droneSwap')">
-            <v-icon>'compare_arrows'</v-icon>
+            <v-icon>compare_arrows</v-icon>
           </v-btn>
         </v-toolbar>
          <v-card>
@@ -233,7 +233,7 @@
           </v-list-tile-title>
             <v-tooltip right>
               <v-btn icon @click= "swapNav('edit')" slot="activator">
-                <v-icon>'settings'</v-icon>
+                <v-icon>settings</v-icon>
               </v-btn>
               <span>Edit Flight Details</span>
             </v-tooltip>
@@ -480,11 +480,41 @@
               this.ends = response.data.ends_at.split(" ")[1];
               for(var i = 0; i < area.features.length; i++) {
                 var paths = [];
+                var avg_lat = 0
+                var lat_range = {min: 200, max: -200, range: 0}
+                var avg_lng = 0
+                var lng_range = {min: 200, max: -200, range: 0}
+                var num_coords = area.features[0].geometry.coordinates.length
                 for (var a in area.features[i].geometry.coordinates) {
                   paths.push({
                   lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
                   });
+
+                  //avg_lat
+                  avg_lat += area.features[i].geometry.coordinates[a][0]
+                  if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+                    lat_range.max = area.features[i].geometry.coordinates[a][0]
+                  }
+                  if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+                    lat_range.min = area.features[i].geometry.coordinates[a][0]
+                  }
+                  //avg_lng
+                  if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+                    lng_range.max = area.features[i].geometry.coordinates[a][1]
+                  }
+                  if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+                    lng_range.min = area.features[i].geometry.coordinates[a][1]
+                  }
+                  avg_lng += area.features[i].geometry.coordinates[a][1]
                 }
+
+                lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+                lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+                var range = Math.max(lat_range.range, lng_range.range)
+                var zoom_coefficient = 2
+                this.zoom = -1.420533814 * Math.log(range) + 6.8957137
+                this.center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+
                 var poly = new google.maps.Polygon({
                   paths: paths,
                   id : i,
@@ -536,6 +566,10 @@
           this.selected_drone_drawer = false;
 
         } else if (drone == "overView") {
+          for (var i = 0; i < this.polygons.length; i++) {
+            this.polygons[i].setEditable(false);
+            this.polygons[i].setDraggable(false);
+          }
           this.edit = false;
           this.edit_drawer = false;
           this.drawer = false;
