@@ -298,12 +298,10 @@
 			        lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
 			        var range = Math.max(lat_range.range, lng_range.range)
 			        var zoom_coefficient = 2
-			        //alert(range)
-			        //y = -1.420533814 ln(x) + 6.8957137
 			        this.items[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
 			        this.items[j].paths = paths
 			        this.items[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
-	          }
+	          	}
 		      },
 		      error => {
 		        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')

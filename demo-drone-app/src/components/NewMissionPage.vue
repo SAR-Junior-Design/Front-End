@@ -27,7 +27,7 @@
         v-if="!drawer"
         fab
       >
-        <v-icon>compare_arrows</v-icon>
+        <v-icon> compare_arrows </v-icon>
       </v-btn>
 
     <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
@@ -39,11 +39,11 @@
         <v-icon>search</v-icon>
       </v-btn>
       <v-btn @click="drawOn()" flat v-if="!canDraw">
-        <v-icon>'edit'</v-icon>
+        <v-icon> edit </v-icon>
         Draw Search Area
       </v-btn>
       <v-btn @click="drawOff()" flat v-if="canDraw">
-        <v-icon>'pan_tool'</v-icon>
+        <v-icon> pan_tool </v-icon>
         Edit Map
       </v-btn>
     </v-toolbar>        
@@ -64,7 +64,7 @@
         </v-list-tile>
       </v-list>
       <v-btn icon @click.stop="drawer = !drawer">
-          <v-icon>'compare_arrows'</v-icon>
+          <v-icon> compare_arrows </v-icon>
         </v-btn>
     </v-toolbar>
 
