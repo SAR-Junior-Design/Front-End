@@ -1,5 +1,5 @@
 <template>
-  <v-layout style="width:100%;height:100%;" fixed>
+  <v-layout style="width:100%;height:100%;" fixed @contextmenu="showDeleteMenu">
     <gmap-map
       ref="map"
       class="map-panel"
@@ -17,6 +17,22 @@
           @click="closePolygon($event)">
       </gmap-polyline>
     </gmap-map>
+    <v-menu
+      offset-y
+      v-model="deleteMenu"
+      absolute
+      :position-x="x"
+      :position-y="y"
+    >
+      <v-list>
+        <v-list-tile @click="deletePolygon()">
+          <v-list-tile-title>Delete Polygon</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile @click="unselectPolygon()">
+          <v-list-tile-title>Unselect Polygon</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
     <v-layout>
       <v-btn @click.stop="drawer = !drawer"
         dark
@@ -267,6 +283,9 @@
         description: "",
         timeout: null,
         show: false,
+        deleteMenu: false,
+        x: 0,
+        y: 0,
 
         menuDate: false,
         menuStart: false,
@@ -281,15 +300,51 @@
         drawer: false,
         snackbar: false,
         timeout: 6000,
+        selectedPolygon: null,
       };
     },
     methods: {
+      deletePolygon () {
+          this.polygons.splice(this.selectedPolygon.id,1);
+          this.selectedPolygon.setMap(null);
+          this.selectedPolygon = null;
+      },
+      unselectPolygon () {
+          this.selectedPolygon.setOptions({strokeColor: "#FF0000"});
+          this.selectedPolygon = null;
+      },
+      showDeleteMenu (e) {
+        if(!this.canDraw) {
+          if(this.selectedPolygon != null) {
+            this.deleteMenu = false
+            this.x = e.clientX
+            this.y = e.clientY
+            this.$nextTick(() => {
+              this.deleteMenu = true
+            })
+          }
+        }
+      },
       saveDate (date) {
         this.$refs.menuDate.save(date)
       },
       setEvent(poly, that){
         google.maps.event.addListener(poly, 'dragend', function (event) {
           that.polygons[poly.id].setPath(poly.getPath());
+        });
+        google.maps.event.addListener(poly, 'rightclick', function (event) {
+          if(!that.canDraw) {
+            if (that.selectedPolygon != null) {
+              if (that.selectedPolygon != poly) {
+                that.selectedPolygon.setOptions({strokeColor: "#FF0000"});
+                poly.setOptions({strokeColor: "#0000FF"});
+                that.selectedPolygon = poly;
+              }
+            } else {
+              poly.setOptions({strokeColor: "#0000FF"});
+              that.selectedPolygon = poly;
+            }
+          }
         });
       },
       closePolygon: function(event) {
