@@ -699,7 +699,6 @@
                 that.selectedPolygon = poly;
               }
               if (event.vertex != undefined) {
-                console.log("IM A VERTEX BITCH")
                 that.selectedVertex = event.vertex;
                 that.selectedPolygon = poly;
               }
