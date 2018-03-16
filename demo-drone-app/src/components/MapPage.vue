@@ -13,7 +13,8 @@
           :path="paths"
           :editable="true"
           ref="polyline"
-          @click="closePolygon($event)">
+          @click="closePolygon($event)"
+          @rightclick="selectingVertex">
       </gmap-polyline>
     </gmap-map>
 
@@ -25,13 +26,13 @@
       :position-y="y"
     >
       <v-list>
-        <v-list-tile @click="deletePolygon()">
+        <v-list-tile v-if="selectedPolygon!=null" @click="deletePolygon()">
           <v-list-tile-title>Delete Polygon</v-list-tile-title>
         </v-list-tile>
         <v-list-tile v-if="selectedVertex!=null" @click="deleteVertex()">
           <v-list-tile-title>Delete Vertex</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile @click="unselectPolygon()">
+        <v-list-tile v-if="selectedPolygon!=null" @click="unselectPolygon()">
           <v-list-tile-title>Unselect Polygon</v-list-tile-title>
         </v-list-tile>
       </v-list>
@@ -376,6 +377,7 @@
         x: 0,
         y: 0,
         selectedPolygon: null,
+        selectedPolyline: null,
         selectedVertex: null,
 
         currentSelectedDrone: {
@@ -599,8 +601,10 @@
             }
             this.polygons=[];
             this.fetch_mission_info();
+            this.paths=[];
           }
           this.edit = false;
+          this.drawOff();
           this.edit_drawer = false;
           this.drawer = false;
           this.flight_drawer = true;
@@ -658,6 +662,15 @@
           that.swapNav(drone);
         });
       },
+      selectingVertex (e) {
+        if (e.vertex!=undefined) {
+          if (this.selectedPolygon!=null){
+            this.unselectPolygon();
+          }
+          this.selectedPolyline = this.$refs.polyline.$polylineObject;
+          this.selectedVertex = e.vertex;
+        }
+      },
       deletePolygon () {
           this.polygons.splice(this.selectedPolygon.id,1);
           this.selectedPolygon.setMap(null);
@@ -665,9 +678,15 @@
           this.selectedVertex = null;
       },
       deleteVertex () {
-          var path = this.selectedPolygon.getPath();
-          path.removeAt(this.selectedVertex);
-          this.selectedVertex = null;
+          if (this.selectedPolygon!=null) {
+            var path = this.selectedPolygon.getPath();
+            path.removeAt(this.selectedVertex);
+            this.selectedVertex = null;
+          } else if (this.selectedPolyline != null) {
+            this.paths.splice(this.selectedVertex,1);
+            this.selectedVertex = null;
+            this.selectedPolyline = null;
+          }
       },
       unselectPolygon () {
           this.selectedPolygon.setOptions({strokeColor: "#FF0000"});
@@ -675,14 +694,23 @@
           this.selectedVertex = null;
       },
       showDeleteMenu (e) {
-        if(!this.canDraw) {
-          if(this.selectedPolygon != null) {
+        if(this.selectedPolyline != null) {
             this.deleteMenu = false
             this.x = e.clientX
             this.y = e.clientY
             this.$nextTick(() => {
               this.deleteMenu = true
             })
+        } else {
+          if(!this.canDraw) {
+            if(this.selectedPolygon != null) {
+              this.deleteMenu = false
+              this.x = e.clientX
+              this.y = e.clientY
+              this.$nextTick(() => {
+                this.deleteMenu = true
+              })
+            }
           }
         }
       },
@@ -844,6 +872,7 @@
               this.drawer = false;
               this.flight_drawer = true;
               this.selected_drone_drawer = false;
+              this.paths=[];
             } else if (response.data['code'] == 31) {
               alert(response.data.message);
             }
