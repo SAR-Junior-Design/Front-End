@@ -14,7 +14,8 @@
           :path="paths"
           :editable="true"
           ref="polyline"
-          @click="closePolygon($event)">
+          @click="closePolygon($event)"
+          @contextmenu="">
       </gmap-polyline>
     </gmap-map>
     <v-menu
@@ -27,6 +28,9 @@
       <v-list>
         <v-list-tile @click="deletePolygon()">
           <v-list-tile-title>Delete Polygon</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="selectedVertex!=null" @click="deleteVertex()">
+          <v-list-tile-title>Delete Vertex</v-list-tile-title>
         </v-list-tile>
         <v-list-tile @click="unselectPolygon()">
           <v-list-tile-title>Unselect Polygon</v-list-tile-title>
@@ -301,6 +305,7 @@
         snackbar: false,
         timeout: 6000,
         selectedPolygon: null,
+        selectedVertex: null
       };
     },
     methods: {
@@ -308,10 +313,17 @@
           this.polygons.splice(this.selectedPolygon.id,1);
           this.selectedPolygon.setMap(null);
           this.selectedPolygon = null;
+          this.selectedVertex = null;
+      },
+      deleteVertex () {
+          var path = this.selectedPolygon.getPath();
+          path.removeAt(this.selectedVertex);
+          this.selectedVertex = null;
       },
       unselectPolygon () {
           this.selectedPolygon.setOptions({strokeColor: "#FF0000"});
           this.selectedPolygon = null;
+          this.selectedVertex = null;
       },
       showDeleteMenu (e) {
         if(!this.canDraw) {
@@ -340,9 +352,18 @@
                 poly.setOptions({strokeColor: "#0000FF"});
                 that.selectedPolygon = poly;
               }
+              if (event.vertex != undefined) {
+                console.log("IM A VERTEX BITCH")
+                that.selectedVertex = event.vertex;
+                that.selectedPolygon = poly;
+              }
             } else {
               poly.setOptions({strokeColor: "#0000FF"});
               that.selectedPolygon = poly;
+              if (event.vertex != undefined) {
+                that.selectedVertex = event.vertex;
+                that.selectedPolygon = poly;
+              }
             }
           }
         });

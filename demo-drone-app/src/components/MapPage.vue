@@ -28,6 +28,9 @@
         <v-list-tile @click="deletePolygon()">
           <v-list-tile-title>Delete Polygon</v-list-tile-title>
         </v-list-tile>
+        <v-list-tile v-if="selectedVertex!=null" @click="deleteVertex()">
+          <v-list-tile-title>Delete Vertex</v-list-tile-title>
+        </v-list-tile>
         <v-list-tile @click="unselectPolygon()">
           <v-list-tile-title>Unselect Polygon</v-list-tile-title>
         </v-list-tile>
@@ -373,6 +376,7 @@
         x: 0,
         y: 0,
         selectedPolygon: null,
+        selectedVertex: null,
 
         currentSelectedDrone: {
               "id" : '',
@@ -658,10 +662,17 @@
           this.polygons.splice(this.selectedPolygon.id,1);
           this.selectedPolygon.setMap(null);
           this.selectedPolygon = null;
+          this.selectedVertex = null;
+      },
+      deleteVertex () {
+          var path = this.selectedPolygon.getPath();
+          path.removeAt(this.selectedVertex);
+          this.selectedVertex = null;
       },
       unselectPolygon () {
           this.selectedPolygon.setOptions({strokeColor: "#FF0000"});
           this.selectedPolygon = null;
+          this.selectedVertex = null;
       },
       showDeleteMenu (e) {
         if(!this.canDraw) {
@@ -680,16 +691,23 @@
           that.polygons[poly.id].setPath(poly.getPath());
         });
         google.maps.event.addListener(poly, 'rightclick', function (event) {
-          if(that.edit) {
-            if(!that.canDraw) {
-              if (that.selectedPolygon != null) {
-                if (that.selectedPolygon != poly) {
-                  that.selectedPolygon.setOptions({strokeColor: "#FF0000"});
-                  poly.setOptions({strokeColor: "#0000FF"});
-                  that.selectedPolygon = poly;
-                }
-              } else {
+          if(!that.canDraw) {
+            if (that.selectedPolygon != null) {
+              if (that.selectedPolygon != poly) {
+                that.selectedPolygon.setOptions({strokeColor: "#FF0000"});
                 poly.setOptions({strokeColor: "#0000FF"});
+                that.selectedPolygon = poly;
+              }
+              if (event.vertex != undefined) {
+                console.log("IM A VERTEX BITCH")
+                that.selectedVertex = event.vertex;
+                that.selectedPolygon = poly;
+              }
+            } else {
+              poly.setOptions({strokeColor: "#0000FF"});
+              that.selectedPolygon = poly;
+              if (event.vertex != undefined) {
+                that.selectedVertex = event.vertex;
                 that.selectedPolygon = poly;
               }
             }
