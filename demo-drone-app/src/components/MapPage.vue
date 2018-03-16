@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-layout style="width:100%;" fixed>
+    <v-layout style="width:100%;" fixed  @contextmenu="showDeleteMenu">
     <gmap-map
       ref="map"
       class="map-panel"
@@ -13,9 +13,31 @@
           :path="paths"
           :editable="true"
           ref="polyline"
-          @click="closePolygon($event)">
+          @click="closePolygon($event)"
+          @rightclick="selectingVertex">
       </gmap-polyline>
     </gmap-map>
+
+    <v-menu
+      offset-y
+      v-model="deleteMenu"
+      absolute
+      :position-x="x"
+      :position-y="y"
+    >
+      <v-list>
+        <v-list-tile v-if="selectedPolygon!=null" @click="deletePolygon()">
+          <v-list-tile-title>Delete Polygon</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="selectedVertex!=null" @click="deleteVertex()">
+          <v-list-tile-title>Delete Vertex</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="selectedPolygon!=null" @click="unselectPolygon()">
+          <v-list-tile-title>Unselect Polygon</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
+
     <v-layout>
     <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
       <v-text-field 
@@ -351,6 +373,13 @@
         starts: null,
         ends: null,
 
+        deleteMenu: false,
+        x: 0,
+        y: 0,
+        selectedPolygon: null,
+        selectedPolyline: null,
+        selectedVertex: null,
+
         currentSelectedDrone: {
               "id" : '',
               "battery_info" : {
@@ -566,11 +595,16 @@
           this.selected_drone_drawer = false;
 
         } else if (drone == "overView") {
-          for (var i = 0; i < this.polygons.length; i++) {
-            this.polygons[i].setEditable(false);
-            this.polygons[i].setDraggable(false);
+          if (this.edit) {
+            for (var i = 0; i < this.polygons.length; i++) {
+              this.polygons[i].setMap(null);
+            }
+            this.polygons=[];
+            this.fetch_mission_info();
+            this.paths=[];
           }
           this.edit = false;
+          this.drawOff();
           this.edit_drawer = false;
           this.drawer = false;
           this.flight_drawer = true;
@@ -628,9 +662,83 @@
           that.swapNav(drone);
         });
       },
+      selectingVertex (e) {
+        if (e.vertex!=undefined) {
+          if (this.selectedPolygon!=null){
+            this.unselectPolygon();
+          }
+          this.selectedPolyline = this.$refs.polyline.$polylineObject;
+          this.selectedVertex = e.vertex;
+        }
+      },
+      deletePolygon () {
+          this.polygons.splice(this.selectedPolygon.id,1);
+          this.selectedPolygon.setMap(null);
+          this.selectedPolygon = null;
+          this.selectedVertex = null;
+      },
+      deleteVertex () {
+          if (this.selectedPolygon!=null) {
+            var path = this.selectedPolygon.getPath();
+            path.removeAt(this.selectedVertex);
+            this.selectedVertex = null;
+          } else if (this.selectedPolyline != null) {
+            this.paths.splice(this.selectedVertex,1);
+            this.selectedVertex = null;
+            this.selectedPolyline = null;
+          }
+      },
+      unselectPolygon () {
+          this.selectedPolygon.setOptions({strokeColor: "#FF0000"});
+          this.selectedPolygon = null;
+          this.selectedVertex = null;
+      },
+      showDeleteMenu (e) {
+        if(this.selectedPolyline != null) {
+            this.deleteMenu = false
+            this.x = e.clientX
+            this.y = e.clientY
+            this.$nextTick(() => {
+              this.deleteMenu = true
+            })
+        } else {
+          if(!this.canDraw) {
+            if(this.selectedPolygon != null) {
+              this.deleteMenu = false
+              this.x = e.clientX
+              this.y = e.clientY
+              this.$nextTick(() => {
+                this.deleteMenu = true
+              })
+            }
+          }
+        }
+      },
       setEvent(poly, that){
         google.maps.event.addListener(poly, 'dragend', function (event) {
           that.polygons[poly.id].setPath(poly.getPath());
+        });
+        google.maps.event.addListener(poly, 'rightclick', function (event) {
+          if(!that.canDraw) {
+            if (that.selectedPolygon != null) {
+              if (that.selectedPolygon != poly) {
+                that.selectedPolygon.setOptions({strokeColor: "#FF0000"});
+                poly.setOptions({strokeColor: "#0000FF"});
+                that.selectedPolygon = poly;
+              }
+              if (event.vertex != undefined) {
+                that.selectedVertex = event.vertex;
+                that.selectedPolygon = poly;
+              }
+            } else {
+              poly.setOptions({strokeColor: "#0000FF"});
+              that.selectedPolygon = poly;
+              if (event.vertex != undefined) {
+                that.selectedVertex = event.vertex;
+                that.selectedPolygon = poly;
+              }
+            }
+          }
         });
       },
       closePolygon: function(event) {
@@ -764,6 +872,7 @@
               this.drawer = false;
               this.flight_drawer = true;
               this.selected_drone_drawer = false;
+              this.paths=[];
             } else if (response.data['code'] == 31) {
               alert(response.data.message);
             }

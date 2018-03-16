@@ -1,22 +1,42 @@
 <template>
-  <v-layout style="width:100%;height:100%;" fixed>
-      <gmap-map
-        ref="map"
-        class="map-panel"
-        :center="center"
-        :zoom="zoom"
-        :map-type-id="mapType"
-        :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
-        @click="drawLine($event)"
-        @mouseout="mouseOff($event)"
-        @mouseover="mouseOn($event)">
-        <gmap-polyline v-if="paths.length > 0"
-            :path="paths"
-            :editable="true"
-            ref="polyline"
-            @click="closePolygon($event)">
-        </gmap-polyline>
-      </gmap-map>
+  <v-layout style="width:100%;height:100%;" fixed @contextmenu="showDeleteMenu">
+    <gmap-map
+      ref="map"
+      class="map-panel"
+      :center="center"
+      :zoom="zoom"
+      :map-type-id="mapType"
+      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+      @click="drawLine($event)"
+      @mouseout="mouseOff($event)"
+      @mouseover="mouseOn($event)">
+      <gmap-polyline v-if="paths.length > 0"
+          :path="paths"
+          :editable="true"
+          ref="polyline"
+          @click="closePolygon($event)"
+          @rightclick="selectingVertex">
+      </gmap-polyline>
+    </gmap-map>
+    <v-menu
+      offset-y
+      v-model="deleteMenu"
+      absolute
+      :position-x="x"
+      :position-y="y"
+    >
+      <v-list>
+        <v-list-tile v-if="selectedPolygon!=null" @click="deletePolygon()">
+          <v-list-tile-title>Delete Polygon</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="selectedVertex!=null" @click="deleteVertex()">
+          <v-list-tile-title>Delete Vertex</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="selectedPolygon!=null" @click="unselectPolygon()">
+          <v-list-tile-title>Unselect Polygon</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
     <v-layout>
       <v-btn @click.stop="drawer = !drawer"
         dark
@@ -35,9 +55,12 @@
         label="Latitude, Longitude"
         v-model="newCenter">
       </v-text-field>
-      <v-btn icon @click="updateMap()">
-        <v-icon>search</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <v-btn icon @click="updateMap()" slot="activator">
+          <v-icon>search</v-icon>
+        </v-btn>
+        <span>Search</span>
+      </v-tooltip>
       <v-btn @click="drawOn()" flat v-if="!canDraw">
         <v-icon> edit </v-icon>
         Draw Search Area
@@ -46,7 +69,39 @@
         <v-icon> pan_tool </v-icon>
         Edit Map
       </v-btn>
-    </v-toolbar>        
+      <v-tooltip bottom v-if="canDraw" max-width='100'>
+        <v-btn icon slot="activator" @click.stop="show = true">
+          <v-icon dark color="primary">help</v-icon>
+        </v-btn>
+        <span>Need Help Selecting a Flight Area?</span>
+      </v-tooltip>
+    </v-toolbar>
+
+      <v-dialog v-model="show" max-width="500px">
+        <v-card>
+        <v-card-title primary-title>
+          <div>
+            <h3 class="headline mb-0">Tips for selecting a Flight Area:</h3>
+            <div>
+              <br>
+              <ul style="list-style-position: inside; margin-left: 25%;">
+                <li> Fly below 400 ft. </li>
+                <li> Fly within visual line-of-sight </li>
+                <li> Fly in clear weather conditions </li>
+                <li> Fly over green spaces and not over traffic </li>
+                <li> Fly where there are no people under you </li>
+                <li> Fly during the day </li>
+                <li> Never fly near other aircrafts </li>
+              </ul>
+            </div>
+          </div>
+        </v-card-title>
+        <v-card-actions>
+          <v-btn color="primary" flat @click.stop="show=false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+      </v-dialog>
+
     </v-layout>
     <v-navigation-drawer
       disable-resize-watcher
@@ -64,8 +119,8 @@
         </v-list-tile>
       </v-list>
       <v-btn icon @click.stop="drawer = !drawer">
-          <v-icon> compare_arrows </v-icon>
-        </v-btn>
+        <v-icon> compare_arrows </v-icon>
+      </v-btn>
     </v-toolbar>
 
       <v-list dense class="pt-0" style="margin:2%;">
@@ -230,6 +285,11 @@
         title: "",
         location: "",
         description: "",
+        timeout: null,
+        show: false,
+        deleteMenu: false,
+        x: 0,
+        y: 0,
 
         menuDate: false,
         menuStart: false,
@@ -244,15 +304,92 @@
         drawer: false,
         snackbar: false,
         timeout: 6000,
+        selectedPolygon: null,
+        selectedPolyline: null,
+        selectedVertex: null
       };
     },
     methods: {
+      selectingVertex (e) {
+        if (e.vertex!=undefined) {
+          if (this.selectedPolygon!=null){
+            this.unselectPolygon();
+          }
+          this.selectedPolyline = this.$refs.polyline.$polylineObject;
+          this.selectedVertex = e.vertex;
+        }
+      },
+      deletePolygon () {
+          this.polygons.splice(this.selectedPolygon.id,1);
+          this.selectedPolygon.setMap(null);
+          this.selectedPolygon = null;
+          this.selectedVertex = null;
+      },
+      deleteVertex () {
+          if (this.selectedPolygon!=null) {
+            var path = this.selectedPolygon.getPath();
+            path.removeAt(this.selectedVertex);
+            this.selectedVertex = null;
+          } else if (this.selectedPolyline != null) {
+            this.paths.splice(this.selectedVertex,1);
+            this.selectedVertex = null;
+            this.selectedPolyline = null;
+          }
+      },
+      unselectPolygon () {
+          this.selectedPolygon.setOptions({strokeColor: "#FF0000"});
+          this.selectedPolygon = null;
+          this.selectedVertex = null;
+      },
+      showDeleteMenu (e) {
+        if(this.selectedPolyline != null) {
+            this.deleteMenu = false
+            this.x = e.clientX
+            this.y = e.clientY
+            this.$nextTick(() => {
+              this.deleteMenu = true
+            })
+        } else {
+          if(!this.canDraw) {
+            if(this.selectedPolygon != null) {
+              this.deleteMenu = false
+              this.x = e.clientX
+              this.y = e.clientY
+              this.$nextTick(() => {
+                this.deleteMenu = true
+              })
+            }
+          }
+        }
+      },
       saveDate (date) {
         this.$refs.menuDate.save(date)
       },
       setEvent(poly, that){
         google.maps.event.addListener(poly, 'dragend', function (event) {
           that.polygons[poly.id].setPath(poly.getPath());
+        });
+        google.maps.event.addListener(poly, 'rightclick', function (event) {
+          if(!that.canDraw) {
+            if (that.selectedPolygon != null) {
+              if (that.selectedPolygon != poly) {
+                that.selectedPolygon.setOptions({strokeColor: "#FF0000"});
+                poly.setOptions({strokeColor: "#0000FF"});
+                that.selectedPolygon = poly;
+              }
+              if (event.vertex != undefined) {
+                that.selectedVertex = event.vertex;
+                that.selectedPolygon = poly;
+              }
+            } else {
+              poly.setOptions({strokeColor: "#0000FF"});
+              that.selectedPolygon = poly;
+              if (event.vertex != undefined) {
+                that.selectedVertex = event.vertex;
+                that.selectedPolygon = poly;
+              }
+            }
+          }
         });
       },
       closePolygon: function(event) {
