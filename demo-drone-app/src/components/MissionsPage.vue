@@ -156,8 +156,13 @@
 										      </gmap-polygon>
 										    </gmap-map>
 						          </v-flex>
+					          </v-layout>
+					          <v-layout column>
 					          	<v-flex class="text-xs-center">
-					          		<v-btn @click="goToMission(props.item.id)">
+					          		<v-btn outline flat @click="deleteMission(props.item.id)">
+					          			DELETE MISSION
+					          		</v-btn>
+					          		<v-btn outline flat @click="goToMission(props.item.id)">
 					          			OPEN MAP
 					          		</v-btn>
 					          	</v-flex>
@@ -324,7 +329,17 @@
 	    		})
 	    },
 	    goToMission(mission) {
-      router.push('map?id='+mission);
+      	router.push('map?id='+mission);
+    	},
+    	deleteMission(mission) {
+    		this.delete_mission(mission,
+    			response => {
+    				alert('Mission deleted!')
+    				this.getMissions()
+    			},
+    			error => {
+
+    			})
     	},
     	newMission(){
 				router.push('/newmission')
