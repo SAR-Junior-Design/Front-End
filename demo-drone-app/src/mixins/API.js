@@ -131,6 +131,13 @@ export default {
         .then(success)
         .catch(failure);
     },
+    delete_mission(mission_id, success, failure) {
+      var body = {'mission_id': mission_id}
+      var url = this.base_url + '/delete_mission'
+      axios.post(url,body, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
     // Details must be a dictionary with any combination
     // of 'area', 'description', and 'title'. If you don't
     // want to change a value, don't put it in the
