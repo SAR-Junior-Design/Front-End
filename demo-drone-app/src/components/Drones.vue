@@ -1,9 +1,9 @@
 <template>                   
-    <v-layout class="background">
-      <v-flex xs10 sm8 offset-sm2>
-        <v-card id="drone_ADD">
-          <template>
-            <v-form v-model="valid" ref="form" lazy-validation>
+  <v-layout class="background">
+    <v-flex xs10 sm8 offset-sm2>
+      <v-card id="drone_ADD">
+        <template>
+          <v-form v-model="valid" ref="form" lazy-validation>
             <v-container fluid>
               <v-layout row wrap>
                 <v-flex xs12 >
@@ -100,8 +100,12 @@
                     v-model="props.selected"
                   ></v-checkbox>
                 </td>
-                <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.id }}</td>
+                <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.color }}</td>
                 <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.description }}</td>
+                 <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.id }}</td>
+                <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.manufacturer }}</td>
+                 <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.number_of_blades }}</td>
+                <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.type }}</td>
               </tr>
             </template>
             <template slot="expand" slot-scope="props">
@@ -164,10 +168,14 @@ export default {
       search: '',
       pagination: {},
       headers: [     
-        { text: 'Drone ID', value: 'id' },
+        { text: 'Color', value: 'color' },
         { text: 'Description', value: 'description' },
+        { text: 'ID', value: 'id' },
+        { text: 'Manufacturer', value: 'manufacturer' },
+        { text: 'Number of Blades', value: 'number_of_blades' },
+        { text: 'Type', value: 'type' }
       ],
-      items: [],//////{text: 'state 1'}///////]
+      items: [],
       selected: [],
       radios: null,
       valid: false,
@@ -201,12 +209,13 @@ export default {
       })
     },
     registerDrone() {
-      this.register_drone(this.e0, 
+      this.register_drone(this.e0, this.e1, this.e2, this.radios,
         response => {
-          if (response.status == 200) {
+          if (response.data == 200) {
             this.drone_id = true;
+            console.log("The GOOOOODs" + this.e0 + this.e1 + this. e2 + this.radios)
             this.getUserDrones();
-            console.log          } else if (response.data['code'] == 31) {
+          } else if (response.data['code'] == 31) {
             throw error;
           }
         })
