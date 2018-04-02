@@ -11,7 +11,7 @@ Vue.use(VueAxios, axios)
 export default {
   data () {
   	return {
-  		base_url: 'http://backend.searchandrescuedrones.us:5000'
+  		base_url: 'http://backend.searchandrescuedrones.us:5000/v1_0'
       //base_url: 'http://localhost:5000'
   	}
   },
@@ -56,7 +56,7 @@ export default {
         .catch(failure);
     },
     get_user_info(success, failure) {
-      var url = this.base_url + '/api/v1/get_user_info'
+      var url = this.base_url + '/get_user_info'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
@@ -70,7 +70,7 @@ export default {
 
     //DRONE API CALLS
     get_user_drones(success, failure){
-      var url = this.base_url + '/api/v1/get_user_drones'
+      var url = this.base_url + '/get_user_drones'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);

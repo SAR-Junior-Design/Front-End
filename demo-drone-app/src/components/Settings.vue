@@ -33,49 +33,49 @@
 </style>
 
 <script>
-import API from '../mixins/API.js'
-import SettingsProfile from './settings/SettingsProfile.vue'
-import SettingsLicenses from './settings/SettingsLicenses.vue'
+	import API from '../mixins/API/API_V1_0.js'
+	import SettingsProfile from './settings/SettingsProfile.vue'
+	import SettingsLicenses from './settings/SettingsLicenses.vue'
 
-export default {
-	mixins: [API],
-	components: {
-    'settings-profile': SettingsProfile,
-    'settings-licenses': SettingsLicenses
-  },
-	data() {
-		return {
-			size:'150px',
-			items: [
-				{'title': 'Profile', 'color': 'black', 'component': 'settings-profile'},
-				{'title': 'Licenses', 'color': 'black', 'component': 'settings-licenses'}
-			],
-			current_item: {},
-			profile_info: {
-				image: 'https://avatars0.githubusercontent.com/u/8029035?s=400&v=4',
-				documents: [
-					{ type: 'part_107', location: 'https://drive.google.com/file/d/1j8jXiXbI05VogHVKivfavdZgbaD0yrwP/view?usp=sharing'},
-					{ type: 'part_333', location: 'https://drive.google.com/file/d/1j8jXiXbI05VogHVKivfavdZgbaD0yrwP/view?usp=sharing'}
-				]
-			},
-			user_info: {}
-		}
-	},
-	methods: {
-		_get_user_info() {
-			this.get_user_info(response => {
-				this.user_info = response.data
-			}, error => {
-				alert ('Could not get user info!')
-			});
+	export default {
+		mixins: [API],
+		components: {
+	    'settings-profile': SettingsProfile,
+	    'settings-licenses': SettingsLicenses
+	  },
+		data() {
+			return {
+				size:'150px',
+				items: [
+					{'title': 'Profile', 'color': 'black', 'component': 'settings-profile'},
+					{'title': 'Licenses', 'color': 'black', 'component': 'settings-licenses'}
+				],
+				current_item: {},
+				profile_info: {
+					image: 'https://avatars0.githubusercontent.com/u/8029035?s=400&v=4',
+					documents: [
+						{ type: 'part_107', location: 'https://drive.google.com/file/d/1j8jXiXbI05VogHVKivfavdZgbaD0yrwP/view?usp=sharing'},
+						{ type: 'part_333', location: 'https://drive.google.com/file/d/1j8jXiXbI05VogHVKivfavdZgbaD0yrwP/view?usp=sharing'}
+					]
+				},
+				user_info: {}
+			}
 		},
-		on_nav_click(item) {
-			this.current_item = this.item
+		methods: {
+			_get_user_info() {
+				this.get_user_info(response => {
+					this.user_info = response.data
+				}, error => {
+					alert ('Could not get user info!')
+				});
+			},
+			on_nav_click(item) {
+				this.current_item = this.item
+			}
+		},
+		mounted() {
+			this._get_user_info()
+			this.current_item = this.items[0]
 		}
-	},
-	mounted() {
-		this._get_user_info()
-		this.current_item = this.items[0]
 	}
-}
 </script>
