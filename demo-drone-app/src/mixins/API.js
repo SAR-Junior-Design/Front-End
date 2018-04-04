@@ -162,6 +162,13 @@ export default {
         .then(success)
         .catch(failure);
     },
+    get_possible_mission_conflicts(starts_at, ends_at, success, failure){
+      var body = {'starts_at': starts_at, 'ends_at': ends_at}
+      var url = this.base_url + '/v1_1/get_possible_mission_conflicts'
+      axios.get(url,body, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
     delete_mission(mission_id, success, failure) {
       var body = {'mission_id': mission_id}
       var url = this.base_url + '/v1_0/delete_mission'
