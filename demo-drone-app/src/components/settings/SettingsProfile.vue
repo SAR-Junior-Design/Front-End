@@ -29,7 +29,7 @@
 							</v-btn>
 						</v-flex>	
 						<v-flex class="text-xs-center">
-							<v-btn flat outline @click="">
+							<v-btn disabled flat outline @click="">
 								Edit Picture
 							</v-btn>
 						</v-flex>

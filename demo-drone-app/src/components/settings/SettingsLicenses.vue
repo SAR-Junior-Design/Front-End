@@ -6,6 +6,9 @@
 					<span style="font-size:30px;"> Licenses </span>
 				</v-flex>
 				<v-layout column>
+					<v-flex class="text-xs-left">
+						This portion is currently under construction! We are working hard to get a license file storage system working.
+					</v-flex>
 					<v-layout row
 						v-for="doc in profile_info.documents"
 						:key = "profile_info.type"
@@ -61,7 +64,6 @@ export default {
 	methods: {
 	},
 	mounted() {
-		alert('This is under construction! Still working on setting up part 107 license hosting.')
 	}
 }
 </script>
