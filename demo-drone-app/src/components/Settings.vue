@@ -33,7 +33,7 @@
 </style>
 
 <script>
-	import API from '../mixins/API/API_V1_0.js'
+	import API from '../mixins/API.js'
 	import SettingsProfile from './settings/SettingsProfile.vue'
 	import SettingsLicenses from './settings/SettingsLicenses.vue'
 

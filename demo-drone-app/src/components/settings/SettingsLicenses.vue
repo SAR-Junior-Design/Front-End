@@ -36,7 +36,7 @@
 </style>
 
 <script>
-import API from '../../mixins/API/API_V1_0.js'
+import API from '../../mixins/API.js'
 
 export default {
 	mixins: [API],
