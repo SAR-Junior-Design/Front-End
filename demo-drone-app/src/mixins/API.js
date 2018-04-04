@@ -36,8 +36,21 @@ export default {
         .then(success)
         .catch(failure);
     },
+    login_v1_1(email, password, success, failure) {
+      var body = {'email': email, 'password': password}
+      var url = this.base_url + '/v1_1/login'
+      axios.post(url,body, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
     logoff(success, failure) {
     	var url = this.base_url + '/v1_0/logoff'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
+    logoff_v1_1(success, failure) {
+      var url = this.base_url + '/v1_1/logoff'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
@@ -142,10 +155,29 @@ export default {
         .then(success)
         .catch(failure);
     },
+    get_missions_v1_1(starts_at, ends_at, success, failure){
+      var body = {'starts_at': starts_at, 'ends_at': ends_at}
+      var url = this.base_url + '/v1_1/get_missions'
+      axios.get(url,body, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
     delete_mission(mission_id, success, failure) {
       var body = {'mission_id': mission_id}
       var url = this.base_url + '/v1_0/delete_mission'
       axios.post(url,body, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
+    get_active_missions(success, failure){
+      var url = this.base_url + '/v1_1/get_active_missions'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
+    get_past_missions(success, failure){
+      var url = this.base_url + '/v1_1/get_past_missions'
+      axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
