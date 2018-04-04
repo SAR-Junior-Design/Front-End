@@ -91,7 +91,7 @@
 		            <td class="text-xs-center">{{ props.item.commander }}</td>
 		            <td class="text-xs-center">{{ props.item.num_drones }}</td>
 		            <td class="text-xs-center">{{ props.item.starts_at }}</td>
-		            <td class="text-xs-center"> 
+		            <td class="text-xs-center">
 		            	<v-icon v-if="_state(props.item.clearance) == 'DECLINED'" right color="red">block</v-icon>
 		            	<v-icon v-if="_state(props.item.clearance) == 'PENDING'" right color="yellow">error</v-icon>
 		            	<v-icon v-if="_state(props.item.clearance) == 'APPROVED'" right color="green">check_circle</v-icon>
@@ -138,23 +138,10 @@
 					          	</v-flex>
 					          </v-layout>
 					          <v-layout column align-center>
-						          <v-flex 
+						          <v-flex
 						          class="text-xs-center"
 						          style="margin:10px;">
-						          	<gmap-map
-										      ref="map"
-										      class="map-panel"
-										      :center="props.item.center"
-										      :zoom="props.item.zoom"
-										      :map-type-id="mapType"
-										      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: false, zoomControl: true}"
-										      style="width:350px;height:200px;">
-										      <gmap-polygon v-if="props.item.paths.length > 0"
-									          :path="props.item.paths"
-									          :editable="false"
-									          ref="polyline">
-										      </gmap-polygon>
-										    </gmap-map>
+												<component :mission="props.item" is="mapTemplate"></component>
 						          </v-flex>
 					          </v-layout>
 					          <v-layout column>
@@ -207,6 +194,7 @@
 	import Vuetify from 'vuetify'
 	import router from '@/router'
 	import API from '../mixins/API.js'
+	import mapThumbnail from '@/components/map/mapThumbnail.vue'
 
 	Vue.use(VueGoogleMaps, {
     load: {
@@ -218,6 +206,9 @@
 	export default {
 		name: 'MissionsPage',
 		mixins: [API],
+	  components: {
+	    'mapTemplate': mapThumbnail
+	  },
 	  data () {
 	    return {
         newCenter: "",
@@ -228,7 +219,7 @@
 	      tmp: '',
 	      search: '',
 	      pagination: {},
-	      headers: [        
+	      headers: [
 	        { text: 'Title', align: 'left', value: 'title' },
 	        { text: 'Commander', align: 'center', value: 'commander'},
 	        { text: 'Drones', align: 'center', value: 'Drones#'},
