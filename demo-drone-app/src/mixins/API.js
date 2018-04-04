@@ -122,6 +122,14 @@ export default {
         .then(success)
         .catch(failure);
     },
+    register_mission_v1_1(title, area, description, starts_at, ends_at, type, success, failure) {
+      var body = {'title': title, 'area': area, 'description': description,
+                  'starts_at': starts_at, 'ends_at': ends_at, 'type': type}
+      var url = this.base_url + '/v1_1/register_mission'
+      axios.post(url,body, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
     get_mission_drones(mission_id, success, failure) {
       var body = {'mission_id': mission_id}
       var url = this.base_url + '/v1_0/get_mission_drones'
