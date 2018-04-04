@@ -2,139 +2,37 @@
   <v-content class="background">
     <section fill-height>
       <v-container text-xs-center style="margin-top:5%;">
-        <v-layout row justify-center>
+        <v-layout row>
           <v-flex xs12 class="text-xs-center" ma-1>
-            <v-card style="background-color:#dadfe8;">
-              <v-card-title>
-                <v-flex class="text-xs-left" style="margin-top:0px;">
-                  <h2> Active Missions </h2>
-                </v-flex>
-              </v-card-title>
-              <v-card-text>
-                <v-layout row style="overflow-x: scroll;">
-                  <v-flex pa-3 class="text-xs-center" v-for="mission in userMissions" :key="mission.id">
-                    <v-card dark style="background-color:#1d561a; height:100%;width:300px;">
-                      <v-container fluid grid-list-lg>
-                        <v-layout row>
-                          <v-flex xs7>
-                            <div @mouseover="mouseOver()" @mouseout="mouseOut()" @click="goToMission(mission.id)">
-                              <div class="headline"> {{ mission.title }}</div>
-                              <div>awaiting mission details...</div>
-                            </div>
-                          </v-flex>
-                          <v-flex xs5>
-                            <v-card-media
-                              :src="require('@/assets/missionRadar.png')"
-                              height="125px"
-                              contain
-                            ></v-card-media>
-                          </v-flex>
-                        </v-layout>
-                      </v-container>
-                    </v-card>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-        <v-layout row justify-center>
-          <v-flex xs12 class="text-xs-center" ma-1>
-            <v-card style="background-color:#dadfe8;">
-              <v-card-title>
-                <v-flex class="text-xs-left" style="margin-top:0px;">
-                  <h2> Past Missions </h2>
-                </v-flex>
-              </v-card-title>
-              <v-card-text>
-                <v-layout row style="overflow-x: scroll;">
-                  <v-flex pa-3 class="text-xs-center" v-for="i in 3" :key="i">
-                    <v-card dark style="background-color:#1d561a">
-                      <v-container fluid grid-list-lg>
-                        <v-layout row>
-                          <v-flex xs7>
-                            <div>
-                              <div class="headline"> Mission {{i}}</div>
-                              <div>awaiting mission details...</div>
-                            </div>
-                          </v-flex>
-                          <v-flex xs5>
-                            <v-card-media
-                              :src="require('@/assets/missionRadar.png')"
-                              height="125px"
-                              contain
-                            ></v-card-media>
-                          </v-flex>
-                        </v-layout>
-                      </v-container>
-                    </v-card>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-        <v-layout row justify-center>
-          <v-flex xs12 class="text-xs-center" ma-1>
-            <v-card style="background-color:#dadfe8;">
-              <v-card-title>
-                <v-flex class="text-xs-left" style="margin-top:0px;">
-                  <h2> Drones Online </h2>
-                </v-flex>
-              </v-card-title>
-              <v-card-text>
-                <v-layout row style="overflow-x: scroll;">
-                  <v-flex pa-3 class="text-xs-center" v-for="i in 5" :key="i">
-                    <v-card dark style="background-color:#1d561a">
-                      <v-container fluid grid-list-lg>
-                        <v-layout column>
-                          <v-layout row>
-                            <v-flex>
-                              <div>
-                                <v-card-media
-                                  :src="require('@/assets/drone.png')"
-                                  height="50px"
-                                  contain
-                                ></v-card-media>
-                              </div>
-                              <div>
-                                <div class="headline"> Drone {{i}}</div>
-                                <div>awaiting drone details...</div>
-                              </div>
-                            </v-flex>
-                          </v-layout>
-                        </v-layout>
-                      </v-container>
-                    </v-card>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-        <v-layout row justify-center>
-          <v-flex xs12 class="text-xs-center" ma-1>
-            <v-card style="background-color:#dadfe8;">
-              <v-card-title>
-                <v-flex class="text-xs-left" style="margin-top:0px;">
-                  <h2> Team Mememers </h2>
-                </v-flex>
-              </v-card-title>
-              <v-card-text>
-                <v-layout row>
-                  <v-flex pa-3 class="text-xs-center" v-for="i in 6" :key="i">
-                    <v-card pa-2 dark style="background-color:#1d561a">
-                      <v-card-title>
-                        <v-flex class="text-xs-center" style="margin-top:0px;">
-                          <h2> Team Member {{i}} </h2>
+            <v-tabs fixed centered>
+              <v-tabs-bar class="light-green darken-4" dark>
+                <v-tabs-slider class="light-green darken-2"></v-tabs-slider>
+                <v-tabs-item
+                  v-for="item in items"
+                  :key="item.id"
+                  :href="'#tab-' + item.id"
+                >
+                  {{ item.title }}
+                </v-tabs-item>
+              </v-tabs-bar>
+              <v-tabs-items>
+                <v-tabs-content
+                  v-for="item in items"
+                  :key="item.id"
+                  :id="'tab-' + item.id"
+                >
+                  <v-card flat>
+                    <v-card-text>
+                      <v-layout row style="overflow-x: scroll;">
+                        <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in userMissions" :key="index">
+                          <component :mission="currentMission" is="missionTemplate"></component>
                         </v-flex>
-                      </v-card-title>
-                      <v-card-text class="px-0">awaiting member details...</v-card-text>
-                    </v-card>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
-            </v-card>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-tabs-content>
+              </v-tabs-items>
+            </v-tabs>
           </v-flex>
         </v-layout>
       </v-container>
@@ -158,12 +56,16 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from '@/router'
 import API from '../mixins/API.js'
+import missionCard from './homepage/missionCard.vue'
 
 Vue.use(VueAxios, axios)
 
 export default {
   name: 'Login',
   mixins: [API],
+	components: {
+    'missionTemplate': missionCard
+  },
   data () {
     return {
       userMissions: {
@@ -172,7 +74,29 @@ export default {
         }
       },
       userMissionsCount: 0,
-
+      currentMission: {},
+      items: [
+          {
+              title: "Active Missions",
+              text: "This is the first text",
+              id: 1
+          },
+          {
+              title: "Past Missions",
+              text: "This is the second text",
+              id: 2
+          },
+          {
+              title: "Drones",
+              text: "This is the third text",
+              id: 3
+          },
+          {
+              title: "Team Members",
+              test: "This is the fourth text",
+              id: 4
+          }
+      ],
     }
   },
   methods: {
@@ -187,21 +111,56 @@ export default {
     }
   },
   mounted() {
-    this.get_user_missions(
+    this.get_missions(
       response => {
         if (response.status == 200) {
-          if (response.data['commanding']) {
-            this.userMissions = response.data['commanding']
-          }
-          this.$emit('login')
-          router.push('/homepage')
-        } else {
-          throw error
-        }
-      },
+          this.userMissions = response.data;
+
+          for (var j = 0; j < this.userMissions.length; j++){
+            var area = this.userMissions[j].area
+            this.userMissions[j].polygons = []
+            this.userMissions[j].paths = []
+            var paths = []
+            var avg_lat = 0
+            var lat_range = {min: 200, max: -200, range: 0}
+            var avg_lng = 0
+            var lng_range = {min: 200, max: -200, range: 0}
+            var num_coords = area.features[0].geometry.coordinates.length
+            for(var i = 0; i < area.features.length; i++) {
+              for (var a in area.features[i].geometry.coordinates) {
+                paths.push({
+                lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
+                });
+                //avg_lat
+                avg_lat += area.features[i].geometry.coordinates[a][0]
+                if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+                  lat_range.max = area.features[i].geometry.coordinates[a][0]
+                }
+                if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+                  lat_range.min = area.features[i].geometry.coordinates[a][0]
+                }
+                //avg_lng
+                if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+                  lng_range.max = area.features[i].geometry.coordinates[a][1]
+                }
+                if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+                  lng_range.min = area.features[i].geometry.coordinates[a][1]
+                }
+                avg_lng += area.features[i].geometry.coordinates[a][1]
+              }
+            }
+            lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+            lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+            var range = Math.max(lat_range.range, lng_range.range)
+            var zoom_coefficient = 2
+            this.userMissions[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+            this.userMissions[j].paths = paths
+            this.userMissions[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+            }
+      }
       error => {
         alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-      })
+      }})
   }
 }
 </script>

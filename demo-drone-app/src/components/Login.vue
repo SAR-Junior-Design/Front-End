@@ -28,7 +28,7 @@
                       <v-flex>
                         <v-text-field
                           name="loginEmail"
-                          label="Username"
+                          label="Email"
                           id="loginEmail"
                           type="username"
                           v-model="loginEmail"

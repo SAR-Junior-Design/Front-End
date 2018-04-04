@@ -1,12 +1,12 @@
 <template>
   <v-app id="inspire">
-		<v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" style="background-color:#1d561a">
+		<v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" style="background-color:#1d561a;">
       <v-toolbar-title style="margin-right:20px;">
         <router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: #dadfe8;">
-          SAR
+          ICARUS
         </router-link>
         <router-link v-if="logged_in" to="/homepage" tag="span" style="cursor: pointer;color: #dadfe8;">
-          SAR
+          ICARUS
         </router-link>
       </v-toolbar-title>
       <v-toolbar-items class="hidden-xs-only">
@@ -60,7 +60,7 @@ Vue.use(VueAxios, axios)
         menuItems: [
         ],
         userMenu: [
-        	{ title: 'Mission', path: '/missions', icon: 'home'},
+        	{ title: 'Missions', path: '/missions', icon: 'home'},
           { title: 'New Mission', path: '/newmission', icon: 'lock'},
           { title: 'Drones', path: '/drones', icon: 'lock'}
         ],

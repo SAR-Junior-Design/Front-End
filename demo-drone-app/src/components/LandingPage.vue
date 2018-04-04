@@ -102,7 +102,7 @@ export default {
       signUpUsername: '',
       signUpEmail: '',
       signUpPassword: '',
-      passwordConfirm: '',
+      passwordConfirm: ''
     }
   },
   methods: {
@@ -114,7 +114,7 @@ export default {
         (response) => {
           if (response.data['code'] == 200) {
             alert('signing up')
-            router.push('/homepage')
+            router.push('/login')
           } else if (response.data['code'] == 31) {
             throw error
           }

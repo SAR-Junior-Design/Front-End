@@ -1,12 +1,12 @@
 <template>
-  <v-layout style="width:100%;height:100%;" fixed>
+  <v-layout style="width:100%;height:100%;" fixed @contextmenu="showDeleteMenu">
     <gmap-map
       ref="map"
       class="map-panel"
       :center="center"
       :zoom="zoom"
       :map-type-id="mapType"
-      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true, clickableIcons: false}"
       @click="drawLine($event)"
       @mouseout="mouseOff($event)"
       @mouseover="mouseOn($event)">
@@ -14,9 +14,29 @@
           :path="paths"
           :editable="true"
           ref="polyline"
-          @click="closePolygon($event)">
+          @click="closePolygon($event)"
+          @rightclick="selectingVertex">
       </gmap-polyline>
     </gmap-map>
+    <v-menu
+      offset-y
+      v-model="deleteMenu"
+      absolute
+      :position-x="x"
+      :position-y="y"
+    >
+      <v-list>
+        <v-list-tile v-if="selectedPolygon!=null" @click="deletePolygon()">
+          <v-list-tile-title>Delete Polygon</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="selectedVertex!=null" @click="deleteVertex()">
+          <v-list-tile-title>Delete Vertex</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="selectedPolygon!=null" @click="unselectPolygon()">
+          <v-list-tile-title>Unselect Polygon</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
     <v-layout>
       <v-btn @click.stop="drawer = !drawer"
         dark
@@ -24,9 +44,10 @@
         top
         left
         style="background-color:#1d561a;margin-top:60px;"
+        v-if="!drawer"
         fab
       >
-        <v-icon>compare_arrows</v-icon>
+        <v-icon> compare_arrows </v-icon>
       </v-btn>
 
     <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
@@ -34,25 +55,85 @@
         label="Latitude, Longitude"
         v-model="newCenter">
       </v-text-field>
-      <v-btn icon @click="updateMap()">
-        <v-icon>search</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <v-btn icon @click="updateMap()" slot="activator">
+          <v-icon>search</v-icon>
+        </v-btn>
+        <span>Search</span>
+      </v-tooltip>
       <v-btn @click="drawOn()" flat v-if="!canDraw">
-        <v-icon>'edit'</v-icon>
+        <v-icon> edit </v-icon>
         Draw Search Area
       </v-btn>
       <v-btn @click="drawOff()" flat v-if="canDraw">
-        <v-icon>'pan_tool'</v-icon>
+        <v-icon> pan_tool </v-icon>
         Edit Map
       </v-btn>
-    </v-toolbar>        
+      <v-tooltip bottom v-if="canDraw" max-width='100'>
+        <v-btn icon slot="activator" @click.stop="show = true">
+          <v-icon dark color="primary">help</v-icon>
+        </v-btn>
+        <span>Need Help Selecting a Flight Area?</span>
+      </v-tooltip>
+    </v-toolbar>
+
+      <v-dialog v-model="show" max-width="500px">
+        <v-card>
+        <v-card-title primary-title>
+          <div>
+            <h3 class="headline mb-0">Tips for selecting a Flight Area:</h3>
+            <div>
+              <br>
+              <ul style="list-style-position: inside; margin-left: 25%;">
+                <li> Fly below 400 ft. </li>
+                <li> Fly within visual line-of-sight </li>
+                <li> Fly in clear weather conditions </li>
+                <li> Fly over green spaces and not over traffic </li>
+                <li> Fly where there are no people under you </li>
+                <li> Fly during the day </li>
+                <li> Never fly near other aircrafts </li>
+              </ul>
+            </div>
+          </div>
+        </v-card-title>
+        <v-card-actions>
+          <v-btn color="primary" flat @click.stop="show=false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="alertMissingCriteria" max-width="500px">
+        <v-card>
+        <v-card-title primary-title>
+          <div>
+            <h3 class="headline mb-0">Mission Did Not Save</h3>
+            <h4>Please Make Sure the Following Items are Filled Out:</h4>
+            <div>
+              <br>
+              <ul style="list-style-position: inside; margin-left: 25%;">
+                <li> Mission Title </li>
+                <li> Mission Description </li>
+                <li> Flight Area </li>
+                <li> Flight Date </li>
+                <li> Start Time </li>
+                <li> End Time </li>
+              </ul>
+            </div>
+          </div>
+        </v-card-title>
+        <v-card-actions>
+          <v-btn color="primary" flat @click.stop="alertMissingCriteria=false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+      </v-dialog>
+
     </v-layout>
     <v-navigation-drawer
-      temporary
+      disable-resize-watcher
       v-model="drawer"
       light
       absolute
-      style="width:30%;"
+      style="width:30%;height:95%; top:64px;"
     >
     <v-toolbar flat>
       <v-list>
@@ -63,8 +144,8 @@
         </v-list-tile>
       </v-list>
       <v-btn icon @click.stop="drawer = !drawer">
-          <v-icon>'compare_arrows'</v-icon>
-        </v-btn>
+        <v-icon> compare_arrows </v-icon>
+      </v-btn>
     </v-toolbar>
 
       <v-list dense class="pt-0" style="margin:2%;">
@@ -79,42 +160,51 @@
         </v-text-field>
       </v-list>
       <v-menu
-        ref="menuDate"
+        ref="menu"
         lazy
         :close-on-content-click="false"
         v-model="menuDate"
         transition="scale-transition"
         offset-y
         full-width
-        :nudge-right="40"
+        :nudge-right="140"
         min-width="290px"
+        :return-value.sync="pickerDate"
       >
         <v-text-field
           slot="activator"
           label="Flight Date"
           v-model="pickerDate"
           readonly
-          style="margin:2%;width:96%;"
+          prepend-icon="event"
+          style="margin:2%;width:40%;"
         ></v-text-field>
-        <v-date-picker
-          ref="picker"
-          v-model="pickerDate"
-          @change="saveDate"
-          :min="new Date().toISOString().substr(0, 10)"
-          :max="new Date().toISOString().substr(0, 10)"
-        ></v-date-picker>
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <v-date-picker
+                ref="picker"
+                v-model="pickerDate"
+                @change="saveDate"
+                color ="green darken-4"
+                :show-current="false"
+              ></v-date-picker>
+            </div>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn dark style="background-color:#1d561a" @click="menuDate = false">OK</v-btn>
+          </v-card-actions>
+        </v-card>
       </v-menu>
       <v-menu
         ref="menuStart"
+        persistent
         lazy
         :close-on-content-click="false"
         v-model="menuStart"
         transition="scale-transition"
-        offset-y
         full-width
-        :nudge-right="40"
-        max-width="290px"
-        min-width="290px"
+        :nudge-right="140"
         :return-value.sync="pickerStart"
       >
         <v-text-field
@@ -125,19 +215,27 @@
           readonly
           style="width:40%;float:left;margin:10px;"
         ></v-text-field>
-        <v-time-picker v-model="pickerStart" @change="$refs.menuStart.save(time)"></v-time-picker>
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <v-time-picker v-model="pickerStart" color ="green darken-4"></v-time-picker>
+            </div>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn dark style="background-color:#1d561a" @click="menuStart = false">OK</v-btn>
+          </v-card-actions>
+        </v-card>
       </v-menu>
+
       <v-menu
         ref="menuEnd"
+        persistent
         lazy
         :close-on-content-click="false"
         v-model="menuEnd"
         transition="scale-transition"
-        offset-y
         full-width
-        :nudge-right="40"
-        max-width="290px"
-        min-width="290px"
+        :nudge-right="140"
         :return-value.sync="pickerEnd"
       >
         <v-text-field
@@ -148,9 +246,19 @@
           readonly
           style="width:40%;float:left;margin:10px;"
         ></v-text-field>
-        <v-time-picker v-model="pickerEnd" @change="$refs.menuEnd.save(time)"></v-time-picker>
+      <v-card>
+        <v-card-title primary-title>
+          <div>
+            <v-time-picker v-model="pickerEnd" color ="green darken-4"></v-time-picker>
+          </div>
+        </v-card-title>
+        <v-card-actions>
+          <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+        
       </v-menu>
-      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" color="pink" dark style="margin-left:60%">
+      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="background-color:#1d561a; margin-left:60%">
         Save Mission
       </v-btn>
     </v-navigation-drawer>
@@ -193,17 +301,24 @@
     data: function data() {
       return {
         center: {
-          lat: 0,
-          lng: -30
+          lat: 33.778,
+          lng: -84.396
         },
         newCenter: "",
-        zoom: 3,
+        zoom: 15,
         mapType: 'hybrid',
         scrollwheel: true,
         draggable: true,
+
         title: "",
         location: "",
         description: "",
+        timeout: null,
+        show: false,
+        alertMissingCriteria: false,
+        deleteMenu: false,
+        x: 0,
+        y: 0,
 
         menuDate: false,
         menuStart: false,
@@ -218,20 +333,92 @@
         drawer: false,
         snackbar: false,
         timeout: 6000,
+        selectedPolygon: null,
+        selectedPolyline: null,
+        selectedVertex: null
       };
     },
-    watch: {
-      menuDate (val) {
-        val && this.$nextTick(() => (this.$refs.picker.activePicker = 'MONTH'))
-      }
-    },
     methods: {
+      selectingVertex (e) {
+        if (e.vertex!=undefined) {
+          if (this.selectedPolygon!=null){
+            this.unselectPolygon();
+          }
+          this.selectedPolyline = this.$refs.polyline.$polylineObject;
+          this.selectedVertex = e.vertex;
+        }
+      },
+      deletePolygon () {
+          this.polygons.splice(this.selectedPolygon.id,1);
+          this.selectedPolygon.setMap(null);
+          this.selectedPolygon = null;
+          this.selectedVertex = null;
+      },
+      deleteVertex () {
+          if (this.selectedPolygon!=null) {
+            var path = this.selectedPolygon.getPath();
+            path.removeAt(this.selectedVertex);
+            this.selectedVertex = null;
+          } else if (this.selectedPolyline != null) {
+            this.paths.splice(this.selectedVertex,1);
+            this.selectedVertex = null;
+            this.selectedPolyline = null;
+          }
+      },
+      unselectPolygon () {
+          this.selectedPolygon.setOptions({strokeColor: "#FF0000"});
+          this.selectedPolygon = null;
+          this.selectedVertex = null;
+      },
+      showDeleteMenu (e) {
+        if(this.selectedPolyline != null) {
+            this.deleteMenu = false
+            this.x = e.clientX
+            this.y = e.clientY
+            this.$nextTick(() => {
+              this.deleteMenu = true
+            })
+        } else {
+          if(!this.canDraw) {
+            if(this.selectedPolygon != null) {
+              this.deleteMenu = false
+              this.x = e.clientX
+              this.y = e.clientY
+              this.$nextTick(() => {
+                this.deleteMenu = true
+              })
+            }
+          }
+        }
+      },
       saveDate (date) {
         this.$refs.menuDate.save(date)
       },
       setEvent(poly, that){
         google.maps.event.addListener(poly, 'dragend', function (event) {
           that.polygons[poly.id].setPath(poly.getPath());
+        });
+        google.maps.event.addListener(poly, 'rightclick', function (event) {
+          if(!that.canDraw) {
+            if (that.selectedPolygon != null) {
+              if (that.selectedPolygon != poly) {
+                that.selectedPolygon.setOptions({strokeColor: "#FF0000"});
+                poly.setOptions({strokeColor: "#0000FF"});
+                that.selectedPolygon = poly;
+              }
+              if (event.vertex != undefined) {
+                that.selectedVertex = event.vertex;
+                that.selectedPolygon = poly;
+              }
+            } else {
+              poly.setOptions({strokeColor: "#0000FF"});
+              that.selectedPolygon = poly;
+              if (event.vertex != undefined) {
+                that.selectedVertex = event.vertex;
+                that.selectedPolygon = poly;
+              }
+            }
+          }
         });
       },
       closePolygon: function(event) {
@@ -289,6 +476,9 @@
         }
       },
       drawLine: function (event) {
+        if (this.drawer) {
+        this.drawer = false;
+        }
         if(this.canDraw) {
           this.paths.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
         } else {
@@ -298,7 +488,7 @@
           }
         }
       },
-      updateMap() {
+      updateMap: function () {
         if (this.newCenter != "" && this.newCenter != null) {
           var newStr = this.newCenter.replace(/\s/g,'');
           var newArray = newStr.split(',');
@@ -354,30 +544,51 @@
           }
           return gJson;
       },
+      checkCriteria(title, des, start, end) {
+        if (title != '' & title != null) {
+          if (des != '' & des != null) {
+            if (start != '' & start != null) {
+              if (end != '' & end != null) {
+                if (this.polygons.length > 0) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+        this.alertMissingCriteria = true;
+        return false;
+      },
       saveMission() {
         var geoJ = this.makeGeoJson();
-        this.register_mission(
-          this.title, geoJ, 
-          this.description,
-          response => {
-            if (response.data['code'] == 200) {
-              for (var i = 0; i < this.polygons.length; i++) {
-                this.polygons[i].setEditable(false);
-                this.polygons[i].setDraggable(false);
+        var start = this.pickerDate + ' ' + this.pickerStart;
+        var end = this.pickerDate + ' ' + this.pickerEnd;
+        if(this.checkCriteria(this.title, this.description, start, end)) {
+          this.register_mission(
+            this.title, geoJ, 
+            this.description,
+            start,
+            end,
+            response => {
+              if (response.data['code'] == 200) {
+                for (var i = 0; i < this.polygons.length; i++) {
+                  this.polygons[i].setEditable(false);
+                  this.polygons[i].setDraggable(false);
+                }
+                this.draggable = true;
+                this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
+                this.canDraw = false;
+                this.edit = !this.edit;
+                this.snackbar =true;
+              } else if (response.data['code'] == 31) {
+                alert("Authentication Error");
               }
-              this.draggable = true;
-              this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
-              this.canDraw = false;
-              this.edit = !this.edit;
-              this.snackbar =true;
-            } else if (response.data['code'] == 31) {
-              alert("Authentication Error");
+            }, 
+            error => {
+              alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
             }
-          }, 
-          error => {
-            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-          }
-        );
+          );
+        }
       }
     }
   };

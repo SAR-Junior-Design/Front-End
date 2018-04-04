@@ -1,9 +1,9 @@
-<template>                          
-    <v-layout class="background">
-      <v-flex xs10 sm8 offset-sm2>
-        <v-card id="drone_ADD">
-          <template>
-            <v-form v-model="valid" ref="form" lazy-validation>
+<template>                   
+  <v-layout class="background">
+    <v-flex xs10 sm8 offset-sm2>
+      <v-card id="drone_ADD">
+        <template>
+          <v-form v-model="valid" ref="form" lazy-validation>
             <v-container fluid>
               <v-layout row wrap>
                 <v-flex xs12 >
@@ -13,7 +13,6 @@
                     <v-container fluid>
                       <v-radio-group 
                         v-model="radios" 
-                        :mandatory="true" 
                         required 
                         :rules="[v => !!v || 'You must specify a Type!']"
                       >
@@ -61,6 +60,7 @@
               <v-btn 
                 @click="submit"
                 :disabled="!valid"
+                v-on:click="registerDrone()"
               > Add Drones 
               </v-btn>
             </div>
@@ -100,13 +100,17 @@
                     v-model="props.selected"
                   ></v-checkbox>
                 </td>
-                <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.id }}</td>
+                <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.color }}</td>
                 <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.description }}</td>
+                 <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.id }}</td>
+                <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.manufacturer }}</td>
+                 <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.number_of_blades }}</td>
+                <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.type }}</td>
               </tr>
             </template>
             <template slot="expand" slot-scope="props">
               <v-card flat>
-                <v-card-text>Peek-a-boo, it's Ladd bruh!</v-card-text>
+                <v-card-text>Any more DRONE INFO can be displayed here!</v-card-text>
               </v-card>
             </template>
             <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -164,10 +168,14 @@ export default {
       search: '',
       pagination: {},
       headers: [     
-        { text: 'Drone ID', value: 'id' },
+        { text: 'Color', value: 'color' },
         { text: 'Description', value: 'description' },
+        { text: 'ID', value: 'id' },
+        { text: 'Manufacturer', value: 'manufacturer' },
+        { text: 'Number of Blades', value: 'number_of_blades' },
+        { text: 'Type', value: 'type' }
       ],
-      items: [],//////{text: 'state 1'}///////]
+      items: [],
       selected: [],
       radios: null,
       valid: false,
@@ -180,7 +188,11 @@ export default {
       x: null,
       mode: '',
       timeout: 6000,
-      text: 'Drone Succesfully Added!'
+      text: 'Drone Succesfully Added!',
+
+      drone_id: null,
+      validADD: false
+
     }
   },
   methods: {
@@ -196,6 +208,20 @@ export default {
         alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
       })
     },
+    registerDrone() {
+      this.register_drone(this.e0, this.e1, this.e2, this.radios,
+        response => {
+          if (response.data == 200) {
+            this.drone_id = true;
+            console.log("The GOOOOODs" + this.e0 + this.e1 + this. e2 + this.radios)
+            this.getUserDrones();
+          } else if (response.data['code'] == 31) {
+            throw error;
+          }
+        })
+    },
+
+    
     toggleAll () {
       if (this.selected.length) this.selected = []
       else this.selected = this.items.slice()
@@ -217,7 +243,6 @@ export default {
         this.snackbar = true;
       }
     }
-
 
   },
   mounted () {
@@ -243,6 +268,9 @@ export default {
 #drone_ADD {
   margin-top: 70px; 
   padding-bottom: 10px;
+}
+#testing {
+  margin-top: 70px;
 }
 </style>
 

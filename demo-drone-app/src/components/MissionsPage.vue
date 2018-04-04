@@ -13,60 +13,80 @@
 					<v-card-text>
 						<v-flex>
 							<v-menu
-				        ref="menuDate"
-				        lazy
-				        :close-on-content-click="false"
-				        v-model="start_menu"
-				        transition="scale-transition"
-				        offset-y
-				        full-width
-				        :nudge-right="40"
-				        min-width="290px"
-				      >
-				        <v-text-field
-				          slot="activator"
-				          label="Start Date"
-				          v-model="start_date"
-				          readonly
-				          style="margin:2%;width:96%;"
-				        ></v-text-field>
-				        <v-date-picker
-				          ref="picker"
-				          v-model="start_date"
-				          @change=""
-				          :min="new Date().toISOString().substr(0, 10)"
-				          :max="new Date().toISOString().substr(0, 10)"
-				        ></v-date-picker>
-				      </v-menu>
-				    </v-flex>
-				    <v-flex>
+						        ref="menuDate"
+						        lazy
+						        :close-on-content-click="false"
+						        v-model="start_menu"
+						        transition="scale-transition"
+						        offset-y
+						        full-width
+						        :nudge-right="40"
+						        min-width="290px"
+						    >
+						        <v-text-field
+						          slot="activator"
+						          label="Start Date"
+						          v-model="start_date"
+						          readonly
+						          style="margin:2%;width:96%;"
+						        ></v-text-field>
+						        <v-card>
+						          <v-card-title primary-title>
+						            <div>
+						              <v-date-picker
+								          ref="picker"
+								          color ="green darken-4"
+								          v-model="start_date"
+								          @change=""
+								          :min="new Date().toISOString().substr(0, 10)"
+								          :max="new Date().toISOString().substr(0, 10)"
+								        ></v-date-picker>
+						            </div>
+						          </v-card-title>
+						          <v-card-actions>
+						            <v-btn dark style="background-color:#1d561a" @click="start_menu = false">OK</v-btn>
+						          </v-card-actions>
+						        </v-card>
+				      		</v-menu>
+				    	</v-flex>
+				    	<v-flex>
 							<v-menu
-				        ref="menuDate"
-				        lazy
-				        :close-on-content-click="false"
-				        v-model="end_menu"
-				        transition="scale-transition"
-				        offset-y
-				        full-width
-				        :nudge-right="40"
-				        min-width="290px"
-				      >
-				        <v-text-field
-				          slot="activator"
-				          label="End Date"
-				          v-model="end_date"
-				          readonly
-				          style="margin:2%;width:96%;"
-				        ></v-text-field>
-				        <v-date-picker
-				          ref="picker"
-				          v-model="end_date"
-				          @change=""
-				          :min="new Date().toISOString().substr(0, 10)"
-				          :max="new Date().toISOString().substr(0, 10)"
-				        ></v-date-picker>
-				      </v-menu>
-				    </v-flex>
+						        ref="menuDate"
+						        lazy
+						        :close-on-content-click="false"
+						        v-model="end_menu"
+						        transition="scale-transition"
+						        offset-y
+						        full-width
+						        :nudge-right="40"
+						        min-width="290px"
+						    >
+						        <v-text-field
+						        	slot="activator"
+						          	label="End Date"
+						          	v-model="end_date"
+						          	readonly
+						          	style="margin:2%;width:96%;"
+						        ></v-text-field>
+						        <v-card>
+						          	<v-card-title primary-title>
+						            	<div>
+						              		<v-date-picker
+								          		ref="picker"
+								          		color ="green darken-4"
+								          		v-model="end_date"
+								          		@change=""
+								          		:min="new Date().toISOString().substr(0, 10)"
+								          		:max="new Date().toISOString().substr(0, 10)"
+								        	></v-date-picker>
+						            	</div>
+						          	</v-card-title>
+						          	<v-card-actions>
+						            	<v-btn dark style="background-color:#1d561a" @click="end_menu = false">OK</v-btn>
+						          	</v-card-actions>
+						        </v-card>
+					      	</v-menu>
+				    	</v-flex>
 					</v-card-text>
 				</v-card>
 				<v-card style="margin-left:20px;margin-right:20px;">
@@ -86,12 +106,12 @@
 	            v-bind:search="search"
 	          >
 	          <template slot="items" slot-scope="props">
-	          	<tr @click="props.expanded = !props.expanded">
+	          	<tr @click.prevent="props.expanded = !props.expanded">
 		            <td class="text-xs-left">{{ props.item.title }}</td>
 		            <td class="text-xs-center">{{ props.item.commander }}</td>
 		            <td class="text-xs-center">{{ props.item.num_drones }}</td>
 		            <td class="text-xs-center">{{ props.item.starts_at }}</td>
-		            <td class="text-xs-center"> 
+		            <td class="text-xs-center">
 		            	<v-icon v-if="_state(props.item.clearance) == 'DECLINED'" right color="red">block</v-icon>
 		            	<v-icon v-if="_state(props.item.clearance) == 'PENDING'" right color="yellow">error</v-icon>
 		            	<v-icon v-if="_state(props.item.clearance) == 'APPROVED'" right color="green">check_circle</v-icon>
@@ -138,21 +158,22 @@
 					          	</v-flex>
 					          </v-layout>
 					          <v-layout column align-center>
-						          <v-flex 
+						          <v-flex
 						          class="text-xs-center"
 						          style="margin:10px;">
-						          	<gmap-map
-										      ref="map"
-										      class="map-panel"
-										      :center="center"
-										      :zoom="zoom"
-										      :map-type-id="mapType"
-										      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
-										      style="width:350px;height:200px;">
-										    </gmap-map>
+												<component :mission="props.item" is="mapTemplate"></component>
 						          </v-flex>
+					          </v-layout>
+					          <v-layout column>
 					          	<v-flex class="text-xs-center">
-					          		<v-btn @click="goToMission(props.item.id)">
+					          		<v-btn 
+					          		outline 
+					          		flat 
+					          		@click="deleteMission(props.item.id)"
+					          		:disabled="!can_delete(props.item.commander_id)">
+					          			DELETE MISSION
+					          		</v-btn>
+					          		<v-btn outline flat @click="goToMission(props.item.id)">
 					          			OPEN MAP
 					          		</v-btn>
 					          	</v-flex>
@@ -165,6 +186,20 @@
 	      </v-card>
 			</v-layout>
 		</v-layout>
+		<v-snackbar
+      :timeout="timeout"
+      :top="y === 'top'"
+      :bottom="y === 'bottom'"
+      :right="x === 'right'"
+      :left="x === 'left'"
+      :multi-line="mode === 'multi-line'"
+      :vertical="mode === 'vertical'"
+      v-model="snackbar"
+      color="white"
+    >
+      <span style="color:black"> {{ text }} </span>
+      <v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
+    </v-snackbar>
 	</v-content>
 </template>
 
@@ -183,32 +218,33 @@
 	import Vuetify from 'vuetify'
 	import router from '@/router'
 	import API from '../mixins/API.js'
+	import mapThumbnail from '@/components/map/mapThumbnail.vue'
 
 	Vue.use(VueGoogleMaps, {
     load: {
       installComponents: true,
-      key: 'AIzaSyCtbjOc1SD9ozYtUVzrtxd0PDxRpN-0JGs',
+      key: 'AIzaSyCtbjOc1SD9ozYtUVzrtxd0PDxRpN-0JGs'
     }
   });
 
 	export default {
+		name: 'MissionsPage',
 		mixins: [API],
+		user_info: null,
+	  components: {
+	    'mapTemplate': mapThumbnail
+	  },
 	  data () {
 	    return {
-	    	center: {
-          lat: 0,
-          lng: -30
-        },
         newCenter: "",
-        zoom: 3,
+        zoom: 4,
         mapType: 'hybrid',
         scrollwheel: false,
-        draggable: false,
 	      max25chars: (v) => v.length <= 25 || 'Input too long!',
 	      tmp: '',
 	      search: '',
 	      pagination: {},
-	      headers: [        
+	      headers: [
 	        { text: 'Title', align: 'left', value: 'title' },
 	        { text: 'Commander', align: 'center', value: 'commander'},
 	        { text: 'Drones', align: 'center', value: 'Drones#'},
@@ -224,10 +260,20 @@
 	      	'APPROVED',
 	      	'DECLINED'
 	      ],
-	      is_gov_official: false
+	      is_gov_official: false,
+	      snackbar: false,
+        y: 'top',
+        x: null,
+        mode: '',
+        timeout: 6000,
+        text: 'Clearance updated.',
+        mapLoaded: false
 	    }
 	  },
 	  methods: {
+	  	can_delete(id){
+	  		return this.user_info.id == id
+	  	},
 	  	_state(clearance) {
 	  		if (clearance == null){
 	  			return false
@@ -235,26 +281,92 @@
 	  		return clearance["state"]
 	  	},
 	    getMissions() {
-	      this.get_missions(
-	        response => {
-	          this.items = response.data
-	      },
-	      error => {
-	        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
-	      })
+	      	this.get_missions(
+	        	response => {
+	          		this.items = response.data
+
+	          		for (var j = 0; j < this.items.length; j++){
+			          	var area = this.items[j].area
+			            this.items[j].polygons = []
+			            this.items[j].paths = []
+			            var paths = []
+			            var avg_lat = 0
+			            var lat_range = {min: 200, max: -200, range: 0}
+			            var avg_lng = 0
+			            var lng_range = {min: 200, max: -200, range: 0}
+			            if(area.features.length>0) {
+				            var num_coords = area.features[0].geometry.coordinates.length
+				            for(var i = 0; i < area.features.length; i++) {
+						        for (var a in area.features[i].geometry.coordinates) {
+						            paths.push({
+						            lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
+						            });
+						            //avg_lat
+						            avg_lat += area.features[i].geometry.coordinates[a][0]
+						            if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+						            	lat_range.max = area.features[i].geometry.coordinates[a][0]
+						            }
+						            if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+						            	lat_range.min = area.features[i].geometry.coordinates[a][0]
+						            }
+						            //avg_lng
+						            if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+						            	lng_range.max = area.features[i].geometry.coordinates[a][1]
+						            }
+						            if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+						            	lng_range.min = area.features[i].geometry.coordinates[a][1]
+						            }
+						            avg_lng += area.features[i].geometry.coordinates[a][1]
+						        }
+						    }
+					        lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+					        lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+					        var range = Math.max(lat_range.range, lng_range.range)
+					        var zoom_coefficient = 2
+					        this.items[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+					        this.items[j].paths = paths
+					        this.items[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+			          	}
+		        	}
+			    },
+		    error => {
+		    	alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
+		        console.log(error)
+	      	})
 	    },
+      	setEvent(poly, that){
+        	google.maps.event.addListener(poly, 'dragend', function (event) {
+          	that.polygons[poly.id].setPath(poly.getPath());
+        	});
+      	},
 	    update_clearance(item) {
-	    	// alert(item.clearance.state)
+	    	this.edit_clearance(
+	    		item.id, item.clearance.state,
+	    		response => {
+	    			this.snackbar = true
+	    		},
+	    		error => {
+	    			alert('Error connecting to servers!')
+	    		})
 	    },
 	    goToMission(mission) {
-      router.push('map?id='+mission);
+      		router.push('map?id='+mission);
+    	},
+    	deleteMission(mission) {
+    		this.delete_mission(mission,
+    			response => {
+    				alert('Mission deleted!')
+    				this.getMissions()
+    			},
+    			error => {
+
+    			})
     	},
     	newMission(){
-				router.push('/newmission')
+			router.push('/newmission')
     	}
 	  },
-	  mounted () {
-	    this.getMissions();
+	  beforeMount () {
 	    this.is_government_official(response => {
 	    	if (response.data == 'True') {
     				this.is_gov_official = true
@@ -264,6 +376,19 @@
 	    }, error => {
 	    	alert ('Error Connecting to servers!')
 	    })
-	  }  
+	    this.getMissions();
+	    this.get_user_info(response => {
+	    	if (response.status == 200) {
+	    		this.user_info = response.data
+	    	} else {
+	    		throw error;
+	    	}
+	    },
+	    error => {
+	    	console.log('Error grabbing user data!')
+	    })
+	  },
+	  mounted () {
+	  }
 	}
 </script>
