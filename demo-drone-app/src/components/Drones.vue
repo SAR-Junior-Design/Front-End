@@ -145,7 +145,7 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify'
 import router from '@/router'
-import API from '../mixins/API/API_V1_0.js'
+import API from '../mixins/API.js'
 
 export default {
   name: 'Login',
@@ -197,6 +197,7 @@ export default {
   },
   methods: {
     getUserDrones() {
+      console.log("first" + this.items);
       this.get_user_drones(
         response => {
           this.drone_data = response.data
@@ -209,12 +210,26 @@ export default {
       })
     },
     registerDrone() {
+      console.log("second" + this.items);
       this.register_drone(this.e0, this.e1, this.e2, this.radios,
         response => {
-          if (response.data == 200) {
+          if (response.status == 200) {
+            console("lllllaadddd")
             this.drone_id = true;
-            console.log("The GOOOOODs" + this.e0 + this.e1 + this. e2 + this.radios)
+            console.log("Here is the stuff " + this.e0 + this.e1 + this. e2 + this.radios)
             this.getUserDrones();
+          } else if (response.data['code'] == 31) {
+            throw error;
+          }
+        })
+    },
+
+    deleteDrone() {
+      this.delete_drone(this.selected.drone_id,
+        response => {
+          if (response.data == 200) {
+            getUserDrones();
+            console.log(this.selected.drone_id);
           } else if (response.data['code'] == 31) {
             throw error;
           }
