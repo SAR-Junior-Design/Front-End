@@ -61,6 +61,7 @@ export default {
 	methods: {
 	},
 	mounted() {
+		alert('This is under construction! Still working on setting up part 107 license hosting.')
 	}
 }
 </script>

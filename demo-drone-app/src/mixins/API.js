@@ -11,7 +11,7 @@ Vue.use(VueAxios, axios)
 export default {
   data () {
   	return {
-  		base_url: 'https://backend.searchandrescuedrones.us'
+  		base_url: 'https://backend.icarusmap.com'
       //base_url: 'http://localhost:5000'
   	}
   },

@@ -146,7 +146,11 @@
 					          </v-layout>
 					          <v-layout column>
 					          	<v-flex class="text-xs-center">
-					          		<v-btn outline flat @click="deleteMission(props.item.id)">
+					          		<v-btn 
+					          		outline 
+					          		flat 
+					          		@click="deleteMission(props.item.id)"
+					          		:disabled="!can_delete(props.item.commander_id)">
 					          			DELETE MISSION
 					          		</v-btn>
 					          		<v-btn outline flat @click="goToMission(props.item.id)">
@@ -206,6 +210,7 @@
 	export default {
 		name: 'MissionsPage',
 		mixins: [API],
+		user_info: null,
 	  components: {
 	    'mapTemplate': mapThumbnail
 	  },
@@ -246,6 +251,9 @@
 	    }
 	  },
 	  methods: {
+	  	can_delete(id){
+	  		return this.user_info.id == id
+	  	},
 	  	_state(clearance) {
 	  		if (clearance == null){
 	  			return false
@@ -346,7 +354,17 @@
 	    }, error => {
 	    	alert ('Error Connecting to servers!')
 	    })
-	    this.getMissions()
+	    this.getMissions();
+	    this.get_user_info(response => {
+	    	if (response.status == 200) {
+	    		this.user_info = response.data
+	    	} else {
+	    		throw error;
+	    	}
+	    },
+	    error => {
+	    	console.log('Error grabbing user data!')
+	    })
 	  },
 	  mounted () {
 	  }
