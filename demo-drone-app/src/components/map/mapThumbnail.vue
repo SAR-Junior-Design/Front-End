@@ -10,7 +10,7 @@
       :map-type-id="mapType"
       :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: false, zoomControl: true}"
       style="width:350px;height:200px;">
-      <gmap-polygon v-if="this.mission.paths.length > 0"
+      <gmap-polygon
         :path="this.mission.paths"
         :editable="false"
         ref="polyline">
@@ -51,7 +51,6 @@
         zoom: 4,
         mapType: 'hybrid',
         scrollwheel: false,
-	      max25chars: (v) => v.length <= 25 || 'Input too long!',
 	      tmp: '',
 	      search: '',
 	      pagination: {},
