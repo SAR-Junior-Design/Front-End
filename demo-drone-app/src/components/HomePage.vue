@@ -75,30 +75,28 @@ export default {
       },
       userMissionsCount: 0,
       currentMission: {},
-        items: [
-            {
-                title: "Active Missions",
-                text: "This is the first text",
-                id: 1
-            },
-            {
-                title: "Past Missions",
-                text: "This is the second text",
-                id: 2
-            },
-            {
-                title: "Drones",
-                text: "This is the third text",
-                id: 3
-            },
-            {
-                title: "Team Members",
-                test: "This is the fourth text",
-                id: 4
-            }
-        ],
-
-
+      items: [
+          {
+              title: "Active Missions",
+              text: "This is the first text",
+              id: 1
+          },
+          {
+              title: "Past Missions",
+              text: "This is the second text",
+              id: 2
+          },
+          {
+              title: "Drones",
+              text: "This is the third text",
+              id: 3
+          },
+          {
+              title: "Team Members",
+              test: "This is the fourth text",
+              id: 4
+          }
+      ],
     }
   },
   methods: {
@@ -117,13 +115,52 @@ export default {
       response => {
         if (response.status == 200) {
           this.userMissions = response.data;
-        } else {
-          throw error
-        }
-      },
+
+          for (var j = 0; j < this.userMissions.length; j++){
+            var area = this.userMissions[j].area
+            this.userMissions[j].polygons = []
+            this.userMissions[j].paths = []
+            var paths = []
+            var avg_lat = 0
+            var lat_range = {min: 200, max: -200, range: 0}
+            var avg_lng = 0
+            var lng_range = {min: 200, max: -200, range: 0}
+            var num_coords = area.features[0].geometry.coordinates.length
+            for(var i = 0; i < area.features.length; i++) {
+              for (var a in area.features[i].geometry.coordinates) {
+                paths.push({
+                lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
+                });
+                //avg_lat
+                avg_lat += area.features[i].geometry.coordinates[a][0]
+                if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+                  lat_range.max = area.features[i].geometry.coordinates[a][0]
+                }
+                if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+                  lat_range.min = area.features[i].geometry.coordinates[a][0]
+                }
+                //avg_lng
+                if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+                  lng_range.max = area.features[i].geometry.coordinates[a][1]
+                }
+                if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+                  lng_range.min = area.features[i].geometry.coordinates[a][1]
+                }
+                avg_lng += area.features[i].geometry.coordinates[a][1]
+              }
+            }
+            lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+            lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+            var range = Math.max(lat_range.range, lng_range.range)
+            var zoom_coefficient = 2
+            this.userMissions[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+            this.userMissions[j].paths = paths
+            this.userMissions[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+            }
+      }
       error => {
         alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-      })
+      }})
   }
 }
 </script>
