@@ -206,7 +206,7 @@
 	import Vue from 'vue';
 	import Vuetify from 'vuetify'
 	import router from '@/router'
-	import API from '../mixins/API/API_V1_0.js'
+	import API from '../mixins/API.js'
 
 	Vue.use(VueGoogleMaps, {
     load: {
