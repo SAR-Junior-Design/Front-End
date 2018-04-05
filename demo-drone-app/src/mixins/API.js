@@ -241,7 +241,7 @@ export default {
     //   'ends_at': <datetime>
     // }
     edit_mission_details_v1_1(details, success, failure) {
-      var url = this.base_url + '/v1_0/edit_mission_details'
+      var url = this.base_url + '/v1_1/edit_mission_details'
       axios.post(url,details, {withCredentials:true})
         .then(success)
         .catch(failure);
