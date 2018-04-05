@@ -991,7 +991,6 @@
         this.ends = this.pickerEnd;
         this.date = this.pickerDate;
         this.type = this.selectedType;
-        console.log(this.pickerDate + ' ' + this.starts);
         var body = {'mission_id': this.mission_id, 'area': geoJ, 'title': this.title, 'description': this.description, 'starts_at': this.pickerDate + ' ' + this.starts, 'ends_at': this.pickerDate + ' ' + this.ends, 'type': this.selectedType}
         this.edit_mission_details_v1_1(
           body,

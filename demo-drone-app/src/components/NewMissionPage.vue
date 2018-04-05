@@ -556,6 +556,14 @@
           return gJson;
       },
       checkCriteria(title, des, start, end) {
+        this.get_possible_mission_conflicts("2013-09-28 20:30:55", "2013-09-28 20:30:55",
+          response => {
+              console.log(response);
+          }, 
+          error => {
+            alert(error)
+          }
+        );
         if (title != '' & title != null) {
           if (des != '' & des != null) {
             if (start != '' & start != null) {
