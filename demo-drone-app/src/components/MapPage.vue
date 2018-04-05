@@ -74,7 +74,6 @@
           absolute
           height='80%'
           class = "sideNav"
-          temporary="false"
         >
         <v-toolbar flat>
           <v-list>
@@ -624,11 +623,10 @@
         )
       },
       fetch_mission_info() {
-        this.get_mission_info(
+        this.get_mission_info_v1_1(
           this.mission_id,
           response => {
             if (response.status == 200) {
-              console.log("fetched info")
               this.title = response.data.title;
               this.description = response.data.description;
               var area = response.data.area;
@@ -637,6 +635,8 @@
               this.pickerStart = this.starts;
               this.date = timeArray[0];
               this.pickerDate = this.date;
+              this.type = response.data.type;
+              this.selectedType = this.type;
               this.ends = response.data.ends_at.split(" ")[1];
               this.pickerEnd = this.ends;
               for(var i = 0; i < area.features.length; i++) {
@@ -991,11 +991,12 @@
         this.ends = this.pickerEnd;
         this.date = this.pickerDate;
         this.type = this.selectedType;
-        var body = {'mission_id': this.mission_id, 'area': geoJ, 'title': this.title, 'description': this.description}
-        this.edit_mission_details(
+        console.log(this.pickerDate + ' ' + this.starts);
+        var body = {'mission_id': this.mission_id, 'area': geoJ, 'title': this.title, 'description': this.description, 'starts_at': this.pickerDate + ' ' + this.starts, 'ends_at': this.pickerDate + ' ' + this.ends, 'type': this.selectedType}
+        this.edit_mission_details_v1_1(
           body,
           response => {
-            if (response.data['code'] == 200) {
+            if (response['status'] == 200) {
               for (var i = 0; i < this.polygons.length; i++) {
                 this.polygons[i].setEditable(false);
                 this.polygons[i].setDraggable(false);
