@@ -500,6 +500,7 @@
           this.mission_id,
           response => {
             if (response.status == 200) {
+              console.log(response.data);
               this.title = response.data.title;
               this.description = response.data.description;
               var area = response.data.area;
