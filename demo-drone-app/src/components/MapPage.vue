@@ -12,14 +12,14 @@
             </v-list-tile>
           </v-list>
         </v-toolbar>
-          <v-data-table
-            v-bind:headers="headers"
-            :items="drones"
-            hide-actions
-            item-key="name"
-            must-sort
-          >
-            <template slot="items" slot-scope="props">
+        <v-data-table
+          v-bind:headers="headers"
+          :items="drones"
+          hide-actions
+          item-key="name"
+          must-sort
+        >
+          <template slot="items" slot-scope="props">
             <v-tooltip top>
               <v-icon  v-if= "props.item.connection == 'IS_CONNECTION'" slot="activator">wifi</v-icon>
               <v-icon  v-else-if= "props.item.connection == 'null'" slot="activator">visibility_off</v-icon>
@@ -38,28 +38,29 @@
               <v-icon  v-else slot="activator">battery_full</v-icon>
               <span>{{props.item.battery_info.energy_remaining}}%</span>
             </v-tooltip>
-              <tr  @click= "swapNav(props.item)" @mouseover= "mouseOver()" @mouseout= "mouseOut()">
-                <td>{{ props.item.id }}</td>
-              </tr>
-            </template>
-          </v-data-table>
-      <v-menu
-        offset-x
-        :close-on-content-click="false"
-        :nudge-width="200"
-        v-model="menu"
-      >
-        <v-btn style="background-color:#1d561a;color:#ffffff" slot="activator">Add Drone</v-btn>
-        <v-card>
-          <v-list>
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>Registered Drones</v-list-tile-title>
-                <v-list-tile-sub-title>Select a drone to add to your mission.</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-          <v-divider></v-divider>
+            <tr  @click= "swapNav(props.item)" @mouseover= "mouseOver()" @mouseout= "mouseOut()">
+              <td>{{ props.item.id }}</td>
+            </tr>
+          </template>
+        </v-data-table>
+        
+        <v-menu
+          offset-x
+          :close-on-content-click="false"
+          :nudge-width="200"
+          v-model="menu"
+        >
+          <v-btn style="background-color:#1d561a;color:#ffffff" slot="activator">Add Drone</v-btn>
+          <v-card>
+            <v-list>
+              <v-list-tile>
+                <v-list-tile-content>
+                  <v-list-tile-title>Registered Drones</v-list-tile-title>
+                  <v-list-tile-sub-title>Select a drone to add to your mission.</v-list-tile-sub-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+            <v-divider></v-divider>
             <v-data-table
               :headers="headers"
               :items="myDrones"
@@ -80,18 +81,18 @@
                 </tr>
               </template>
             </v-data-table>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn flat @click="menu = false">Cancel</v-btn>
-            <v-btn color="primary" flat @click="addDrone()">Save</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-menu>
-    </v-card>
-        <v-card
-          v-if="selected_drone_drawer"
-          class="sideNav"
-        >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn flat @click="menu = false">Cancel</v-btn>
+              <v-btn color="primary" flat @click="addDrone()">Save</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+      </v-card>
+      <v-card
+        v-if="selected_drone_drawer"
+        class="sideNav"
+      >
         <v-toolbar flat>
           <v-list>
             <v-list-tile>
@@ -100,50 +101,47 @@
               </v-list-tile-title>
             </v-list-tile>
           </v-list>
-          <v-btn icon @click= "swapNav('droneSwap')">
-            <v-icon>compare_arrows</v-icon>
-          </v-btn>
         </v-toolbar>
-         <v-card>
-            <v-card-title primary-title>
-              <div>
-                <h3>ID: {{currentSelectedDrone.id}}</h3><br>
-                <h3>Flight Details</h3>
-                <p class="firstHeader"> Battery </p>
-                
-                <p class="secondHeader"> Power Remaining: {{currentSelectedDrone.battery_info.current_consumption}}%</p>
-                <p class="secondHeader"> Voltage: {{currentSelectedDrone.battery_info.voltage}} V</p>
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <h3>ID: {{currentSelectedDrone.id}}</h3><br>
+              <h3>Flight Details</h3>
+              <p class="firstHeader"> Battery </p>
+              
+              <p class="secondHeader"> Power Remaining: {{currentSelectedDrone.battery_info.current_consumption}}%</p>
+              <p class="secondHeader"> Voltage: {{currentSelectedDrone.battery_info.voltage}} V</p>
 
-                <p class="firstHeader"> Speed </p>
-                <p class="secondHeader">x: {{currentSelectedDrone.velocity.x}} m/s</p>
-                <p class="secondHeader">y: {{currentSelectedDrone.velocity.y}} m/s</p>
-                <p class="secondHeader">z: {{currentSelectedDrone.velocity.z}} m/s</p>
+              <p class="firstHeader"> Speed </p>
+              <p class="secondHeader">x: {{currentSelectedDrone.velocity.x}} m/s</p>
+              <p class="secondHeader">y: {{currentSelectedDrone.velocity.y}} m/s</p>
+              <p class="secondHeader">z: {{currentSelectedDrone.velocity.z}} m/s</p>
 
-                <h3>Navigation</h3>
-                <p class="firstHeader"> Location </p>
-                <p class="secondHeader">Latitude: {{currentSelectedDrone.location.latitude}} </p>
-                <p class="secondHeader">Longitude: {{currentSelectedDrone.location.longitude}} </p>
-                <p class="secondHeader">Altitude: {{currentSelectedDrone.altitude}} m</p>
+              <h3>Navigation</h3>
+              <p class="firstHeader"> Location </p>
+              <p class="secondHeader">Latitude: {{currentSelectedDrone.location.latitude}} </p>
+              <p class="secondHeader">Longitude: {{currentSelectedDrone.location.longitude}} </p>
+              <p class="secondHeader">Altitude: {{currentSelectedDrone.altitude}} m</p>
 
-                <h3>Visuals</h3>
-              </div>
-            </v-card-title>
-          </v-card>
+              <h3>Visuals</h3>
+            </div>
+          </v-card-title>
+        </v-card>
       </v-card>
 
       <v-card
         v-if="edit_drawer"
         class="sideNav"
       >
-      <v-toolbar flat>
-        <v-list>
-          <v-list-tile>
-            <v-list-tile-title class="title">
-              Flight Details
-            </v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-toolbar>
+        <v-toolbar flat>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-title class="title">
+                Flight Details
+              </v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-toolbar>
 
         <v-list dense class="pt-0" style="margin:2%;">
           <v-text-field 
@@ -164,8 +162,8 @@
           single-line
           auto
           hide-details
-          style="width:40%;float:left;margin:10px;"
-        ></v-select>
+          style="width:40%;float:left;margin:10px;">
+        </v-select>
         <v-menu
           ref="menu"
           persistent
@@ -250,83 +248,81 @@
             v-model="pickerEnd"
             prepend-icon="access_time"
             readonly
-            style="width:40%;float:left;margin:10px;"
-          ></v-text-field>
-        <v-card>
-          <v-card-title primary-title>
-            <div>
-              <v-time-picker v-model="pickerEnd" color ="green darken-4"></v-time-picker>
-            </div>
-          </v-card-title>
-          <v-card-actions>
-            <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
-          </v-card-actions>
-        </v-card>
-          
+            style="width:40%;float:left;margin:10px;">
+          </v-text-field>
+          <v-card>
+            <v-card-title primary-title>
+              <div>
+                <v-time-picker v-model="pickerEnd" color ="green darken-4"></v-time-picker>
+              </div>
+            </v-card-title>
+            <v-card-actions>
+              <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
+            </v-card-actions>
+          </v-card>  
         </v-menu>
 
         <v-btn style="background-color:#1d561a;color:#ffffff" @click="saveMission()">Update Mission</v-btn>
         <v-btn style="background-color:#1d561a;color:#ffffff" @click="swapNav('overView')">Back</v-btn>
+        
       </v-card>
-
-
-    <v-card
-      v-if="flight_drawer"
-      class="sideNav"
-    >
-    <v-toolbar flat>
-      <v-list>
-        <v-list-tile>
-          <v-list-tile-title class="title">
-            Flight Details
-          </v-list-tile-title>
-            <v-tooltip right>
-              <v-btn icon @click= "swapNav('edit')" slot="activator">
-                <v-icon>settings</v-icon>
-              </v-btn>
-              <span>Edit Flight Details</span>
-            </v-tooltip>
-        </v-list-tile>
-      </v-list>
-    </v-toolbar>
-    <v-expansion-panel expand popout>
-        <v-expansion-panel-content>
-          <div slot="header">Mission Title</div>
-          <v-card>
-            <v-card-text class="grey lighten-3">{{title}}</v-card-text>
-          </v-card>
-        </v-expansion-panel-content>
-        <v-expansion-panel-content>
-          <div slot="header">Mission Description</div>
-          <v-card>
-            <v-card-text class="grey lighten-3">{{description}}</v-card-text>
-          </v-card>
-        </v-expansion-panel-content>
-        <v-expansion-panel-content>
-          <div slot="header">Mission Type</div>
-          <v-card>
-            <v-card-text class="grey lighten-3">{{type}}</v-card-text>
-          </v-card>
-        </v-expansion-panel-content>
-        <v-expansion-panel-content>
-          <div slot="header">Scheduled Flight Date</div>
-          <v-card>
-            <v-card-text class="grey lighten-3">{{date}}</v-card-text>
-          </v-card>
-        </v-expansion-panel-content>
-        <v-expansion-panel-content>
-          <div slot="header">Start Time</div>
-          <v-card>
-            <v-card-text class="grey lighten-3">{{starts}}</v-card-text>
-          </v-card>
-        </v-expansion-panel-content>
-        <v-expansion-panel-content>
-          <div slot="header">End Time</div>
-          <v-card>
-            <v-card-text class="grey lighten-3">{{ends}}</v-card-text>
-          </v-card>
-        </v-expansion-panel-content>
-    </v-expansion-panel>
+      <v-card
+        v-if="flight_drawer"
+        class="sideNav"
+      >
+        <v-toolbar flat>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-title class="title">
+                Flight Details
+              </v-list-tile-title>
+              <v-tooltip right>
+                <v-btn icon @click= "swapNav('edit')" slot="activator">
+                  <v-icon>settings</v-icon>
+                </v-btn>
+                <span>Edit Flight Details</span>
+              </v-tooltip>
+            </v-list-tile>
+          </v-list>
+        </v-toolbar>
+        <v-expansion-panel expand popout>
+          <v-expansion-panel-content>
+            <div slot="header">Mission Title</div>
+            <v-card>
+              <v-card-text class="grey lighten-3">{{title}}</v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+          <v-expansion-panel-content>
+            <div slot="header">Mission Description</div>
+            <v-card>
+              <v-card-text class="grey lighten-3">{{description}}</v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+          <v-expansion-panel-content>
+            <div slot="header">Mission Type</div>
+            <v-card>
+              <v-card-text class="grey lighten-3">{{type}}</v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+          <v-expansion-panel-content>
+            <div slot="header">Scheduled Flight Date</div>
+            <v-card>
+              <v-card-text class="grey lighten-3">{{date}}</v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+          <v-expansion-panel-content>
+            <div slot="header">Start Time</div>
+            <v-card>
+              <v-card-text class="grey lighten-3">{{starts}}</v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+          <v-expansion-panel-content>
+            <div slot="header">End Time</div>
+            <v-card>
+              <v-card-text class="grey lighten-3">{{ends}}</v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+      </v-expansion-panel>
     </v-card>
 
     <gmap-map
