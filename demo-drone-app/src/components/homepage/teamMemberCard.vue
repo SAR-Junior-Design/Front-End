@@ -1,7 +1,6 @@
 <template>
   <v-card dark style="background-color:#1d561a; height:110%;width:400px;">
-    <v-card-media height="200px">
-      <component :mission="this.mission" is="mapTemplate"></component>
+    <v-card-media :src="require('@/assets/exampleMapImage.png')" height="200px">
     </v-card-media>
     <v-container fluid grid-list-lg>
       <v-layout row justify-left>
@@ -28,14 +27,10 @@
 <script>
 import API from '../../mixins/API.js'
 import router from '@/router'
-import mapThumbnail from '../map/mapThumbnail.vue'
 
 export default {
 	mixins: [API],
 	props: ['mission'],
-  components: {
-    'mapTemplate': mapThumbnail
-  },
 	data() {
 		return {
 		}

@@ -6,7 +6,7 @@
       :center="center"
       :zoom="zoom"
       :map-type-id="mapType"
-      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true, clickableIcons: false}"
       @click="drawLine($event)"
       @mouseout="mouseOff($event)"
       @mouseover="mouseOn($event)">
@@ -102,6 +102,31 @@
       </v-card>
       </v-dialog>
 
+      <v-dialog v-model="alertMissingCriteria" max-width="500px">
+        <v-card>
+        <v-card-title primary-title>
+          <div>
+            <h3 class="headline mb-0">Mission Did Not Save</h3>
+            <h4>Please Make Sure the Following Items are Filled Out:</h4>
+            <div>
+              <br>
+              <ul style="list-style-position: inside; margin-left: 25%;">
+                <li> Mission Title </li>
+                <li> Mission Description </li>
+                <li> Flight Area </li>
+                <li> Flight Date </li>
+                <li> Start Time </li>
+                <li> End Time </li>
+              </ul>
+            </div>
+          </div>
+        </v-card-title>
+        <v-card-actions>
+          <v-btn color="primary" flat @click.stop="alertMissingCriteria=false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+      </v-dialog>
+
     </v-layout>
     <v-navigation-drawer
       disable-resize-watcher
@@ -135,7 +160,7 @@
         </v-text-field>
       </v-list>
       <v-menu
-        ref="menuDate"
+        ref="menu"
         lazy
         :close-on-content-click="false"
         v-model="menuDate"
@@ -144,6 +169,7 @@
         full-width
         :nudge-right="140"
         min-width="290px"
+        :return-value.sync="pickerDate"
       >
         <v-text-field
           slot="activator"
@@ -161,6 +187,7 @@
                 v-model="pickerDate"
                 @change="saveDate"
                 color ="green darken-4"
+                :show-current="false"
               ></v-date-picker>
             </div>
           </v-card-title>
@@ -282,11 +309,13 @@
         mapType: 'hybrid',
         scrollwheel: true,
         draggable: true,
+
         title: "",
         location: "",
         description: "",
         timeout: null,
         show: false,
+        alertMissingCriteria: false,
         deleteMenu: false,
         x: 0,
         y: 0,
@@ -459,7 +488,7 @@
           }
         }
       },
-      updateMap() {
+      updateMap: function () {
         if (this.newCenter != "" && this.newCenter != null) {
           var newStr = this.newCenter.replace(/\s/g,'');
           var newArray = newStr.split(',');
@@ -515,34 +544,51 @@
           }
           return gJson;
       },
+      checkCriteria(title, des, start, end) {
+        if (title != '' & title != null) {
+          if (des != '' & des != null) {
+            if (start != '' & start != null) {
+              if (end != '' & end != null) {
+                if (this.polygons.length > 0) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+        this.alertMissingCriteria = true;
+        return false;
+      },
       saveMission() {
         var geoJ = this.makeGeoJson();
         var start = this.pickerDate + ' ' + this.pickerStart;
         var end = this.pickerDate + ' ' + this.pickerEnd;
-        this.register_mission(
-          this.title, geoJ, 
-          this.description,
-          start,
-          end,
-          response => {
-            if (response.data['code'] == 200) {
-              for (var i = 0; i < this.polygons.length; i++) {
-                this.polygons[i].setEditable(false);
-                this.polygons[i].setDraggable(false);
+        if(this.checkCriteria(this.title, this.description, start, end)) {
+          this.register_mission(
+            this.title, geoJ, 
+            this.description,
+            start,
+            end,
+            response => {
+              if (response.data['code'] == 200) {
+                for (var i = 0; i < this.polygons.length; i++) {
+                  this.polygons[i].setEditable(false);
+                  this.polygons[i].setDraggable(false);
+                }
+                this.draggable = true;
+                this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
+                this.canDraw = false;
+                this.edit = !this.edit;
+                this.snackbar =true;
+              } else if (response.data['code'] == 31) {
+                alert("Authentication Error");
               }
-              this.draggable = true;
-              this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
-              this.canDraw = false;
-              this.edit = !this.edit;
-              this.snackbar =true;
-            } else if (response.data['code'] == 31) {
-              alert("Authentication Error");
+            }, 
+            error => {
+              alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
             }
-          }, 
-          error => {
-            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-          }
-        );
+          );
+        }
       }
     }
   };
