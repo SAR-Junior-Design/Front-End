@@ -186,6 +186,7 @@
 							v-bind:headers="headers"
 							v-bind:items="items"
 							v-bind:search="search"
+							:rows-per-page-items="rppi"
 						>
 						<template slot="items" slot-scope="props">
 							<tr @click.prevent="props.expanded = !props.expanded">
@@ -323,6 +324,7 @@
 			return {
 				newCenter: "",
 				zoom: 4,
+				rppi: [10,20,40,{"text":"All","value":-1}],
 				mapType: 'hybrid',
 				scrollwheel: false,
 				max25chars: (v) => v.length <= 25 || 'Input too long!',
