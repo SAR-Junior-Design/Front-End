@@ -1,7 +1,7 @@
 <template>
   <v-layout style="width:100%;height:100%;" fixed @contextmenu="showDeleteMenu">
-        <v-card
-      style="width:40%;height:95%; top:64px;"
+    <v-card
+      style="width:40%;height:95%; top:64px;overflow: scroll;"
     >
       <v-toolbar flat>
         <v-list>

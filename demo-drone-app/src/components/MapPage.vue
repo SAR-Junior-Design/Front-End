@@ -1,80 +1,10 @@
 <template>
   <v-layout>
     <v-layout style="width:100%;" fixed  @contextmenu="showDeleteMenu">
-    <gmap-map
-      ref="map"
-      class="map-panel"
-      :center="center"
-      :zoom="zoom"
-      :map-type-id="mapType"
-      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
-      @click="drawLine($event)">
-      <gmap-polyline v-if="paths.length > 0"
-          :path="paths"
-          :editable="true"
-          ref="polyline"
-          @click="closePolygon($event)"
-          @rightclick="selectingVertex">
-      </gmap-polyline>
-    </gmap-map>
-
-    <v-menu
-      offset-y
-      v-model="deleteMenu"
-      absolute
-      :position-x="x"
-      :position-y="y"
-    >
-      <v-list>
-        <v-list-tile v-if="selectedPolygon!=null" @click="deletePolygon()">
-          <v-list-tile-title>Delete Polygon</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile v-if="selectedVertex!=null" @click="deleteVertex()">
-          <v-list-tile-title>Delete Vertex</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile v-if="selectedPolygon!=null" @click="unselectPolygon()">
-          <v-list-tile-title>Unselect Polygon</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-menu>
-
-    <v-layout>
-    <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
-      <v-text-field 
-        label="Latitude, Longitude"
-        v-model="newCenter">
-      </v-text-field>
-      <v-tooltip bottom>
-        <v-btn icon @click="updateMap()" slot="activator">
-          <v-icon>search</v-icon>
-        </v-btn>
-        <span>Search</span>
-      </v-tooltip>
-    <div v-if="edit">
-      <v-btn @click="drawOn()" flat v-if="!canDraw">
-        <v-icon>edit</v-icon>
-        Draw Search Area
-      </v-btn>
-    </div>
-      <v-btn @click="drawOff()" flat v-if="canDraw">
-        <v-icon>pan_tool</v-icon>
-        Edit Map
-      </v-btn>
-    </v-toolbar>        
-    </v-layout>
-
-      <v-layout row>
-        <v-btn fixed style="left:1%;top:89%; background-color:#1d561a;color:#ffffff;" @click= "swapNav('overView')">Overview</v-btn>
-        <v-btn fixed style="left:10%;top:89%; background-color:#1d561a;color:#ffffff;" @click= "swapNav('droneSwap')">Drones</v-btn>
-      </v-layout>
-
-        <v-navigation-drawer
-          disable-resize-watcher
-          v-model="drawer"
-          absolute
-          height='80%'
-          class = "sideNav"
-        >
+      <v-card
+        v-if="drawer"
+        class = "sideNav"
+      >
         <v-toolbar flat>
           <v-list>
             <v-list-tile>
@@ -82,88 +12,84 @@
             </v-list-tile>
           </v-list>
         </v-toolbar>
-        <v-data-table
-          v-bind:headers="headers"
-          :items="drones"
-          hide-actions
-          item-key="name"
-          must-sort
-        >
-          <template slot="items" slot-scope="props">
-          <v-tooltip top>
-            <v-icon  v-if= "props.item.connection == 'IS_CONNECTION'" slot="activator">wifi</v-icon>
-            <v-icon  v-else-if= "props.item.connection == 'null'" slot="activator">visibility_off</v-icon>
-            <v-icon  v-else slot="activator">signal_wifi_off</v-icon>
-            <span>{{props.item.connection}}</span>
-          </v-tooltip>
-          <v-tooltip top>
-            <v-icon  v-if= "props.item.CURRENT_BEHAVIOR == 'SEARCHING'" slot="activator">location_searching</v-icon>
-            <v-icon  v-else-if= "props.item.CURRENT_BEHAVIOR == 'null'" slot="activator">visibility_off</v-icon>
-            <v-icon  v-else slot="activator">home</v-icon>
-            <span>{{props.item.CURRENT_BEHAVIOR}}</span>
-          </v-tooltip>
-          <v-tooltip top>
-            <v-icon  v-if= "props.item.battery_info.energy_remaining == 'null'" slot="activator">visibility_off</v-icon>
-            <v-icon  v-else-if= "props.item.battery_info.energy_remaining < 50" slot="activator">battery_alert</v-icon>
-            <v-icon  v-else slot="activator">battery_full</v-icon>
-            <span>{{props.item.battery_info.energy_remaining}}%</span>
-          </v-tooltip>
-            <tr  @click= "swapNav(props.item)" @mouseover= "mouseOver()" @mouseout= "mouseOut()">
-              <td>{{ props.item.id }}</td>
-            </tr>
-          </template>
-        </v-data-table>
-    <v-menu
-      offset-x
-      :close-on-content-click="false"
-      :nudge-width="200"
-      v-model="menu"
-    >
-      <v-btn style="background-color:#1d561a;color:#ffffff" slot="activator">Add Drone</v-btn>
-      <v-card>
-        <v-list>
-          <v-list-tile>
-            <v-list-tile-content>
-              <v-list-tile-title>Registered Drones</v-list-tile-title>
-              <v-list-tile-sub-title>Select a drone to add to your mission.</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-        <v-divider></v-divider>
           <v-data-table
-            :headers="headers"
-            :items="myDrones"
-            v-model="selected"
-            item-key="id"
-            select-all
-            :rows-per-page-items="rowsPerPageItems"
+            v-bind:headers="headers"
+            :items="drones"
+            hide-actions
+            item-key="name"
+            must-sort
           >
             <template slot="items" slot-scope="props">
-              <tr>
-                <td>
-                  <v-checkbox
-                    primary
-                    v-model="props.selected"
-                  ></v-checkbox>
-                </td>
+            <v-tooltip top>
+              <v-icon  v-if= "props.item.connection == 'IS_CONNECTION'" slot="activator">wifi</v-icon>
+              <v-icon  v-else-if= "props.item.connection == 'null'" slot="activator">visibility_off</v-icon>
+              <v-icon  v-else slot="activator">signal_wifi_off</v-icon>
+              <span>{{props.item.connection}}</span>
+            </v-tooltip>
+            <v-tooltip top>
+              <v-icon  v-if= "props.item.CURRENT_BEHAVIOR == 'SEARCHING'" slot="activator">location_searching</v-icon>
+              <v-icon  v-else-if= "props.item.CURRENT_BEHAVIOR == 'null'" slot="activator">visibility_off</v-icon>
+              <v-icon  v-else slot="activator">home</v-icon>
+              <span>{{props.item.CURRENT_BEHAVIOR}}</span>
+            </v-tooltip>
+            <v-tooltip top>
+              <v-icon  v-if= "props.item.battery_info.energy_remaining == 'null'" slot="activator">visibility_off</v-icon>
+              <v-icon  v-else-if= "props.item.battery_info.energy_remaining < 50" slot="activator">battery_alert</v-icon>
+              <v-icon  v-else slot="activator">battery_full</v-icon>
+              <span>{{props.item.battery_info.energy_remaining}}%</span>
+            </v-tooltip>
+              <tr  @click= "swapNav(props.item)" @mouseover= "mouseOver()" @mouseout= "mouseOut()">
                 <td>{{ props.item.id }}</td>
               </tr>
             </template>
           </v-data-table>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn flat @click="menu = false">Cancel</v-btn>
-          <v-btn color="primary" flat @click="addDrone()">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-menu>
-      </v-navigation-drawer>
-
-        <v-navigation-drawer
-          disable-resize-watcher
-          v-model="selected_drone_drawer"
-          absolute
-          height='80%'
+      <v-menu
+        offset-x
+        :close-on-content-click="false"
+        :nudge-width="200"
+        v-model="menu"
+      >
+        <v-btn style="background-color:#1d561a;color:#ffffff" slot="activator">Add Drone</v-btn>
+        <v-card>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>Registered Drones</v-list-tile-title>
+                <v-list-tile-sub-title>Select a drone to add to your mission.</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+          <v-divider></v-divider>
+            <v-data-table
+              :headers="headers"
+              :items="myDrones"
+              v-model="selected"
+              item-key="id"
+              select-all
+              :rows-per-page-items="rowsPerPageItems"
+            >
+              <template slot="items" slot-scope="props">
+                <tr>
+                  <td>
+                    <v-checkbox
+                      primary
+                      v-model="props.selected"
+                    ></v-checkbox>
+                  </td>
+                  <td>{{ props.item.id }}</td>
+                </tr>
+              </template>
+            </v-data-table>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn flat @click="menu = false">Cancel</v-btn>
+            <v-btn color="primary" flat @click="addDrone()">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-menu>
+    </v-card>
+        <v-card
+          v-if="selected_drone_drawer"
           class="sideNav"
         >
         <v-toolbar flat>
@@ -203,14 +129,10 @@
               </div>
             </v-card-title>
           </v-card>
-      </v-navigation-drawer>
+      </v-card>
 
-      <v-navigation-drawer
-        disable-resize-watcher
-        v-model="edit_drawer"
-        light
-        absolute
-        height='80%'
+      <v-card
+        v-if="edit_drawer"
         class="sideNav"
       >
       <v-toolbar flat>
@@ -345,15 +267,11 @@
 
         <v-btn style="background-color:#1d561a;color:#ffffff" @click="saveMission()">Update Mission</v-btn>
         <v-btn style="background-color:#1d561a;color:#ffffff" @click="swapNav('overView')">Back</v-btn>
-      </v-navigation-drawer>
+      </v-card>
 
 
-    <v-navigation-drawer
-      disable-resize-watcher
-      v-model="flight_drawer"
-      light
-      absolute
-      height='80%'
+    <v-card
+      v-if="flight_drawer"
       class="sideNav"
     >
     <v-toolbar flat>
@@ -409,9 +327,74 @@
           </v-card>
         </v-expansion-panel-content>
     </v-expansion-panel>
-    </v-navigation-drawer>
+    </v-card>
 
+    <gmap-map
+      ref="map"
+      class="map-panel"
+      :center="center"
+      :zoom="zoom"
+      :map-type-id="mapType"
+      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+      @click="drawLine($event)">
+      <gmap-polyline v-if="paths.length > 0"
+          :path="paths"
+          :editable="true"
+          ref="polyline"
+          @click="closePolygon($event)"
+          @rightclick="selectingVertex">
+      </gmap-polyline>
+    </gmap-map>
 
+    <v-menu
+      offset-y
+      v-model="deleteMenu"
+      absolute
+      :position-x="x"
+      :position-y="y"
+    >
+      <v-list>
+        <v-list-tile v-if="selectedPolygon!=null" @click="deletePolygon()">
+          <v-list-tile-title>Delete Polygon</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="selectedVertex!=null" @click="deleteVertex()">
+          <v-list-tile-title>Delete Vertex</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="selectedPolygon!=null" @click="unselectPolygon()">
+          <v-list-tile-title>Unselect Polygon</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
+
+    <v-layout>
+    <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
+      <v-text-field 
+        label="Latitude, Longitude"
+        v-model="newCenter">
+      </v-text-field>
+      <v-tooltip bottom>
+        <v-btn icon @click="updateMap()" slot="activator">
+          <v-icon>search</v-icon>
+        </v-btn>
+        <span>Search</span>
+      </v-tooltip>
+    <div v-if="edit">
+      <v-btn @click="drawOn()" flat v-if="!canDraw">
+        <v-icon>edit</v-icon>
+        Draw Search Area
+      </v-btn>
+    </div>
+      <v-btn @click="drawOff()" flat v-if="canDraw">
+        <v-icon>pan_tool</v-icon>
+        Edit Map
+      </v-btn>
+    </v-toolbar>        
+    </v-layout>
+
+      <v-layout row>
+        <v-btn fixed v-if="!edit" style="left:1%;top:89%; background-color:#1d561a;color:#ffffff;" @click= "swapNav('overView')">Overview</v-btn>
+        <v-btn fixed v-if="!edit" style="left:10%;top:89%; background-color:#1d561a;color:#ffffff;" @click= "swapNav('droneSwap')">Drones</v-btn>
+      </v-layout>
     </v-layout>
   </v-layout>
 </template>
@@ -419,6 +402,7 @@
 <style>
   .sideNav {
     top:64px;
+    width:40%;
   }
   .map-panel {
     height:100%;
@@ -736,7 +720,6 @@
             this.paths=[];
           }
           this.edit = false;
-          this.drawOff();
           this.edit_drawer = false;
           this.drawer = false;
           this.flight_drawer = true;
