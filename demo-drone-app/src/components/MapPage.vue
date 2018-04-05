@@ -74,6 +74,7 @@
           absolute
           height='80%'
           class = "sideNav"
+          temporary="false"
         >
         <v-toolbar flat>
           <v-list>
