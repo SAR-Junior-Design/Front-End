@@ -260,7 +260,11 @@
 											:disabled="!can_delete(props.item.commander_id)">
 												DELETE MISSION
 											</v-btn>
-											<v-btn outline flat @click="goToMission(props.item.id)">
+											<v-btn 
+											outline 
+											flat 
+											@click="goToMission(props.item.id)"
+											:disabled="!can_delete(props.item.commander_id)">
 												OPEN MAP
 											</v-btn>
 										</v-flex>
