@@ -1,9 +1,9 @@
-<template>                   
-  <v-layout class="background">
-    <v-flex xs10 sm8 offset-sm2>
+<template>
+    <v-layout class="background">
+      <v-flex xs6 >
       <v-card id="drone_ADD">
         <template>
-          <v-form v-model="valid" ref="form" lazy-validation>
+          <v-form v-model="valid" ref="form" validation>
             <v-container fluid>
               <v-layout row wrap>
                 <v-flex xs12 >
@@ -12,12 +12,12 @@
                 <v-flex>
                     <v-container fluid>
                       <v-radio-group 
-                        v-model="radios" 
+                        v-model="type0" 
                         required 
                         :rules="[v => !!v || 'You must specify a Type!']"
                       >
-                        <v-radio label="Hover" value="radio-1"></v-radio>
-                        <v-radio label="Glide" value="radio-2"></v-radio>
+                        <v-radio label="Hover" value="Hover"></v-radio>
+                        <v-radio label="Glide" value="Glide"></v-radio>
                       </v-radio-group>
                     </v-container>
                 </v-flex>
@@ -28,7 +28,7 @@
                     item-value="text"
                     autocomplete
                     required
-                    v-model="e0"
+                    v-model="man1"
                     :rules="[v => !!v || 'You must specify a Manufacturer!']"
                   ></v-select>
                 </v-flex>
@@ -40,7 +40,7 @@
                     single-line
                     autocomplete
                     required
-                    v-model="e1"
+                    v-model="blades2"
                     :rules="[v => !!v || 'You must specify the Number of Blades!']"
                   ></v-select>
                 </v-flex>
@@ -50,12 +50,18 @@
                     :items="color_op"
                     autocomplete
                     required
-                    v-model="e2"
+                    v-model="color3"
                     :rules="[v => !!v || 'You must specify a color!']"
                   ></v-select>
                 </v-flex>
-              </v-layout>
-            </v-container>
+                <v-flex xs12>
+                  <v-text-field
+                    name="input-7-1"
+                    label="Description (optionial)"
+                    multi-line
+                    v-model="descr"
+                  ></v-text-field>
+                </v-flex>
             <div id="add_drone_button" >
               <v-btn 
                 @click="submit"
@@ -64,9 +70,13 @@
               > Add Drones 
               </v-btn>
             </div>
+            </v-layout>
+            </v-container>
           </v-form>
           </template>
         </v-card>
+      </v-flex>
+      <v-flex xs9>
         <v-card id="drone_TABLE">
           <v-card-title>
             Connected Drones
@@ -80,7 +90,11 @@
             ></v-text-field>
           </v-card-title>
           <div>
-            <v-btn color="info">Remove Selected</v-btn>
+            <v-btn
+                @click="submit"
+                v-on:click="deleteDrone()"
+               >Remove Selected
+            </v-btn>
           </div>
           <v-data-table
             :headers="headers"
@@ -92,6 +106,7 @@
             class="elevation-1"
             hide-actions
           >
+           <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
             <template slot="items" slot-scope="props">
               <tr>
                 <td>
@@ -109,6 +124,7 @@
               </tr>
             </template>
             <template slot="expand" slot-scope="props">
+              <span @click="testerDropDown"> </span>
               <v-card flat>
                 <v-card-text>Any more DRONE INFO can be displayed here!</v-card-text>
               </v-card>
@@ -119,9 +135,9 @@
           </v-data-table>
         </v-card>
       </v-flex>
+      </v-flex>
 
       <v-btn block color="primary" @click.native="snackbar = true" dark>Show Snackbar</v-btn>
-        </v-card-text>
         <v-snackbar
           :timeout="timeout"
           :top="y === 'top'"
@@ -134,8 +150,7 @@
         >
       {{ text }}
       <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
-    </v-snackbar>
-
+      </v-snackbar>
     </v-layout>
 </template>
 
@@ -177,11 +192,12 @@ export default {
       ],
       items: [],
       selected: [],
-      radios: null,
+      type0: null,
       valid: false,
-      e0: null,
-      e1: null,
-      e2: null,
+      man1: null,
+      blades2: null,
+      color3: null,
+      descr: null,
 
       snackbar: false,
       y: 'top',
@@ -197,10 +213,11 @@ export default {
   },
   methods: {
     getUserDrones() {
-      console.log("first" + this.items);
+      console.log("first090980009809" + this.items);
       this.get_user_drones(
         response => {
           this.drone_data = response.data
+          this.items = []
           for(var i=0; i<this.drone_data.length; i++) {
             this.items.push(this.drone_data[i])
           }
@@ -210,33 +227,39 @@ export default {
       })
     },
     registerDrone() {
-      console.log("second" + this.items);
-      this.register_drone(this.e0, this.e1, this.e2, this.radios,
+      this.register_drone_v1_1(this.descr, this.man1, this.type0, this.color3, this.blades2,
         response => {
           if (response.status == 200) {
-            console("lllllaadddd")
             this.drone_id = true;
-            console.log("Here is the stuff " + this.e0 + this.e1 + this. e2 + this.radios)
             this.getUserDrones();
           } else if (response.data['code'] == 31) {
             throw error;
           }
+        },
+        error => {
+          console.log('It didn\'t work...')
         })
     },
 
     deleteDrone() {
-      this.delete_drone(this.selected.drone_id,
+      console.log("drone to be slected, id: " + this.selected[0]['id'])
+      this.delete_drone(this.selected[0]['id'],
         response => {
           if (response.data == 200) {
             getUserDrones();
-            console.log(this.selected.drone_id);
           } else if (response.data['code'] == 31) {
             throw error;
           }
+        }, 
+        error => {
+          console.log('The Drone was not able to be removed...')
         })
     },
 
-    
+    testerDropDown() {
+      console.log("drop down calls method")
+    },
+
     toggleAll () {
       if (this.selected.length) this.selected = []
       else this.selected = this.items.slice()
@@ -270,19 +293,20 @@ export default {
 <!-- styling for the component -->
 <style>
 .background {
-  background: url(https://i.imgur.com/iuiH5Cu.jpg) no-repeat center center fixed;
+  background-color: #303030;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 }
-#drone_TABLE {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
 #drone_ADD {
   margin-top: 70px; 
-  padding-bottom: 10px;
+  margin-left: 30px;
+}
+#drone_TABLE {
+  margin-left: 30px;
+  margin-top: 70px;
+  margin-bottom: 10px;
 }
 #testing {
   margin-top: 70px;
