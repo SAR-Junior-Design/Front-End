@@ -37,7 +37,6 @@
                     label="Number of Blades"
                     :items="num_blades_op"
                     item-value="text"
-                    single-line
                     autocomplete
                     required
                     v-model="blades2"
