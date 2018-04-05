@@ -147,7 +147,6 @@
         <v-icon> compare_arrows </v-icon>
       </v-btn>
     </v-toolbar>
-
       <v-list dense class="pt-0" style="margin:2%;">
         <v-text-field 
           label="Mission Title"
@@ -159,16 +158,24 @@
           v-model="description">
         </v-text-field>
       </v-list>
+      <v-select
+          :items="types"
+          v-model="selectedType"
+          label="Mission Type"
+          single-line
+          auto
+          hide-details
+          style="width:40%;float:left;margin:10px;"
+        ></v-select>
       <v-menu
         ref="menu"
+        persistent
         lazy
         :close-on-content-click="false"
         v-model="menuDate"
         transition="scale-transition"
-        offset-y
         full-width
         :nudge-right="140"
-        min-width="290px"
         :return-value.sync="pickerDate"
       >
         <v-text-field
@@ -177,7 +184,7 @@
           v-model="pickerDate"
           readonly
           prepend-icon="event"
-          style="margin:2%;width:40%;"
+          style="width:40%;float:left;margin:10px;"
         ></v-text-field>
         <v-card>
           <v-card-title primary-title>
@@ -320,6 +327,10 @@
         x: 0,
         y: 0,
 
+        types:[
+          'Recreational', 'Commercial', 'Research'
+        ],
+        selectedType: "Recreational",
         menuDate: false,
         menuStart: false,
         menuEnd: false,
@@ -564,13 +575,15 @@
         var start = this.pickerDate + ' ' + this.pickerStart;
         var end = this.pickerDate + ' ' + this.pickerEnd;
         if(this.checkCriteria(this.title, this.description, start, end)) {
-          this.register_mission(
-            this.title, geoJ, 
+          this.register_mission_v1_1(
+            this.title,
+            geoJ, 
             this.description,
             start,
             end,
+            this.selectedType,
             response => {
-              if (response.data['code'] == 200) {
+              if (response['status'] == 200) {
                 for (var i = 0; i < this.polygons.length; i++) {
                   this.polygons[i].setEditable(false);
                   this.polygons[i].setDraggable(false);
@@ -580,8 +593,6 @@
                 this.canDraw = false;
                 this.edit = !this.edit;
                 this.snackbar =true;
-              } else if (response.data['code'] == 31) {
-                alert("Authentication Error");
               }
             }, 
             error => {
