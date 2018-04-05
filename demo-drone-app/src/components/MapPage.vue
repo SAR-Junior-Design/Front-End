@@ -74,7 +74,6 @@
           absolute
           height='80%'
           class = "sideNav"
-          temporary="false"
         >
         <v-toolbar flat>
           <v-list>
@@ -235,6 +234,115 @@
             v-model="description">
           </v-text-field>
         </v-list>
+
+        <v-select
+          :items="types"
+          v-model="selectedType"
+          label="Mission Type"
+          single-line
+          auto
+          hide-details
+          style="width:40%;float:left;margin:10px;"
+        ></v-select>
+        <v-menu
+          ref="menu"
+          persistent
+          lazy
+          :close-on-content-click="false"
+          v-model="menuDate"
+          transition="scale-transition"
+          full-width
+          :nudge-right="140"
+          :return-value.sync="pickerDate"
+        >
+          <v-text-field
+            slot="activator"
+            label="Flight Date"
+            v-model="pickerDate"
+            readonly
+            prepend-icon="event"
+            style="width:40%;float:left;margin:10px;"
+          ></v-text-field>
+          <v-card>
+            <v-card-title primary-title>
+              <div>
+                <v-date-picker
+                  ref="picker"
+                  v-model="pickerDate"
+                  @change="saveDate"
+                  color ="green darken-4"
+                  :show-current="false"
+                ></v-date-picker>
+              </div>
+            </v-card-title>
+            <v-card-actions>
+              <v-btn dark style="background-color:#1d561a" @click="menuDate = false">OK</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+        <v-menu
+          ref="menuStart"
+          persistent
+          lazy
+          :close-on-content-click="false"
+          v-model="menuStart"
+          transition="scale-transition"
+          full-width
+          :nudge-right="140"
+          :return-value.sync="pickerStart"
+        >
+          <v-text-field
+            slot="activator"
+            label="Flight Start Time"
+            v-model="pickerStart"
+            prepend-icon="access_time"
+            readonly
+            style="width:40%;float:left;margin:10px;"
+          ></v-text-field>
+          <v-card>
+            <v-card-title primary-title>
+              <div>
+                <v-time-picker v-model="pickerStart" color ="green darken-4"></v-time-picker>
+              </div>
+            </v-card-title>
+            <v-card-actions>
+              <v-btn dark style="background-color:#1d561a" @click="menuStart = false">OK</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+
+        <v-menu
+          ref="menuEnd"
+          persistent
+          lazy
+          :close-on-content-click="false"
+          v-model="menuEnd"
+          transition="scale-transition"
+          full-width
+          :nudge-right="140"
+          :return-value.sync="pickerEnd"
+        >
+          <v-text-field
+            slot="activator"
+            label="Flight End Time"
+            v-model="pickerEnd"
+            prepend-icon="access_time"
+            readonly
+            style="width:40%;float:left;margin:10px;"
+          ></v-text-field>
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <v-time-picker v-model="pickerEnd" color ="green darken-4"></v-time-picker>
+            </div>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
+          </v-card-actions>
+        </v-card>
+          
+        </v-menu>
+
         <v-btn style="background-color:#1d561a;color:#ffffff" @click="saveMission()">Update Mission</v-btn>
         <v-btn style="background-color:#1d561a;color:#ffffff" @click="swapNav('overView')">Back</v-btn>
       </v-navigation-drawer>
@@ -274,6 +382,12 @@
           <div slot="header">Mission Description</div>
           <v-card>
             <v-card-text class="grey lighten-3">{{description}}</v-card-text>
+          </v-card>
+        </v-expansion-panel-content>
+        <v-expansion-panel-content>
+          <div slot="header">Mission Type</div>
+          <v-card>
+            <v-card-text class="grey lighten-3">{{type}}</v-card-text>
           </v-card>
         </v-expansion-panel-content>
         <v-expansion-panel-content>
@@ -370,7 +484,19 @@
         flight_drawer: false,
         selected_drone_drawer: false,
 
+        types:[
+          'Recreational', 'Commercial', 'Research'
+        ],
+        selectedType: "Recreational",
+        menuDate: false,
+        menuStart: false,
+        menuEnd: false,
+        pickerDate:null,
+        pickerStart:null,
+        pickerEnd:null,
+
         date: null,
+        type: null,
         starts: null,
         ends: null,
 
@@ -497,7 +623,7 @@
         )
       },
       fetch_mission_info() {
-        this.get_mission_info(
+        this.get_mission_info_v1_1(
           this.mission_id,
           response => {
             if (response.status == 200) {
@@ -506,8 +632,13 @@
               var area = response.data.area;
               var timeArray = response.data.starts_at.split(" ");
               this.starts = timeArray[1];
+              this.pickerStart = this.starts;
               this.date = timeArray[0];
+              this.pickerDate = this.date;
+              this.type = response.data.type;
+              this.selectedType = this.type;
               this.ends = response.data.ends_at.split(" ")[1];
+              this.pickerEnd = this.ends;
               for(var i = 0; i < area.features.length; i++) {
                 var paths = [];
                 var avg_lat = 0
@@ -856,11 +987,16 @@
       },
       saveMission() {
         var geoJ = this.makeGeoJson();
-        var body = {'mission_id': this.mission_id, 'area': geoJ, 'title': this.title, 'description': this.description}
-        this.edit_mission_details(
+        this.starts = this.pickerStart;
+        this.ends = this.pickerEnd;
+        this.date = this.pickerDate;
+        this.type = this.selectedType;
+        console.log(this.pickerDate + ' ' + this.starts);
+        var body = {'mission_id': this.mission_id, 'area': geoJ, 'title': this.title, 'description': this.description, 'starts_at': this.pickerDate + ' ' + this.starts, 'ends_at': this.pickerDate + ' ' + this.ends, 'type': this.selectedType}
+        this.edit_mission_details_v1_1(
           body,
           response => {
-            if (response.data['code'] == 200) {
+            if (response['status'] == 200) {
               for (var i = 0; i < this.polygons.length; i++) {
                 this.polygons[i].setEditable(false);
                 this.polygons[i].setDraggable(false);
@@ -882,6 +1018,9 @@
             alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
           }
         );
+      },
+      saveDate (date) {
+        this.$refs.menuDate.save(date)
       }
     }
   };
