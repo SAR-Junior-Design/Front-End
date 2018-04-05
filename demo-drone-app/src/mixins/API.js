@@ -166,7 +166,7 @@ export default {
     get_missions_v1_1(starts_at, ends_at, success, failure){
       var body = {'starts_at': starts_at, 'ends_at': ends_at}
       var url = this.base_url + '/v1_1/get_missions'
-      axios.get(url,body, {withCredentials:true})
+      axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
@@ -211,6 +211,29 @@ export default {
     //   'description': 'New description.'
     // }
     edit_mission_details(details, success, failure) {
+      var url = this.base_url + '/v1_0/edit_mission_details'
+      axios.post(url,details, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
+    // Details must be a dictionary with any combination
+    // of 'area', 'description', 'title', 'type', 'starts_at', 'ends_at'. If you don't
+    // want to change a value, don't put it in the
+    // dictionary, just leave it out. Ex.:
+    // to change area, and title and type and starts_at:
+    // {
+    //   'area': <area description>,
+    //   'title': 'New Title'
+    //   'type': 'Commercial',
+    //   'starts_at': <datetime>
+    // }
+    // to change title and description and ends_at:
+    // {
+    //   'title': 'New Title',
+    //   'description': 'New description.',
+    //   'ends_at': <datetime>
+    // }
+    edit_mission_details_v1_1(details, success, failure) {
       var url = this.base_url + '/v1_0/edit_mission_details'
       axios.post(url,details, {withCredentials:true})
         .then(success)
