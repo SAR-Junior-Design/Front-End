@@ -110,7 +110,7 @@ export default {
           if (response.data['code'] == 200) {
             this.loginDialog = true;
             this.signUpDialog = false;
-            this.$emit('change-toolbar-color', 'green')
+            this.$emit('change-toolbar-color', 'primary')
             this.$emit('login')
             router.push('/homepage')
           } else if (response.data['code'] == 31) {
@@ -134,7 +134,7 @@ export default {
     this.isLoggedIn(
       response => {
         if (response.data == 'True') {
-          this.$emit('change-toolbar-color', 'green')
+          this.$emit('change-toolbar-color', 'primary')
           router.push('/homepage')
         } else {
           this.$emit('change-toolbar-color', 'transparent')
