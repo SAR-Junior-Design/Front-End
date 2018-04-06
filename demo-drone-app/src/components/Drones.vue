@@ -1,6 +1,6 @@
 <template>
-    <v-layout class="background">
-      <v-flex xs6 >
+    <v-layout class="background_drone">
+      <v-flex>
       <v-card id="drone_ADD">
         <template>
           <v-form v-model="valid" ref="form" validation>
@@ -37,7 +37,6 @@
                     label="Number of Blades"
                     :items="num_blades_op"
                     item-value="text"
-                    single-line
                     autocomplete
                     required
                     v-model="blades2"
@@ -76,7 +75,7 @@
           </template>
         </v-card>
       </v-flex>
-      <v-flex xs9>
+      <v-flex>
         <v-card id="drone_TABLE">
           <v-card-title>
             Connected Drones
@@ -91,7 +90,7 @@
           </v-card-title>
           <div>
             <v-btn
-                @click="submit"
+                @click="submitting"
                 v-on:click="deleteDrone()"
                >Remove Selected
             </v-btn>
@@ -106,7 +105,6 @@
             class="elevation-1"
             hide-actions
           >
-           <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
             <template slot="items" slot-scope="props">
               <tr>
                 <td>
@@ -116,7 +114,6 @@
                   ></v-checkbox>
                 </td>
                 <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.color }}</td>
-                <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.description }}</td>
                  <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.id }}</td>
                 <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.manufacturer }}</td>
                  <td class="text-xs-right" @click="props.expanded = !props.expanded" @mouseover="mouseOverM()">{{ props.item.number_of_blades }}</td>
@@ -124,9 +121,8 @@
               </tr>
             </template>
             <template slot="expand" slot-scope="props">
-              <span @click="testerDropDown"> </span>
               <v-card flat>
-                <v-card-text>Any more DRONE INFO can be displayed here!</v-card-text>
+                <v-card-text>{{props.item.description}}</v-card-text>
               </v-card>
             </template>
             <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -137,7 +133,7 @@
       </v-flex>
       </v-flex>
 
-      <v-btn block color="primary" @click.native="snackbar = true" dark>Show Snackbar</v-btn>
+      <v-btn block color="red" @click.native="snackbar = true">Show Snackbar</v-btn>
         <v-snackbar
           :timeout="timeout"
           :top="y === 'top'"
@@ -147,9 +143,26 @@
           :multi-line="mode === 'multi-line'"
           :vertical="mode === 'vertical'"
           v-model="snackbar"
+          color="blue"
         >
       {{ text }}
-      <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
+      <v-btn flat color="black" @click.native="snackbar = false">Close</v-btn>
+      </v-snackbar>
+
+      <v-btn block color="red" @click.native="snackbar2 = true">Show Snackbar</v-btn>
+        <v-snackbar
+          :timeout="timeout"
+          :top="y === 'top'"
+          :bottom="y === 'bottom'"
+          :right="x === 'right'"
+          :left="x === 'left'"
+          :multi-line="mode === 'multi-line'"
+          :vertical="mode === 'vertical'"
+          v-model="snackbar2"
+          color="blue"
+        >
+      {{ text2 }}
+      <v-btn flat color="black" @click.native="snackbar2 = false">Close</v-btn>
       </v-snackbar>
     </v-layout>
 </template>
@@ -172,7 +185,7 @@ export default {
         "3D Robotics", "CUSTOM BUILD"
       ],
       num_blades_op: [
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', "10+"
+        '1', '2', '3', '4', '5', '6', '7', '8', '9', "10"
       ],
       color_op: [
         'White', 'Black', 'Grey', 'Blue', 'Red', 'Orange'
@@ -184,7 +197,6 @@ export default {
       pagination: {},
       headers: [     
         { text: 'Color', value: 'color' },
-        { text: 'Description', value: 'description' },
         { text: 'ID', value: 'id' },
         { text: 'Manufacturer', value: 'manufacturer' },
         { text: 'Number of Blades', value: 'number_of_blades' },
@@ -200,11 +212,13 @@ export default {
       descr: null,
 
       snackbar: false,
+      snackbar2: false,
       y: 'top',
       x: null,
       mode: '',
       timeout: 6000,
       text: 'Drone Succesfully Added!',
+      text2: 'Drone Successfully Removed!',
 
       drone_id: null,
       validADD: false
@@ -213,7 +227,6 @@ export default {
   },
   methods: {
     getUserDrones() {
-      console.log("first090980009809" + this.items);
       this.get_user_drones(
         response => {
           this.drone_data = response.data
@@ -227,11 +240,15 @@ export default {
       })
     },
     registerDrone() {
+      if (this.descr == null) {
+        this.descr = "No description added"
+      }
       this.register_drone_v1_1(this.descr, this.man1, this.type0, this.color3, this.blades2,
         response => {
           if (response.status == 200) {
             this.drone_id = true;
             this.getUserDrones();
+            this.$refs.form.reset();
           } else if (response.data['code'] == 31) {
             throw error;
           }
@@ -242,11 +259,15 @@ export default {
     },
 
     deleteDrone() {
-      console.log("drone to be slected, id: " + this.selected[0]['id'])
-      this.delete_drone(this.selected[0]['id'],
+      console.log("drone to be slected, id: " + JSON.stringify(this.selected)) // just making sure this gives what i want
+      this.delete_drone(this.selected,
         response => {
-          if (response.data == 200) {
-            getUserDrones();
+          if (response.status == 200) {
+            console.log("response status: " + response.status +"777777777")
+            //this.drone_id = true;
+            this.snackbar2 = true;
+            this.getUserDrones();
+            this.selected = [];
           } else if (response.data['code'] == 31) {
             throw error;
           }
@@ -254,10 +275,6 @@ export default {
         error => {
           console.log('The Drone was not able to be removed...')
         })
-    },
-
-    testerDropDown() {
-      console.log("drop down calls method")
     },
 
     toggleAll () {
@@ -280,6 +297,9 @@ export default {
         console.log("IT FINALLY WORKED");
         this.snackbar = true;
       }
+    },
+    submitting () {
+      console.log("!@#$%^& Ladd Jones")
     }
 
   },
@@ -292,19 +312,17 @@ export default {
 
 <!-- styling for the component -->
 <style>
-.background {
-  background-color: #303030;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+.background_drone {
+  background-image: none;
+  background-color: #F0F0F0;
 }
 #drone_ADD {
   margin-top: 70px; 
   margin-left: 30px;
+  margin-right: 30px;
+  margin-bottom: 10px;
 }
 #drone_TABLE {
-  margin-left: 30px;
   margin-top: 70px;
   margin-bottom: 10px;
 }
