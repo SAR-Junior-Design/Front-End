@@ -1,10 +1,10 @@
 <template>
-  <v-card dark style="background-color:#1d561a; height:110%;width:400px;">
-    <v-card-media height="200px">
+  <v-card dark style="background-color:#1d561a; height:100%;width:400px;">
+    <v-card-media class="text-xs-center" height="200px" style="margin-left:5%;margin-right:7.5%">
       <component :mission="this.mission" is="mapTemplate"></component>
     </v-card-media>
     <v-container fluid grid-list-lg>
-      <v-layout row justify-left>
+      <v-layout row>
         <v-flex class="text-xs-left">
           <div @mouseover="mouseOver()" @mouseout="mouseOut()" @click="goToMission()">
             <div class="text-xs-center" style="font-size:25px;"> {{ this.mission.title }}</div>
