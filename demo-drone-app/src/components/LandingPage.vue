@@ -12,15 +12,15 @@
                   <span style="font-size:20px;color:#ffffff;">Modernization made easy.</span>
                 </v-flex>
               </v-flex>
-            </v-layout>
+            </v-layout style="margin-bottom: 10%;">
               <v-layout column>
-                <v-card style="background-color:#ffffff;">
+                <v-card style="background-color:#ffffff;opacity:0.9;">
                   <v-card-title>
                     <v-flex class="text-xs-left" style="margin-top:0px;">
                       <h2> Register </h2>
                     </v-flex>
                   </v-card-title>
-                  <v-card-text>
+                  <v-card-text style="opacity:1.0;">
                     <form @submit.prevent="userSignUp">
                       <v-layout column>
                         <v-flex>
@@ -198,6 +198,14 @@ export default {
         error => {
           alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
         })
+    },
+    handleScroll(event){
+      if (window.scrollY > 350) {
+        console.log('GOT SOMEWHERE')
+        this.$emit('change-toolbar-color', 'primary')
+      } else {
+        this.$emit('change-toolbar-color', 'transparent')
+      }
     }
   },
   computed: {
@@ -206,6 +214,7 @@ export default {
     }
   },
   mounted() {
+    this.$emit('change-toolbar-color', 'transparent')
     this.isLoggedIn(
       response => {
         if (response.data == 'True') {
@@ -215,6 +224,12 @@ export default {
       error => {
         alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
       })
+  },
+  created () {
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  destroyed () {
+    window.removeEventListener('scroll', this.handleScroll);
   }
 }
 </script>

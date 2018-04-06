@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-		<v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" color="primary">
+		<v-toolbar transparent fixed :flat = "is_flat" :color="toolbar_color">
       <v-toolbar-title style="margin-right:20px;">
         <router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: white;">
           ICARUS
@@ -42,7 +42,7 @@
         Login</v-btn>
       </v-toolbar-items>
     </v-toolbar>
-	  <router-view absolute v-on:login="login" v-on:snackbar="_snackbar"></router-view>
+	  <router-view absolute v-on:login="login" v-on:snackbar="_snackbar" v-on:change-toolbar-color="change_toolbar_color"></router-view>
     <v-snackbar
       :timeout="timeout"
       :top="y === 'top'"
@@ -83,6 +83,7 @@ Vue.use(Vuetify, {
     data () {
       return {
         is_flat: true,
+        toolbar_color: "transparent",
         sidebar: false,
         logged_in: false,
         snackbar: false,
@@ -109,6 +110,9 @@ Vue.use(Vuetify, {
       }
     },
     methods: {
+      change_toolbar_color(color) {
+        this.toolbar_color = color
+      },
     	login() {
         this.logged_in = true
         this.menuItems = this.userMenu
@@ -135,9 +139,11 @@ Vue.use(Vuetify, {
     			if (response.data == 'True') {
     				this.logged_in = true
     				this.menuItems = this.userMenu
+            this.toolbar_color = 'primary'
     			} else {
     				this.logged_in = false
     				this.menuItems = this.notLoggedIn
+            this.toolbar_color = 'transparent'
     			}
     		},
     		error => {
