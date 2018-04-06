@@ -14,11 +14,11 @@
         </v-list>
       </v-toolbar>
       <v-list dense class="pt-0" style="margin:2%;">
-        <v-text-field 
+        <v-text-field
           label="Mission Title"
           v-model="title">
         </v-text-field>
-        <v-text-field 
+        <v-text-field
           label="Description"
           multi-line
           v-model="description">
@@ -128,7 +128,7 @@
           <v-card-actions>
             <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
           </v-card-actions>
-        </v-card>  
+        </v-card>
       </v-menu>
       <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="background-color:#1d561a; margin-left:60%">
         Save Mission
@@ -140,7 +140,7 @@
       :center="center"
       :zoom="zoom"
       :map-type-id="mapType"
-      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true, clickableIcons: false}"
+      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
       @click="drawLine($event)"
       @mouseout="mouseOff($event)"
       @mouseover="mouseOn($event)">
@@ -173,7 +173,7 @@
     </v-menu>
     <v-layout>
     <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
-      <v-text-field 
+      <v-text-field
         label="Latitude, Longitude"
         v-model="newCenter">
       </v-text-field>
@@ -224,32 +224,139 @@
       </v-card>
       </v-dialog>
 
-      <v-dialog v-model="alertMissingCriteria" max-width="500px">
+    </v-layout>
+    <v-navigation-drawer
+      disable-resize-watcher
+      v-model="drawer"
+      light
+      absolute
+      style="width:30%;height:95%; top:64px;"
+    >
+    <v-toolbar flat>
+      <v-list>
+        <v-list-tile>
+          <v-list-tile-title class="title">
+            New Mission
+          </v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+      <v-btn icon @click.stop="drawer = !drawer">
+        <v-icon> compare_arrows </v-icon>
+      </v-btn>
+    </v-toolbar>
+
+      <v-list dense class="pt-0" style="margin:2%;">
+        <v-text-field
+          label="Mission Title"
+          v-model="title">
+        </v-text-field>
+        <v-text-field
+          label="Description"
+          multi-line
+          v-model="description">
+        </v-text-field>
+      </v-list>
+      <v-menu
+        ref="menuDate"
+        lazy
+        :close-on-content-click="false"
+        v-model="menuDate"
+        transition="scale-transition"
+        offset-y
+        full-width
+        :nudge-right="140"
+        min-width="290px"
+      >
+        <v-text-field
+          slot="activator"
+          label="Flight Date"
+          v-model="pickerDate"
+          readonly
+          prepend-icon="event"
+          style="margin:2%;width:40%;"
+        ></v-text-field>
         <v-card>
+          <v-card-title primary-title>
+            <div>
+              <v-date-picker
+                ref="picker"
+                v-model="pickerDate"
+                @change="saveDate"
+                color ="green darken-4"
+              ></v-date-picker>
+            </div>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn dark style="background-color:#1d561a" @click="menuDate = false">OK</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-menu>
+      <v-menu
+        ref="menuStart"
+        persistent
+        lazy
+        :close-on-content-click="false"
+        v-model="menuStart"
+        transition="scale-transition"
+        full-width
+        :nudge-right="140"
+        :return-value.sync="pickerStart"
+      >
+        <v-text-field
+          slot="activator"
+          label="Flight Start Time"
+          v-model="pickerStart"
+          prepend-icon="access_time"
+          readonly
+          style="width:40%;float:left;margin:10px;"
+        ></v-text-field>
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <v-time-picker v-model="pickerStart" color ="green darken-4"></v-time-picker>
+            </div>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn dark style="background-color:#1d561a" @click="menuStart = false">OK</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-menu>
+
+      <v-menu
+        ref="menuEnd"
+        persistent
+        lazy
+        :close-on-content-click="false"
+        v-model="menuEnd"
+        transition="scale-transition"
+        full-width
+        :nudge-right="140"
+        :return-value.sync="pickerEnd"
+      >
+        <v-text-field
+          slot="activator"
+          label="Flight End Time"
+          v-model="pickerEnd"
+          prepend-icon="access_time"
+          readonly
+          style="width:40%;float:left;margin:10px;"
+        ></v-text-field>
+      <v-card>
         <v-card-title primary-title>
           <div>
-            <h3 class="headline mb-0">Mission Did Not Save</h3>
-            <h4>Please Make Sure the Following Items are Filled Out:</h4>
-            <div>
-              <br>
-              <ul style="list-style-position: inside; margin-left: 25%;">
-                <li> Mission Title </li>
-                <li> Mission Description </li>
-                <li> Flight Area </li>
-                <li> Flight Date </li>
-                <li> Start Time </li>
-                <li> End Time </li>
-              </ul>
-            </div>
+            <v-time-picker v-model="pickerEnd" color ="green darken-4"></v-time-picker>
           </div>
         </v-card-title>
         <v-card-actions>
-          <v-btn color="primary" flat @click.stop="alertMissingCriteria=false">Close</v-btn>
+          <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
         </v-card-actions>
       </v-card>
-      </v-dialog>
 
-    </v-layout>
+      </v-menu>
+      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="background-color:#1d561a; margin-left:60%">
+        Save Mission
+      </v-btn>
+    </v-navigation-drawer>
     <v-snackbar top vertical
       :timeout="timeout"
       v-model="snackbar"
@@ -298,7 +405,6 @@
         mapType: 'hybrid',
         scrollwheel: true,
         draggable: true,
-
         title: "",
         location: "",
         description: "",
@@ -310,10 +416,6 @@
         x: 0,
         y: 0,
 
-        types:[
-          'Recreational', 'Commercial', 'Research'
-        ],
-        selectedType: "Recreational",
         menuDate: false,
         menuStart: false,
         menuEnd: false,
@@ -485,7 +587,7 @@
           }
         }
       },
-      updateMap: function () {
+      updateMap() {
         if (this.newCenter != "" && this.newCenter != null) {
           var newStr = this.newCenter.replace(/\s/g,'');
           var newArray = newStr.split(',');
@@ -514,7 +616,7 @@
             var temp = {
                     "type": "Feature",
                     "geometry":{
-                      "type": "Polygon", 
+                      "type": "Polygon",
                       "coordinates": []
                     },
                     "properties":{}
@@ -526,7 +628,7 @@
               var temp = {
                     "type": "Feature",
                     "geometry":{
-                      "type": "Polygon", 
+                      "type": "Polygon",
                       "coordinates": []
                     },
                     "properties":{}
@@ -560,32 +662,30 @@
         var geoJ = this.makeGeoJson();
         var start = this.pickerDate + ' ' + this.pickerStart;
         var end = this.pickerDate + ' ' + this.pickerEnd;
-        if(this.checkCriteria(this.title, this.description, start, end)) {
-          this.register_mission_v1_1(
-            this.title,
-            geoJ, 
-            this.description,
-            start,
-            end,
-            this.selectedType,
-            response => {
-              if (response['status'] == 200) {
-                for (var i = 0; i < this.polygons.length; i++) {
-                  this.polygons[i].setEditable(false);
-                  this.polygons[i].setDraggable(false);
-                }
-                this.draggable = true;
-                this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
-                this.canDraw = false;
-                this.edit = !this.edit;
-                this.snackbar =true;
+        this.register_mission(
+          this.title, geoJ,
+          this.description,
+          start,
+          end,
+          response => {
+            if (response.data['code'] == 200) {
+              for (var i = 0; i < this.polygons.length; i++) {
+                this.polygons[i].setEditable(false);
+                this.polygons[i].setDraggable(false);
               }
-            }, 
-            error => {
-              alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+              this.draggable = true;
+              this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
+              this.canDraw = false;
+              this.edit = !this.edit;
+              this.snackbar =true;
+            } else if (response.data['code'] == 31) {
+              alert("Authentication Error");
             }
-          );
-        }
+          },
+          error => {
+            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+          }
+        );
       }
     }
   };
