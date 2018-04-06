@@ -538,10 +538,10 @@
       this.fetch_mission_info();
       this.getMissionDrones();
       this.getUserID();
-      this.cardHeight = document.documentElement.offsetHeight-64 + "px";
     },
     mounted () {
       this.getUserDrones();
+      this.cardHeight = document.documentElement.offsetHeight-64 + "px";
     },
     methods: {
       toggleAll () {

@@ -253,9 +253,10 @@
     <v-snackbar top vertical
       :timeout="timeout"
       v-model="snackbar"
+      color="white"
     >
-      Mission Successfully Saved
-      <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
+      <span style="color:black">Mission Successfully Saved</span>
+      <v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
     </v-snackbar>
   </v-layout>
 </template>
@@ -331,7 +332,7 @@
         selectedVertex: null
       };
     },
-    beforeMount() {
+    mounted() {
       this.cardHeight = document.documentElement.offsetHeight-64 + "px";
     },
     methods: {
