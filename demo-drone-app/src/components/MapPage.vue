@@ -265,8 +265,8 @@
           </v-card>  
         </v-menu>
 
-        <v-btn style="background-color:#1d561a;color:#ffffff" @click="saveMission()">Update Mission</v-btn>
-        <v-btn style="background-color:#1d561a;color:#ffffff" @click="swapNav('overView')">Back</v-btn>
+        <v-btn fixed style="left:1%;top:89%;background-color:#1d561a;color:#ffffff" @click="saveMission()">Update Flight</v-btn>
+        <v-btn fixed style="left: 15%;top:89%;background-color:#1d561a;color:#ffffff" @click="swapNav('overView')">Back</v-btn>
 
       </v-card>
       <v-card
@@ -541,7 +541,7 @@
     },
     mounted () {
       this.getUserDrones();
-      this.cardHeight = document.documentElement.offsetHeight-64 + "px";
+      this.cardHeight = .89*document.documentElement.offsetHeight-64 + "px";
     },
     methods: {
       toggleAll () {
