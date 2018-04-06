@@ -1,5 +1,138 @@
 <template>
   <v-layout style="width:100%;height:100%;" fixed @contextmenu="showDeleteMenu">
+    <v-card
+      style="width:40%;height:95%; top:64px;overflow: scroll;"
+    >
+      <v-toolbar flat>
+        <v-list>
+          <v-list-tile>
+            <v-list-tile-title class="title">
+              New Mission
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-toolbar>
+      <v-list dense class="pt-0" style="margin:2%;">
+        <v-text-field 
+          label="Mission Title"
+          v-model="title">
+        </v-text-field>
+        <v-text-field 
+          label="Description"
+          multi-line
+          v-model="description">
+        </v-text-field>
+      </v-list>
+      <v-select
+        :items="types"
+        v-model="selectedType"
+        label="Mission Type"
+        single-line
+        auto
+        hide-details
+        style="width:40%;float:left;margin:10px;">
+      </v-select>
+      <v-menu
+        ref="menu"
+        persistent
+        lazy
+        :close-on-content-click="false"
+        v-model="menuDate"
+        transition="scale-transition"
+        full-width
+        :nudge-right="140"
+        :return-value.sync="pickerDate"
+      >
+        <v-text-field
+          slot="activator"
+          label="Flight Date"
+          v-model="pickerDate"
+          readonly
+          prepend-icon="event"
+          style="width:40%;float:left;margin:10px;">
+        </v-text-field>
+          <v-card>
+            <v-card-title primary-title>
+              <div>
+                <v-date-picker
+                  ref="picker"
+                  v-model="pickerDate"
+                  @change="saveDate"
+                  color ="green darken-4"
+                  :show-current="false"
+                ></v-date-picker>
+              </div>
+            </v-card-title>
+            <v-card-actions>
+              <v-btn dark style="background-color:#1d561a" @click="menuDate = false">OK</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+        <v-menu
+          ref="menuStart"
+          persistent
+          lazy
+          :close-on-content-click="false"
+          v-model="menuStart"
+          transition="scale-transition"
+          full-width
+          :nudge-right="140"
+          :return-value.sync="pickerStart"
+        >
+          <v-text-field
+            slot="activator"
+            label="Flight Start Time"
+            v-model="pickerStart"
+            prepend-icon="access_time"
+            readonly
+            style="width:40%;float:left;margin:10px;"
+          ></v-text-field>
+          <v-card>
+            <v-card-title primary-title>
+              <div>
+                <v-time-picker v-model="pickerStart" color ="green darken-4"></v-time-picker>
+              </div>
+            </v-card-title>
+            <v-card-actions>
+              <v-btn dark style="background-color:#1d561a" @click="menuStart = false">OK</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+
+        <v-menu
+          ref="menuEnd"
+          persistent
+          lazy
+          :close-on-content-click="false"
+          v-model="menuEnd"
+          transition="scale-transition"
+          full-width
+          :nudge-right="140"
+          :return-value.sync="pickerEnd"
+        >
+        <v-text-field
+          slot="activator"
+          label="Flight End Time"
+          v-model="pickerEnd"
+          prepend-icon="access_time"
+          readonly
+          style="width:40%;float:left;margin:10px;">
+        </v-text-field>
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <v-time-picker v-model="pickerEnd" color ="green darken-4"></v-time-picker>
+            </div>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
+          </v-card-actions>
+        </v-card>  
+      </v-menu>
+      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="background-color:#1d561a; margin-left:60%">
+        Save Mission
+      </v-btn>
+    </v-card>
     <gmap-map
       ref="map"
       class="map-panel"
@@ -38,18 +171,6 @@
       </v-list>
     </v-menu>
     <v-layout>
-      <v-btn @click.stop="drawer = !drawer"
-        dark
-        fixed
-        top
-        left
-        style="background-color:#1d561a;margin-top:60px;"
-        v-if="!drawer"
-        fab
-      >
-        <v-icon> compare_arrows </v-icon>
-      </v-btn>
-
     <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
       <v-text-field 
         label="Latitude, Longitude"
@@ -128,147 +249,6 @@
       </v-dialog>
 
     </v-layout>
-    <v-navigation-drawer
-      disable-resize-watcher
-      v-model="drawer"
-      light
-      absolute
-      style="width:30%;height:95%; top:64px;"
-    >
-    <v-toolbar flat>
-      <v-list>
-        <v-list-tile>
-          <v-list-tile-title class="title">
-            New Mission
-          </v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-      <v-btn icon @click.stop="drawer = !drawer">
-        <v-icon> compare_arrows </v-icon>
-      </v-btn>
-    </v-toolbar>
-      <v-list dense class="pt-0" style="margin:2%;">
-        <v-text-field 
-          label="Mission Title"
-          v-model="title">
-        </v-text-field>
-        <v-text-field 
-          label="Description"
-          multi-line
-          v-model="description">
-        </v-text-field>
-      </v-list>
-      <v-select
-          :items="types"
-          v-model="selectedType"
-          label="Mission Type"
-          single-line
-          auto
-          hide-details
-          style="width:40%;float:left;margin:10px;"
-        ></v-select>
-      <v-menu
-        ref="menu"
-        persistent
-        lazy
-        :close-on-content-click="false"
-        v-model="menuDate"
-        transition="scale-transition"
-        full-width
-        :nudge-right="140"
-        :return-value.sync="pickerDate"
-      >
-        <v-text-field
-          slot="activator"
-          label="Flight Date"
-          v-model="pickerDate"
-          readonly
-          prepend-icon="event"
-          style="width:40%;float:left;margin:10px;"
-        ></v-text-field>
-        <v-card>
-          <v-card-title primary-title>
-            <div>
-              <v-date-picker
-                ref="picker"
-                v-model="pickerDate"
-                @change="saveDate"
-                color ="green darken-4"
-                :show-current="false"
-              ></v-date-picker>
-            </div>
-          </v-card-title>
-          <v-card-actions>
-            <v-btn dark style="background-color:#1d561a" @click="menuDate = false">OK</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-menu>
-      <v-menu
-        ref="menuStart"
-        persistent
-        lazy
-        :close-on-content-click="false"
-        v-model="menuStart"
-        transition="scale-transition"
-        full-width
-        :nudge-right="140"
-        :return-value.sync="pickerStart"
-      >
-        <v-text-field
-          slot="activator"
-          label="Flight Start Time"
-          v-model="pickerStart"
-          prepend-icon="access_time"
-          readonly
-          style="width:40%;float:left;margin:10px;"
-        ></v-text-field>
-        <v-card>
-          <v-card-title primary-title>
-            <div>
-              <v-time-picker v-model="pickerStart" color ="green darken-4"></v-time-picker>
-            </div>
-          </v-card-title>
-          <v-card-actions>
-            <v-btn dark style="background-color:#1d561a" @click="menuStart = false">OK</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-menu>
-
-      <v-menu
-        ref="menuEnd"
-        persistent
-        lazy
-        :close-on-content-click="false"
-        v-model="menuEnd"
-        transition="scale-transition"
-        full-width
-        :nudge-right="140"
-        :return-value.sync="pickerEnd"
-      >
-        <v-text-field
-          slot="activator"
-          label="Flight End Time"
-          v-model="pickerEnd"
-          prepend-icon="access_time"
-          readonly
-          style="width:40%;float:left;margin:10px;"
-        ></v-text-field>
-      <v-card>
-        <v-card-title primary-title>
-          <div>
-            <v-time-picker v-model="pickerEnd" color ="green darken-4"></v-time-picker>
-          </div>
-        </v-card-title>
-        <v-card-actions>
-          <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-        
-      </v-menu>
-      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="background-color:#1d561a; margin-left:60%">
-        Save Mission
-      </v-btn>
-    </v-navigation-drawer>
     <v-snackbar top vertical
       :timeout="timeout"
       v-model="snackbar"
@@ -556,14 +536,6 @@
           return gJson;
       },
       checkCriteria(title, des, start, end) {
-        this.get_possible_mission_conflicts("2013-09-28 20:30:55", "2013-09-28 20:30:55",
-          response => {
-              console.log(response);
-          }, 
-          error => {
-            alert(error)
-          }
-        );
         if (title != '' & title != null) {
           if (des != '' & des != null) {
             if (start != '' & start != null) {
