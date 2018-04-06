@@ -6,7 +6,7 @@
       :center="center"
       :zoom="zoom"
       :map-type-id="mapType"
-      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true, clickableIcons: false}"
+      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
       @click="drawLine($event)"
       @mouseout="mouseOff($event)"
       @mouseover="mouseOn($event)">
@@ -51,7 +51,7 @@
       </v-btn>
 
     <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
-      <v-text-field 
+      <v-text-field
         label="Latitude, Longitude"
         v-model="newCenter">
       </v-text-field>
@@ -102,31 +102,6 @@
       </v-card>
       </v-dialog>
 
-      <v-dialog v-model="alertMissingCriteria" max-width="500px">
-        <v-card>
-        <v-card-title primary-title>
-          <div>
-            <h3 class="headline mb-0">Mission Did Not Save</h3>
-            <h4>Please Make Sure the Following Items are Filled Out:</h4>
-            <div>
-              <br>
-              <ul style="list-style-position: inside; margin-left: 25%;">
-                <li> Mission Title </li>
-                <li> Mission Description </li>
-                <li> Flight Area </li>
-                <li> Flight Date </li>
-                <li> Start Time </li>
-                <li> End Time </li>
-              </ul>
-            </div>
-          </div>
-        </v-card-title>
-        <v-card-actions>
-          <v-btn color="primary" flat @click.stop="alertMissingCriteria=false">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-      </v-dialog>
-
     </v-layout>
     <v-navigation-drawer
       disable-resize-watcher
@@ -147,36 +122,28 @@
         <v-icon> compare_arrows </v-icon>
       </v-btn>
     </v-toolbar>
+
       <v-list dense class="pt-0" style="margin:2%;">
-        <v-text-field 
+        <v-text-field
           label="Mission Title"
           v-model="title">
         </v-text-field>
-        <v-text-field 
+        <v-text-field
           label="Description"
           multi-line
           v-model="description">
         </v-text-field>
       </v-list>
-      <v-select
-          :items="types"
-          v-model="selectedType"
-          label="Mission Type"
-          single-line
-          auto
-          hide-details
-          style="width:40%;float:left;margin:10px;"
-        ></v-select>
       <v-menu
-        ref="menu"
-        persistent
+        ref="menuDate"
         lazy
         :close-on-content-click="false"
         v-model="menuDate"
         transition="scale-transition"
+        offset-y
         full-width
         :nudge-right="140"
-        :return-value.sync="pickerDate"
+        min-width="290px"
       >
         <v-text-field
           slot="activator"
@@ -184,7 +151,7 @@
           v-model="pickerDate"
           readonly
           prepend-icon="event"
-          style="width:40%;float:left;margin:10px;"
+          style="margin:2%;width:40%;"
         ></v-text-field>
         <v-card>
           <v-card-title primary-title>
@@ -194,7 +161,6 @@
                 v-model="pickerDate"
                 @change="saveDate"
                 color ="green darken-4"
-                :show-current="false"
               ></v-date-picker>
             </div>
           </v-card-title>
@@ -263,7 +229,7 @@
           <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
         </v-card-actions>
       </v-card>
-        
+
       </v-menu>
       <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="background-color:#1d561a; margin-left:60%">
         Save Mission
@@ -316,21 +282,15 @@
         mapType: 'hybrid',
         scrollwheel: true,
         draggable: true,
-
         title: "",
         location: "",
         description: "",
         timeout: null,
         show: false,
-        alertMissingCriteria: false,
         deleteMenu: false,
         x: 0,
         y: 0,
 
-        types:[
-          'Recreational', 'Commercial', 'Research'
-        ],
-        selectedType: "Recreational",
         menuDate: false,
         menuStart: false,
         menuEnd: false,
@@ -499,7 +459,7 @@
           }
         }
       },
-      updateMap: function () {
+      updateMap() {
         if (this.newCenter != "" && this.newCenter != null) {
           var newStr = this.newCenter.replace(/\s/g,'');
           var newArray = newStr.split(',');
@@ -528,7 +488,7 @@
             var temp = {
                     "type": "Feature",
                     "geometry":{
-                      "type": "Polygon", 
+                      "type": "Polygon",
                       "coordinates": []
                     },
                     "properties":{}
@@ -540,7 +500,7 @@
               var temp = {
                     "type": "Feature",
                     "geometry":{
-                      "type": "Polygon", 
+                      "type": "Polygon",
                       "coordinates": []
                     },
                     "properties":{}
@@ -555,59 +515,34 @@
           }
           return gJson;
       },
-      checkCriteria(title, des, start, end) {
-        this.get_possible_mission_conflicts("2013-09-28 20:30:55", "2013-09-28 20:30:55",
-          response => {
-              console.log(response);
-          }, 
-          error => {
-            alert(error)
-          }
-        );
-        if (title != '' & title != null) {
-          if (des != '' & des != null) {
-            if (start != '' & start != null) {
-              if (end != '' & end != null) {
-                if (this.polygons.length > 0) {
-                  return true;
-                }
-              }
-            }
-          }
-        }
-        this.alertMissingCriteria = true;
-        return false;
-      },
       saveMission() {
         var geoJ = this.makeGeoJson();
         var start = this.pickerDate + ' ' + this.pickerStart;
         var end = this.pickerDate + ' ' + this.pickerEnd;
-        if(this.checkCriteria(this.title, this.description, start, end)) {
-          this.register_mission_v1_1(
-            this.title,
-            geoJ, 
-            this.description,
-            start,
-            end,
-            this.selectedType,
-            response => {
-              if (response['status'] == 200) {
-                for (var i = 0; i < this.polygons.length; i++) {
-                  this.polygons[i].setEditable(false);
-                  this.polygons[i].setDraggable(false);
-                }
-                this.draggable = true;
-                this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
-                this.canDraw = false;
-                this.edit = !this.edit;
-                this.snackbar =true;
+        this.register_mission(
+          this.title, geoJ,
+          this.description,
+          start,
+          end,
+          response => {
+            if (response.data['code'] == 200) {
+              for (var i = 0; i < this.polygons.length; i++) {
+                this.polygons[i].setEditable(false);
+                this.polygons[i].setDraggable(false);
               }
-            }, 
-            error => {
-              alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+              this.draggable = true;
+              this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
+              this.canDraw = false;
+              this.edit = !this.edit;
+              this.snackbar =true;
+            } else if (response.data['code'] == 31) {
+              alert("Authentication Error");
             }
-          );
-        }
+          },
+          error => {
+            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+          }
+        );
       }
     }
   };
