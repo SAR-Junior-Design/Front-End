@@ -313,11 +313,8 @@ export default {
 <!-- styling for the component -->
 <style>
 .background {
+  background-image: none;
   background-color: #F0F0F0;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
 }
 #drone_ADD {
   margin-top: 70px; 
