@@ -1,11 +1,11 @@
 <template>
   <v-app id="inspire">
-		<v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" style="background-color:#1d561a;">
+		<v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" color="primary">
       <v-toolbar-title style="margin-right:20px;">
-        <router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: #dadfe8;">
+        <router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: white;">
           ICARUS
         </router-link>
-        <router-link v-if="logged_in" to="/homepage" tag="span" style="cursor: pointer;color: #dadfe8;">
+        <router-link v-if="logged_in" to="/homepage" tag="span" style="cursor: pointer;color: white;">
           ICARUS
         </router-link>
       </v-toolbar-title>
@@ -15,7 +15,7 @@
           v-for="item in menuItems"
           :key="item.title"
           :to="item.path">
-          <span style="color:#dadfe8;"> {{ item.title }} </span>
+          <span style="color:white;"> {{ item.title }} </span>
         </v-btn>
       </v-toolbar-items>
       <v-spacer></v-spacer>
@@ -33,11 +33,30 @@
         </v-list>
       </v-menu>
       <v-toolbar-items class="hidden-sm-and-down" v-if="!logged_in">
-        <v-btn style="color:#dadfe8;" flat to="/login" >Login</v-btn>
-        <v-btn style="color:#dadfe8;" flat to="/" >Sign Up</v-btn>
+        <v-btn 
+        style="color:white;" 
+        flat 
+        to="/login"
+        >
+          <v-icon style="margin-right:5px">lock_outline</v-icon>
+        Login</v-btn>
       </v-toolbar-items>
     </v-toolbar>
-	  <router-view absolute v-on:login="login"></router-view>
+	  <router-view absolute v-on:login="login" v-on:snackbar="_snackbar"></router-view>
+    <v-snackbar
+      :timeout="timeout"
+      :top="y === 'top'"
+      :bottom="y === 'bottom'"
+      :right="x === 'right'"
+      :left="x === 'left'"
+      :multi-line="mode === 'multi-line'"
+      :vertical="mode === 'vertical'"
+      v-model="snackbar"
+      color="white"
+    >
+      <span style="color:black"> {{ text }} </span>
+      <v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -52,7 +71,7 @@ import Vuetify from 'vuetify'
 Vue.use(VueAxios, axios)
 Vue.use(Vuetify, {
   theme: {
-    primary: '#00183aff',
+    primary: '#1d561a',
     secondary: '#b0bec5',
     accent: '#8c9eff',
     error: '#b71c1c'
@@ -66,6 +85,12 @@ Vue.use(Vuetify, {
         is_flat: true,
         sidebar: false,
         logged_in: false,
+        snackbar: false,
+        mode: '',
+        y: 'top',
+        x: null,
+        timeout: 6000,
+        text: 'Clearance updated.',
         menuItems: [
         ],
         userMenu: [
@@ -97,7 +122,12 @@ Vue.use(Vuetify, {
       	error => {
       		alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
       	})
-    	}
+    	},
+      _snackbar(timeout,text) {
+        this.timeout = timeout
+        this.text = text
+        this.snackbar = true
+      }
     },
     mounted() {
     	this.isLoggedIn(
