@@ -148,6 +148,22 @@
       {{ text }}
       <v-btn flat color="black" @click.native="snackbar = false">Close</v-btn>
       </v-snackbar>
+
+      <v-btn block color="red" @click.native="snackbar2 = true">Show Snackbar</v-btn>
+        <v-snackbar
+          :timeout="timeout"
+          :top="y === 'top'"
+          :bottom="y === 'bottom'"
+          :right="x === 'right'"
+          :left="x === 'left'"
+          :multi-line="mode === 'multi-line'"
+          :vertical="mode === 'vertical'"
+          v-model="snackbar2"
+          color="blue"
+        >
+      {{ text2 }}
+      <v-btn flat color="black" @click.native="snackbar2 = false">Close</v-btn>
+      </v-snackbar>
     </v-layout>
 </template>
 
@@ -169,7 +185,7 @@ export default {
         "3D Robotics", "CUSTOM BUILD"
       ],
       num_blades_op: [
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', "10+"
+        '1', '2', '3', '4', '5', '6', '7', '8', '9', "10"
       ],
       color_op: [
         'White', 'Black', 'Grey', 'Blue', 'Red', 'Orange'
@@ -196,11 +212,13 @@ export default {
       descr: null,
 
       snackbar: false,
+      snackbar2: false,
       y: 'top',
       x: null,
       mode: '',
       timeout: 6000,
       text: 'Drone Succesfully Added!',
+      text2: 'Drone Successfully Removed!',
 
       drone_id: null,
       validADD: false
@@ -241,11 +259,15 @@ export default {
     },
 
     deleteDrone() {
-      console.log("drone to be slected, id: " + this.selected[0]['id']) // just making sure this gives what i want
-      this.delete_drone(this.selected[0]['id'],
+      console.log("drone to be slected, id: " + JSON.stringify(this.selected)) // just making sure this gives what i want
+      this.delete_drone(this.selected,
         response => {
-          if (response.data == 200) {
-            getUserDrones();
+          if (response.status == 200) {
+            console.log("response status: " + response.status +"777777777")
+            //this.drone_id = true;
+            this.snackbar2 = true;
+            this.getUserDrones();
+            this.selected = [];
           } else if (response.data['code'] == 31) {
             throw error;
           }
@@ -291,7 +313,7 @@ export default {
 <!-- styling for the component -->
 <style>
 .background {
-  background-color: #303030;
+  background-color: #F0F0F0;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -300,9 +322,10 @@ export default {
 #drone_ADD {
   margin-top: 70px; 
   margin-left: 30px;
+  margin-right: 30px;
+  margin-bottom: 10px;
 }
 #drone_TABLE {
-  margin-left: 30px;
   margin-top: 70px;
   margin-bottom: 10px;
 }
