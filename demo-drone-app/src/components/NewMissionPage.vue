@@ -1,7 +1,8 @@
 <template>
   <v-layout style="width:100%;height:100%;" fixed @contextmenu="showDeleteMenu">
     <v-card
-      style="width:40%;height:95%; top:64px;overflow: scroll;"
+      :height="cardHeight"
+      style="width:40%; top:64px;overflow: scroll;"
     >
       <v-toolbar flat>
         <v-list>
@@ -303,6 +304,7 @@
         timeout: null,
         show: false,
         alertMissingCriteria: false,
+        cardHeight: '200px',
         deleteMenu: false,
         x: 0,
         y: 0,
@@ -328,6 +330,9 @@
         selectedPolyline: null,
         selectedVertex: null
       };
+    },
+    beforeMount() {
+      this.cardHeight = document.documentElement.offsetHeight-64 + "px";
     },
     methods: {
       selectingVertex (e) {
