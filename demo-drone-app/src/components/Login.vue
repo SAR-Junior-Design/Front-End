@@ -110,6 +110,7 @@ export default {
           if (response.data['code'] == 200) {
             this.loginDialog = true;
             this.signUpDialog = false;
+            this.$emit('change-toolbar-color', 'green')
             this.$emit('login')
             router.push('/homepage')
           } else if (response.data['code'] == 31) {
