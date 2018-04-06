@@ -1,6 +1,6 @@
 <template>
-	<v-content style="margin-top:70px;" class="mission_body">
-		<v-layout row>
+	<v-content class="mission_body">
+		<v-layout row style="margin-top:70px;">
 			<v-layout column>
 				<v-card style="margin:20px;">
 					<v-card-title>
@@ -298,6 +298,7 @@
 
 	.mission_body {
 		font-family: 'Roboto', sans-serif;
+		background-color: #f0f0f0;
 	}
 </style>
 

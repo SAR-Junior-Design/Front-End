@@ -1,11 +1,11 @@
 <template>
   <v-app id="inspire">
-		<v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" style="background-color:#1d561a;">
+		<v-toolbar fixed :flat = "is_flat" @mouseover="is_flat = false" @mouseleave="is_flat = true" style="background-color:#ffffff;border-bottom:5px">
       <v-toolbar-title style="margin-right:20px;">
-        <router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: #dadfe8;">
+        <router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: #000000;">
           ICARUS
         </router-link>
-        <router-link v-if="logged_in" to="/homepage" tag="span" style="cursor: pointer;color: #dadfe8;">
+        <router-link v-if="logged_in" to="/homepage" tag="span" style="cursor: pointer;color: #000000;">
           ICARUS
         </router-link>
       </v-toolbar-title>
@@ -15,12 +15,12 @@
           v-for="item in menuItems"
           :key="item.title"
           :to="item.path">
-          <span style="color:#dadfe8;"> {{ item.title }} </span>
+          <span style="color:##525452;"> {{ item.title }} </span>
         </v-btn>
       </v-toolbar-items>
       <v-spacer></v-spacer>
       <v-menu bottom left v-if="logged_in">
-        <v-btn icon slot="activator" dark>
+        <v-btn icon slot="activator" dark style="color:#525452;">
           <v-icon>more_vert</v-icon>
         </v-btn>
         <v-list>
@@ -33,8 +33,8 @@
         </v-list>
       </v-menu>
       <v-toolbar-items class="hidden-sm-and-down" v-if="!logged_in">
-        <v-btn style="color:#dadfe8;" flat to="/login" >Login</v-btn>
-        <v-btn style="color:#dadfe8;" flat to="/" >Sign Up</v-btn>
+        <v-btn style="color:#525452;" flat to="/login" >Login</v-btn>
+        <v-btn style="color:#525452;" flat to="/" >Sign Up</v-btn>
       </v-toolbar-items>
     </v-toolbar>
 	  <router-view absolute v-on:login="login"></router-view>
