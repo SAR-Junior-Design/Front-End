@@ -1,5 +1,5 @@
 <template>
-    <v-layout class="background">
+    <v-layout class="background_drone">
       <v-flex>
       <v-card id="drone_ADD">
         <template>
@@ -312,7 +312,7 @@ export default {
 
 <!-- styling for the component -->
 <style>
-.background {
+.background_drone {
   background-image: none;
   background-color: #F0F0F0;
 }
