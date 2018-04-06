@@ -1,7 +1,8 @@
 <template>
   <v-layout style="width:100%;height:100%;" fixed @contextmenu="showDeleteMenu">
     <v-card
-      style="width:40%;height:95%; top:64px;overflow: scroll;"
+      :height="cardHeight"
+      style="width:40%; top:64px;overflow: scroll;"
     >
       <v-toolbar flat>
         <v-list>
@@ -252,9 +253,10 @@
     <v-snackbar top vertical
       :timeout="timeout"
       v-model="snackbar"
+      color="white"
     >
-      Mission Successfully Saved
-      <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
+      <span style="color:black">Mission Successfully Saved</span>
+      <v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
     </v-snackbar>
   </v-layout>
 </template>
@@ -303,6 +305,7 @@
         timeout: null,
         show: false,
         alertMissingCriteria: false,
+        cardHeight: '200px',
         deleteMenu: false,
         x: 0,
         y: 0,
@@ -328,6 +331,9 @@
         selectedPolyline: null,
         selectedVertex: null
       };
+    },
+    mounted() {
+      this.cardHeight = document.documentElement.offsetHeight-64 + "px";
     },
     methods: {
       selectingVertex (e) {

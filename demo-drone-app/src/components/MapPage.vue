@@ -4,6 +4,7 @@
       <v-card
         v-if="drawer"
         class = "sideNav"
+        :height="cardHeight"
       >
         <v-toolbar flat>
           <v-list>
@@ -92,6 +93,7 @@
       <v-card
         v-if="selected_drone_drawer"
         class="sideNav"
+        :height="cardHeight"
       >
         <v-toolbar flat>
           <v-list>
@@ -132,6 +134,7 @@
       <v-card
         v-if="edit_drawer"
         class="sideNav"
+        :height="cardHeight"
       >
         <v-toolbar flat>
           <v-list>
@@ -262,13 +265,14 @@
           </v-card>  
         </v-menu>
 
-        <v-btn style="background-color:#1d561a;color:#ffffff" @click="saveMission()">Update Mission</v-btn>
-        <v-btn style="background-color:#1d561a;color:#ffffff" @click="swapNav('overView')">Back</v-btn>
-        
+        <v-btn fixed style="left:1%;top:89%;background-color:#1d561a;color:#ffffff" @click="saveMission()">Update Flight</v-btn>
+        <v-btn fixed style="left: 15%;top:89%;background-color:#1d561a;color:#ffffff" @click="swapNav('overView')">Back</v-btn>
+
       </v-card>
       <v-card
         v-if="flight_drawer"
         class="sideNav"
+        :height="cardHeight"
       >
         <v-toolbar flat>
           <v-list>
@@ -363,28 +367,28 @@
     </v-menu>
 
     <v-layout>
-    <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
-      <v-text-field 
-        label="Latitude, Longitude"
-        v-model="newCenter">
-      </v-text-field>
-      <v-tooltip bottom>
-        <v-btn icon @click="updateMap()" slot="activator">
-          <v-icon>search</v-icon>
+      <v-toolbar fixed style="width: 32%; top:15%; left: 65%;">
+        <v-text-field 
+          label="Latitude, Longitude"
+          v-model="newCenter">
+        </v-text-field>
+        <v-tooltip bottom>
+          <v-btn icon @click="updateMap()" slot="activator">
+            <v-icon>search</v-icon>
+          </v-btn>
+          <span>Search</span>
+        </v-tooltip>
+      <div v-if="edit">
+        <v-btn @click="drawOn()" flat v-if="!canDraw">
+          <v-icon>edit</v-icon>
+          Draw Search Area
         </v-btn>
-        <span>Search</span>
-      </v-tooltip>
-    <div v-if="edit">
-      <v-btn @click="drawOn()" flat v-if="!canDraw">
-        <v-icon>edit</v-icon>
-        Draw Search Area
-      </v-btn>
-    </div>
-      <v-btn @click="drawOff()" flat v-if="canDraw">
-        <v-icon>pan_tool</v-icon>
-        Edit Map
-      </v-btn>
-    </v-toolbar>        
+      </div>
+        <v-btn @click="drawOff()" flat v-if="canDraw">
+          <v-icon>pan_tool</v-icon>
+          Edit Map
+        </v-btn>
+      </v-toolbar>        
     </v-layout>
 
       <v-layout row>
@@ -398,6 +402,7 @@
 <style>
   .sideNav {
     top:64px;
+    overflow: scroll;
     width:40%;
   }
   .map-panel {
@@ -481,6 +486,7 @@
         ends: null,
 
         deleteMenu: false,
+        cardHeight: '200px',
         x: 0,
         y: 0,
         selectedPolygon: null,
@@ -535,6 +541,7 @@
     },
     mounted () {
       this.getUserDrones();
+      this.cardHeight = .89*document.documentElement.offsetHeight-64 + "px";
     },
     methods: {
       toggleAll () {
