@@ -106,10 +106,9 @@ export default {
         .then(success)
         .catch(failure);
     },
-    delete_drone(drone_id, success, failure) {
-      var body = {'id': drone_id}
+    delete_drone(drone_array, success, failure) {
       var url = this.base_url + '/v1_0/delete_drone'
-      axios.post(url,body, {withCredentials:true})
+      axios.post(url,drone_array, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
