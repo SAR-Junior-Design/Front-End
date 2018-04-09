@@ -107,16 +107,6 @@ export default {
               title: "Past Missions",
               text: "This is the second text",
               id: 2
-          },
-          {
-              title: "Drones",
-              text: "This is the third text",
-              id: 3
-          },
-          {
-              title: "Team Members",
-              test: "This is the fourth text",
-              id: 4
           }
       ],
     }
