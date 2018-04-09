@@ -110,6 +110,7 @@ export default {
         saveFile(e) {
         	e.location = this.pdfUrl;
         	this.clearFile();
+        	this.$emit('snackbar',6000, 'File Successfully Saved');
         },
         clearFile() {
       		this.pdfName = '';
