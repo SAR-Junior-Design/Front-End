@@ -27,7 +27,6 @@
 									type="file"
 									style="display: none"
 									id="myBtn"
-									accept="image/*"
 									@change="onFilePicked"
 								>
 								<v-btn outline @click='viewFile(doc)'>
@@ -39,14 +38,19 @@
 								          <div>
 								            <h3 class="headline mb-0">{{currFile}} Upload</h3>
 								            <div>
-								              <img :src="imageUrl" height="150" v-if="imageUrl"/>
+								              	<pdf :src="pdfUrl" 
+								              		v-if="pdfUrl!=null"
+											      	:page=1 
+											     	@num-pages="numPages = $event"
+											     	style="width:100%">
+											    </pdf>
 								            </div>
 								          </div>
 								        </v-card-title>
 								        <v-card-actions>
 								          <v-btn color="primary" flat @click='pickFile'>Upload</v-btn>
-								          <v-btn color="primary" flat @click.stop="editFile=false">Save</v-btn>
-								          <v-btn color="primary" flat @click.stop="editFile=false">Cancel</v-btn>
+								          <v-btn color="primary" flat @click.stop="editFile=false" @click="saveFile(doc)">Save</v-btn>
+								          <v-btn color="primary" flat @click.stop="editFile=false" @click="clearFile()">Cancel</v-btn>
 								        </v-card-actions>
 								    </v-card>
 								</v-dialog>
@@ -65,6 +69,10 @@
 
 <script>
 import API from '../../mixins/API.js'
+import Vue from 'vue';
+import pdf from 'vue-pdf'
+
+Vue.component('pdf', pdf)
 
 export default {
 	mixins: [API],
@@ -80,13 +88,13 @@ export default {
 			profile_info: {
 				image: 'https://avatars0.githubusercontent.com/u/8029035?s=400&v=4',
 				documents: [
-					{ type: 'Part 107', location: 'https://drive.google.com/file/d/1j8jXiXbI05VogHVKivfavdZgbaD0yrwP/view?usp=sharing'},
-					{ type: 'Part 333', location: 'https://drive.google.com/file/d/1j8jXiXbI05VogHVKivfavdZgbaD0yrwP/view?usp=sharing'}
+					{ type: 'Part 107', location: 'https://cdn.mozilla.net/pdfjs/tracemonkey.pdf'},
+					{ type: 'Part 333', location: 'https://www.gutenberg.org/files/1342/1342-pdf.pdf'}
 				]
 			},
-			imageUrl: '',
-			imageName: '',
-    		imageFile: '',
+			pdfUrl: null,
+			pdfName: '',
+    		pdfFile: '',
     		currFile: null,
     		editFile: false
 		}
@@ -95,28 +103,35 @@ export default {
 		pickFile () {
         	document.getElementById("myBtn").click();
         },
-        viewFile(a) {
-        	this.currFile = a.type;
-        	this.imageUrl = a.location;
+        saveFile(e) {
+        	e.location = this.pdfUrl;
+        	this.clearFile();
+        },
+        clearFile() {
+      		this.pdfName = '';
+      		this.pdfFile = '';
+      		this.pdfUrl = '';
+      	},
+        viewFile(e) {
+        	this.currFile = e.type;
+        	this.pdfUrl = e.location;
         	this.editFile=true;
         },
       	onFilePicked (e) {
-        	const files = e.target.files
+        	const files = e.target.files;
         	if(files[0] !== undefined) {
-          	this.imageName = files[0].name
-          	if(this.imageName.lastIndexOf('.') <= 0) {
-            	return
-          	}
-          	const fr = new FileReader ()
-          	fr.readAsDataURL(files[0])
-          	fr.addEventListener('load', () => {
-            	this.imageUrl = fr.result
-            	this.imageFile = files[0] // this is an image file that can be sent to server...
-          	})
+          		this.pdfName = files[0].name;
+          		if(this.pdfName.lastIndexOf('.') <= 0) {
+            		return;
+          		}
+          		const fr = new FileReader ();
+          		fr.readAsDataURL(files[0]);
+          		fr.addEventListener('load', () => {
+            		this.pdfUrl = fr.result;
+            		this.pdfFile = files[0];
+          		})
         	} else {
-          	this.imageName = ''
-          	this.imageFile = ''
-          	this.imageUrl = ''
+        		this.clearFile();
         	}
       	}
 	},
