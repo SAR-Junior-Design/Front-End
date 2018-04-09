@@ -28,6 +28,7 @@
 									style="display: none"
 									id="myBtn"
 									@change="onFilePicked"
+									accept=".pdf"
 								>
 								<v-btn outline @click='viewFile(doc)'>
 									<span> EDIT </span>
@@ -42,9 +43,10 @@
 								              		v-if="pdfUrl!=null"
 											      	:page=1 
 											     	@num-pages="numPages = $event"
-											     	style="width:100%">
+											     	style="width:400px">
 											    </pdf>
 								            </div>
+								            <h4 style="text-align: center; color: red;" v-if="typeError"> Incorrect File Type. Make sure to upload a PDF </h4>
 								          </div>
 								        </v-card-title>
 								        <v-card-actions>
@@ -96,7 +98,9 @@ export default {
 			pdfName: '',
     		pdfFile: '',
     		currFile: null,
-    		editFile: false
+    		editFile: false,
+
+    		typeError: false
 		}
 	},
 	methods: {
@@ -111,6 +115,7 @@ export default {
       		this.pdfName = '';
       		this.pdfFile = '';
       		this.pdfUrl = '';
+      		this.typeError = false;
       	},
         viewFile(e) {
         	this.currFile = e.type;
@@ -121,6 +126,10 @@ export default {
         	const files = e.target.files;
         	if(files[0] !== undefined) {
           		this.pdfName = files[0].name;
+          		if(this.pdfName.slice((this.pdfName.lastIndexOf(".") - 1 >>> 0) + 2)!="pdf") {
+          			this.typeError = true;
+          			return;
+          		}
           		if(this.pdfName.lastIndexOf('.') <= 0) {
             		return;
           		}
@@ -130,6 +139,7 @@ export default {
             		this.pdfUrl = fr.result;
             		this.pdfFile = files[0];
           		})
+          		this.typeError = false;
         	} else {
         		this.clearFile();
         	}
