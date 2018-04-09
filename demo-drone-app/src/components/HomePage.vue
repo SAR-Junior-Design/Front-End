@@ -23,23 +23,23 @@
                 >
                   <v-card flat>
                     <v-card-text>
-                      <v-layout row style="overflow-x: scroll;" v-if="item.id == 1">
-                        <v-flex style="overflow-x: scroll;" v-if="userMissions.length > 0">
-                          <v-flex pa-3 style="overflow-x: scroll;" class="text-xs-center" v-for="(currentMission, index) in userMissions" :key="index">
-                            <component :mission="currentMission" is="missionTemplate"></component>
-                          </v-flex>
+                      <v-layout row style="overflow-x: scroll;" v-if="item.id == 1 && userMissions.length > 0">
+                        <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in userMissions" :key="index">
+                          <component :mission="currentMission" is="missionTemplate"></component>
                         </v-flex>
-                        <v-flex v-else>
+                      </v-layout>
+                      <v-layout row v-else-if="item.id == 1 && userMissions.length == 0">
+                        <v-flex  class="text-xs-center">
                           <component is="noMissionTemplate"></component>
                         </v-flex>
                       </v-layout>
-                      <v-layout row style="overflow-x: scroll;" v-if="item.id == 2">
-                        <v-flex v-if="pastMissions.length > 0">
-                          <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in pastMissions" :key="index">
-                            <component :mission="currentMission" is="missionTemplate"></component>
-                          </v-flex>
+                      <v-layout row style="overflow-x: scroll;" v-else-if="item.id == 2 && pastMissions.length > 0">
+                        <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in pastMissions" :key="index">
+                          <component :mission="currentMission" is="missionTemplate"></component>
                         </v-flex>
-                        <v-flex v-else>
+                      </v-layout>
+                      <v-layout row style="overflow-x: scroll;" v-else-if="item.id == 1 && pastMissions.length == 0">
+                        <v-flex pa-3 class="text-xs-center">
                           <component is="noMissionTemplate"></component>
                         </v-flex>
                       </v-layout>
@@ -107,16 +107,6 @@ export default {
               title: "Past Missions",
               text: "This is the second text",
               id: 2
-          },
-          {
-              title: "Drones",
-              text: "This is the third text",
-              id: 3
-          },
-          {
-              title: "Team Members",
-              test: "This is the fourth text",
-              id: 4
           }
       ],
     }

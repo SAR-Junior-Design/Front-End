@@ -5,7 +5,7 @@
     <gmap-map
       ref="map"
       class="map-panel"
-      :center="this.mission.center"
+      :center="this.mission.newCenter"
       :zoom="this.mission.zoom"
       :map-type-id="mapType"
       :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: false, zoomControl: true}"
