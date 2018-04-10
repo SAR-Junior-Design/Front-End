@@ -181,7 +181,7 @@ export default {
   data () {
     return {
       manufacturer_op: [
-        'AeroVironment', "Ambarella", "DJI", "GoPro", "Parrot", "Yuneec", 
+        'AeroVironment', "Ambarella", "DJI", "GoPro", "Parrot", "Yuneec", "Kespry", "Nutel Robotics", "Institu", "Ehang", "Aeryon Labs", "CyPhy", "senseFly", "Aerialtronics", "Freefly", "FLyability", "draganfly", "ActionDrone",
         "3D Robotics", "CUSTOM BUILD"
       ],
       num_blades_op: [
@@ -259,12 +259,10 @@ export default {
     },
 
     deleteDrone() {
-      console.log("drone to be slected, id: " + JSON.stringify(this.selected)) // just making sure this gives what i want
+      //console.log("drone to be slected, id: " + JSON.stringify(this.selected)) // just making sure this gives what i want
       this.delete_drone(this.selected,
         response => {
           if (response.status == 200) {
-            console.log("response status: " + response.status +"777777777")
-            //this.drone_id = true;
             this.snackbar2 = true;
             this.getUserDrones();
             this.selected = [];
@@ -294,12 +292,11 @@ export default {
     },
     submit () {
       if (this.$refs.form.validate()) {
-        console.log("IT FINALLY WORKED");
         this.snackbar = true;
       }
     },
     submitting () {
-      console.log("!@#$%^& Ladd Jones")
+      //console.log("!@#$%^& Ladd Jones")
     }
 
   },
@@ -317,13 +314,13 @@ export default {
   background-color: #F0F0F0;
 }
 #drone_ADD {
-  margin-top: 70px; 
+  margin-top: 80px; 
   margin-left: 30px;
   margin-right: 30px;
   margin-bottom: 10px;
 }
 #drone_TABLE {
-  margin-top: 70px;
+  margin-top: 80px;
   margin-bottom: 10px;
 }
 #testing {
