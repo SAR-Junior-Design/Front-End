@@ -22,7 +22,7 @@
 		      </v-card>
 			</v-layout>
 			<v-layout column>
-				<component :user_info="user_info" :is="current_item.component"></component>
+				<component :user_info="user_info" :is="current_item.component" @snackbar="snackbar"></component>
 			</v-layout>
 		</v-layout>
 	</v-container>
@@ -41,9 +41,9 @@
 	export default {
 		mixins: [API],
 		components: {
-	    'settings-profile': SettingsProfile,
-	    'settings-licenses': SettingsLicenses,
-	    'settings-contact': SettingsContact
+		    'settings-profile': SettingsProfile,
+		    'settings-licenses': SettingsLicenses,
+		    'settings-contact': SettingsContact
 	  },
 		data() {
 			return {
@@ -74,6 +74,10 @@
 			},
 			on_nav_click(item) {
 				this.current_item = this.item
+			},
+			snackbar(timeout, text) {
+				console.log("here")
+				this.$emit('snackbar',timeout, text);
 			}
 		},
 		mounted() {
