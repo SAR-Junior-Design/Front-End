@@ -1,5 +1,5 @@
 <template>
-  <v-card dark style="background-color:#1d561a; height:100%;width:400px;">
+  <v-card dark style="background-color:#1d561a; height:400px;width:400px;">
     <v-card-media class="text-xs-center" height="200px" style="margin-left:5%;margin-right:7.5%">
       <component :mission="this.mission" is="mapTemplate"></component>
     </v-card-media>
