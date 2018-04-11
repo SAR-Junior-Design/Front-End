@@ -11,10 +11,24 @@
 						:key = "profile_info.type"
 						>
 						<v-card style="margin-top: 20px; margin-left: auto; margin-right: auto; width: 400px;">
-							<h3>{{doc.type}}</h3>
+							<v-toolbar>
+							    <v-toolbar-title>{{doc.type}}</v-toolbar-title>
+							    <v-spacer></v-spacer>
+							    <v-toolbar-items class="hidden-sm-and-down">
+							    	<v-btn flat @click='viewFile(doc)'>
+										<span> EDIT </span>
+									</v-btn>
+							      	<v-btn flat @click="doc.show=!doc.show" v-if="!doc.show">
+						                <v-icon>arrow_drop_down</v-icon>
+						            </v-btn>
+						            <v-btn flat @click="doc.show=!doc.show" v-if="doc.show">
+						                <v-icon>arrow_drop_up</v-icon>
+						            </v-btn>
+							    </v-toolbar-items>
+							 </v-toolbar>
 							<div style="margin-top: 20px; margin-left: auto; margin-right: auto;">
 								<pdf :src="doc.location" 
-				              		v-if="doc.location!=null"
+				              		v-if="doc.show"
 							      	:page=1
 							      	:ref=doc.type
 							     	@num-pages="numPages = $event"
@@ -29,9 +43,6 @@
 									@change="onFilePicked"
 									accept=".pdf"
 								>
-								<v-btn outline @click='viewFile(doc)'>
-									<span> EDIT </span>
-								</v-btn>
 								<v-dialog v-model="editFile" max-width="500px">
 								    <v-card>
 								        <v-card-title primary-title>
@@ -98,9 +109,7 @@
 import API from '../../mixins/API.js'
 import Vue from 'vue';
 import pdf from 'vue-pdf'
-
 Vue.component('pdf', pdf)
-
 export default {
 	mixins: [API],
 	props: ['user_info'],
@@ -115,8 +124,8 @@ export default {
 			profile_info: {
 				image: 'https://avatars0.githubusercontent.com/u/8029035?s=400&v=4',
 				documents: [
-					{ type: 'Part 107', location: 'https://cdn.mozilla.net/pdfjs/tracemonkey.pdf'},
-					{ type: 'Part 333', location: null}
+					{ type: 'Part 107', location: 'https://cdn.mozilla.net/pdfjs/tracemonkey.pdf', show: false},
+					{ type: 'Part 333', location: null, show: false}
 				]
 			},
 			pdfUrl: null,
@@ -124,7 +133,6 @@ export default {
     		pdfFile: '',
     		currFile: null,
     		editFile: false,
-
     		typeError: false
 		}
 	},
@@ -136,7 +144,6 @@ export default {
         	if (this.pdfUrl != null) {
 	        	e.location = this.pdfUrl;
 	        	this.clearFile();
-	        	console.log(this.$refs[e.type]);
 	        	this.$emit('snackbar',6000, 'File Successfully Saved');
 	        }
         },
