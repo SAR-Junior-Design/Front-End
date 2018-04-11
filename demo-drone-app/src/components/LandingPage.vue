@@ -4,7 +4,7 @@
       <video-bg :sources="['https://s3.amazonaws.com/icarus-media/doneVID.mp4']" style="height:610px;">
         <v-container>
           <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
-          <v-layout row wrap style="margin-top:100px;margin-bottom:100px;">
+          <v-layout row wrap style="margin-top:10%;margin-bottom:10%;">
             <v-layout column style="margin-top:18%;margin-bottom:10%">
               <v-flex mt-3>
                 <v-flex class="text-xs-left" style="color:#ffffff">
@@ -14,7 +14,7 @@
               </v-flex>
             </v-layout style="margin-bottom: 10%;">
               <v-layout column>
-                <v-card style="background-color:#ffffff;opacity:0.9;">
+                <v-card style="background-color:#ffffff;opacity:0.95;">
                   <v-card-title>
                     <v-flex class="text-xs-left" style="margin-top:0px;">
                       <h2> Register </h2>
