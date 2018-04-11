@@ -6,22 +6,21 @@
 					<span style="font-size:30px;"> Licenses </span>
 				</v-flex>
 				<v-layout column>
-					<v-flex class="text-xs-left">
-						This portion is currently under construction! We are working hard to get a license file storage system working.
-					</v-flex>
 					<v-layout row
 						v-for="doc in profile_info.documents"
 						:key = "profile_info.type"
 						>
-						<v-flex style="margin-top:12px;">
-							<h3 v-if="doc.location != 'null'"> 
-								<a target="_blank" :href="doc.location"> {{doc.type}} </a>
-							</h3>
-							<h3 v-if="doc.location == 'null'"> 
-								{{doc.type}}
-							</h3>
-						</v-flex>
-						<v-flex class="text-xs-right">
+						<v-card style="margin-top: 20px; margin-left: auto; margin-right: auto; width: 400px;">
+							<h3>{{doc.type}}</h3>
+							<div style="margin-top: 20px; margin-left: auto; margin-right: auto;">
+								<pdf :src="doc.location" 
+				              		v-if="doc.location!=null"
+							      	:page=1
+							      	:ref=doc.type
+							     	@num-pages="numPages = $event"
+							     	style="width:400px; margin-left: auto; margin-right: auto;">
+							    </pdf>
+							</div>
 							<v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
 								<input
 									type="file"
@@ -36,18 +35,34 @@
 								<v-dialog v-model="editFile" max-width="500px">
 								    <v-card>
 								        <v-card-title primary-title>
-								          <div>
-								            <h3 class="headline mb-0">{{currFile}} Upload</h3>
-								            <div>
-								              	<pdf :src="pdfUrl" 
-								              		v-if="pdfUrl!=null"
-											      	:page=1 
-											     	@num-pages="numPages = $event"
-											     	style="width:400px">
-											    </pdf>
-								            </div>
-								            <h4 style="text-align: center; color: red;" v-if="typeError"> Incorrect File Type. Make sure to upload a PDF </h4>
-								          </div>
+									        <div>
+									        	<h3 class="headline mb-0">{{currFile}} Upload</h3>
+									          	<div>
+									            	<div v-if="pdfUrl==null" class="box_input" @mouseover="mouseOver" @mouseout="mouseOut">
+									            		<div class="box_inside">
+													  		<v-icon x-large style="margin-top:15%;">file_upload</v-icon>
+													  		<br>
+													    	<input
+																type="file"
+																style="display: none"
+																id="myBtn"
+																@change="onFilePicked"
+																accept=".pdf"
+															>
+													    	<label @click='pickFile'><strong>No file selected</strong></label>
+														</div>
+									            	</div>
+									            	<div>
+										            	<pdf :src="pdfUrl" 
+										              		v-if="pdfUrl!=null"
+													      	:page=1
+													     	@num-pages="numPages = $event"
+													     	style="width:400px">
+													    </pdf>
+										            </div>
+									            	<h4 style="text-align: center; color: red;" v-if="typeError"> Incorrect File Type. Make sure to upload a PDF </h4>
+									          	</div>
+									        </div>
 								        </v-card-title>
 								        <v-card-actions>
 								          <v-btn color="primary" flat @click='pickFile'>Upload</v-btn>
@@ -57,7 +72,7 @@
 								    </v-card>
 								</v-dialog>
 							</v-flex>
-						</v-flex>
+						</v-card>
 					</v-layout>
 				</v-layout>
 			</v-layout>
@@ -66,7 +81,17 @@
 </template>
 
 <style>
-
+	.box_input {
+		width: 400px;
+		height: 200px;
+		outline: 2px dashed darkgray;
+		margin-top: 2%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.box_inside {
+		text-align: center;
+	}
 </style>
 
 <script>
@@ -91,7 +116,7 @@ export default {
 				image: 'https://avatars0.githubusercontent.com/u/8029035?s=400&v=4',
 				documents: [
 					{ type: 'Part 107', location: 'https://cdn.mozilla.net/pdfjs/tracemonkey.pdf'},
-					{ type: 'Part 333', location: 'https://www.gutenberg.org/files/1342/1342-pdf.pdf'}
+					{ type: 'Part 333', location: null}
 				]
 			},
 			pdfUrl: null,
@@ -108,19 +133,21 @@ export default {
         	document.getElementById("myBtn").click();
         },
         saveFile(e) {
-        	e.location = this.pdfUrl;
-        	this.clearFile();
-        	this.$emit('snackbar',6000, 'File Successfully Saved');
+        	if (this.pdfUrl != null) {
+	        	e.location = this.pdfUrl;
+	        	this.clearFile();
+	        	console.log(this.$refs[e.type]);
+	        	this.$emit('snackbar',6000, 'File Successfully Saved');
+	        }
         },
         clearFile() {
       		this.pdfName = '';
       		this.pdfFile = '';
-      		this.pdfUrl = '';
+      		this.pdfUrl = null;
       		this.typeError = false;
       	},
         viewFile(e) {
         	this.currFile = e.type;
-        	this.pdfUrl = e.location;
         	this.editFile=true;
         },
       	onFilePicked (e) {
@@ -144,6 +171,12 @@ export default {
         	} else {
         		this.clearFile();
         	}
+      	},
+      	mouseOver() {
+      		document.body.style.cursor= 'pointer';
+      	},
+      	mouseOut() {
+      		document.body.style.cursor= 'default';
       	}
 	},
 	mounted() {

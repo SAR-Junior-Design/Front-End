@@ -76,7 +76,6 @@
 				this.current_item = this.item
 			},
 			snackbar(timeout, text) {
-				console.log("here")
 				this.$emit('snackbar',timeout, text);
 			}
 		},
