@@ -179,10 +179,10 @@ export default {
         if (response.status == 200) {
           this.pastMissions = response.data;
 
-          for (var j = 0; j < this.userMissions.length; j++){
-            var area = this.userMissions[j].area
-            this.userMissions[j].polygons = []
-            this.userMissions[j].paths = []
+          for (var j = 0; j < this.pastMissions.length; j++){
+            var area = this.pastMissions[j].area
+            this.pastMissions[j].polygons = []
+            this.pastMissions[j].paths = []
             var paths = []
             var avg_lat = 0
             var lat_range = {min: 200, max: -200, range: 0}
@@ -216,9 +216,9 @@ export default {
             lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
             var range = Math.max(lat_range.range, lng_range.range)
             var zoom_coefficient = 2
-            this.userMissions[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
-            this.userMissions[j].paths = paths
-            this.userMissions[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+            this.pastMissions[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+            this.pastMissions[j].paths = paths
+            this.pastMissions[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
             }
       }
       error => {
