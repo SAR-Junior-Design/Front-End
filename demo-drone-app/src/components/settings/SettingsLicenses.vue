@@ -26,14 +26,21 @@
 						            </v-btn>
 							    </v-toolbar-items>
 							 </v-toolbar>
-							<div style="margin-top: 20px; margin-left: auto; margin-right: auto;">
+							<div style="margin-top: 20px; margin-left: auto; margin-right: auto;" v-if="doc.show">
 								<pdf :src="doc.location" 
-				              		v-if="doc.show"
+				              		v-if="doc.location!=null"
 							      	:page=1
 							      	:ref=doc.type
 							     	@num-pages="numPages = $event"
 							     	style="width:400px; margin-left: auto; margin-right: auto;">
 							    </pdf>
+							    <div class="box_input" v-if="doc.location==null">
+				            		<div class="box_inside">
+								  		<v-icon x-large style="margin-top:15%;">error</v-icon>
+								  		<br>
+								    	<label><strong>No file uploaded</strong></label>
+									</div>
+				            	</div>
 							</div>
 							<v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
 								<input
