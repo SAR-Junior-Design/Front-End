@@ -83,7 +83,7 @@ Vue.use(Vuetify, {
     data () {
       return {
         is_flat: true,
-        toolbar_color: "transparent",
+        toolbar_color: "primary",
         sidebar: false,
         logged_in: false,
         snackbar: false,
@@ -129,6 +129,7 @@ Vue.use(Vuetify, {
     	}
     },
     mounted() {
+      this.toolbar_color = 'primary';
     	this.isLoggedIn(
     		response => {
     			if (response.data == 'True') {
