@@ -38,19 +38,30 @@ localhost:8080
 ## Release Notes for Icarus
 ### New Features
 
-Added video background on Landing/Login pages
-<br> User can now upload and view documents on License page
-<br> User can upload profile picture on Settings
-<br> 
+<ul>
+  <li>Added video background on Landing/Login pages.</li>
+  <li>User can now upload and view documents on License page.</li>
+  <li>User can upload profile picture on Settings.</li>
+  <li>Polygons can now be deleted on both New Mission and Map page.</li>
+  <li>Missions can now be identified by type (recreational, research, commercial)</li>
+</ul> 
 
 ### Bug Fixes
-<br> Pdfs uploaded in License page can be viewed.
 
+<ul>
+  <li>Pdfs uploaded in License page can be viewed.</li>
+  <li>Navigation bar no longer disappears when window resizes for some browsers.</li>
+  <li>Time and Date can updated if flight details are edited on Map page.</li>
+  <li>Clicking outside of a picker no longer closes nav bar</li>
+</ul>
 
 ### Known Bugs
 
-Uploaded documents under the License Page is not saved to the server.
-<br> Updating profile picture under Settings does not save it to the server.
-<br> Inactive drones on Map Page show data as null.
-<br> User cannot remove a drone from a mission once added on Map Page.
-<br> Sometimes a document uploaded as Part 333 replaces the Part 107 document instead.
+<ul>
+  <li>Uploaded documents under the License Page is not saved to the server.</li>
+  <li>Updating profile picture under Settings does not save it to the server.</li>
+  <li>Inactive drones on Map Page show data as null.</li>
+  <li>User cannot remove a drone from a mission once added on Map Page.</li>
+  <li>Sometimes a document uploaded as Part 333 replaces the Part 107 document instead.</li>
+  <li>Mini map component breaks if multiple polygons are drawn in a single mission</li>
+</ul> 
