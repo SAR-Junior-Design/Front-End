@@ -37,5 +37,11 @@ localhost:8080
 
 ## Release Notes for Icarus
 ### New Features
+
+Added video background on Landing/Login pages
+
 ### Bug Fixes
 ### Known Bugs
+
+Uploaded documents under the License Page is not saved to the server.
+Updating profile picture under Settings does not save it to the server.
