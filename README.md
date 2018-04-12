@@ -41,7 +41,10 @@ localhost:8080
 Added video background on Landing/Login pages
 
 ### Bug Fixes
+
+
+
 ### Known Bugs
 
 Uploaded documents under the License Page is not saved to the server.
-Updating profile picture under Settings does not save it to the server.
+<br> Updating profile picture under Settings does not save it to the server.
