@@ -250,14 +250,7 @@
       </v-dialog>
 
     </v-layout>
-    <v-snackbar top vertical
-      :timeout="timeout"
-      v-model="snackbar"
-      color="white"
-    >
-      <span style="color:black">Mission Successfully Saved</span>
-      <v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
-    </v-snackbar>
+
   </v-layout>
 </template>
 
@@ -325,7 +318,6 @@
         polygons:[],
         canDraw: false,
         drawer: false,
-        snackbar: false,
         timeout: 6000,
         selectedPolygon: null,
         selectedPolyline: null,
@@ -578,7 +570,7 @@
                 this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
                 this.canDraw = false;
                 this.edit = !this.edit;
-                this.snackbar =true;
+                this.$emit('snackbar',6000, 'Mission Successfully Saved');
               }
             }, 
             error => {

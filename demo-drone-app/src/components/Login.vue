@@ -15,7 +15,7 @@
             </v-layout>
             <v-layout column style="float:right;margin-top:8%;">
               <v-flex ma-1>
-                <v-card style="background-color:#ffffff;opacity:0.9">
+                <v-card style="background-color:#ffffff;opacity:0.95">
                   <form @submit.prevent="userLogin"  @success="onLogin">
                     <v-card-title>
                       <v-flex class="text-xs-left" style="margin-top:0px;">
