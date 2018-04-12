@@ -39,12 +39,18 @@ localhost:8080
 ### New Features
 
 Added video background on Landing/Login pages
+<br> User can now upload and view documents on License page
+<br> User can upload profile picture on Settings
+<br> 
 
 ### Bug Fixes
-
+<br> Pdfs uploaded in License page can be viewed.
 
 
 ### Known Bugs
 
 Uploaded documents under the License Page is not saved to the server.
 <br> Updating profile picture under Settings does not save it to the server.
+<br> Inactive drones on Map Page show data as null.
+<br> User cannot remove a drone from a mission once added on Map Page.
+<br> Sometimes a document uploaded as Part 333 replaces the Part 107 document instead.
