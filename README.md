@@ -20,7 +20,6 @@ For more information on [vue-loader], visit http://vuejs.github.io/vue-loader
 
 ### Build
 
-
 ``` bash
 # serve with hot reload at localhost:8080
 yarn start
@@ -32,4 +31,9 @@ yarn run build
 ### Installation
 
 ### Run
-Open a web browser and visit localhost:8080
+
+Open a web browser and in the Address Field go to the following
+
+``` bash
+localhost:8080
+```
