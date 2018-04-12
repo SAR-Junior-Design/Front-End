@@ -27,11 +27,6 @@
 							<v-btn flat outline @click="save_profile_changes()">
 								Save
 							</v-btn>
-						</v-flex>	
-						<v-flex class="text-xs-center">
-							<v-btn disabled flat outline @click="">
-								Edit Picture
-							</v-btn>
 						</v-flex>
 					</v-layout>
 				</form>
@@ -41,7 +36,31 @@
 					<span style="font-size:20px;"> Profile Picture </span>
 				</v-flex>
 				<v-flex class="text-xs-center">
-					<img :src="profile_info.image" :width="size" :height="size"/>
+					<v-badge overlap>
+      					<v-btn
+			              	color="primary"
+			              	dark
+			              	small
+			              	absolute
+			              	fab
+			              	slot="badge"
+			              	@click='pickFile'
+			            >
+			              <v-icon>file_upload</v-icon>
+			            </v-btn>
+      					<v-avatar
+	          				:size="size"
+	          				>
+	          				<img :src="profile_info.image" :width="size" :height="size"/>
+						</v-avatar>
+						<input
+							type="file"
+							style="display: none"
+							id="myBtn"
+							@change="onFilePicked"
+							accept="image/*"
+						>
+	    			</v-badge>
 				</v-flex>
 			</v-layout>
 		</v-layout>
@@ -76,12 +95,31 @@ export default {
 		}
 	},
 	methods: {
+		pickFile () {
+        	document.getElementById("myBtn").click();
+        },
+        onFilePicked (e) {
+        	const files = e.target.files;
+        	if(files[0] !== undefined) {
+          		var name = files[0].name;
+          		if(name.lastIndexOf('.') <= 0) {
+            		return;
+          		}
+          		const fr = new FileReader ();
+          		fr.readAsDataURL(files[0]);
+          		fr.addEventListener('load', () => {
+            		this.profile_info.image = fr.result;
+          		})
+        	} else {
+        		return;
+        	}
+      	},
 		save_profile_changes() {
 			var info = {'name': this.user_info.name, 'email': this.user_info.email}
 			this.update_user_info(info,
 			(response) => {
         if (response.data['code'] == 200) {
-          alert('success!')
+          this.$emit('snackbar',6000, 'Profile Updated');
         } else if (response.data['code'] == 31) {
           throw error
         }
