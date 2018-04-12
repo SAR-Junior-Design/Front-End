@@ -149,6 +149,7 @@ export default {
         },
         saveFile(e) {
         	if (this.pdfUrl != null) {
+	        	e.show=false;
 	        	e.location = this.pdfUrl;
 	        	this.clearFile();
 	        	this.$emit('snackbar',6000, 'File Successfully Saved');
