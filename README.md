@@ -11,11 +11,12 @@ Download the following repository: https://github.com/SAR-Junior-Design/Front-En
 
 ### Dependencies
 
-All dependencies are listed in the package.json file. To install these dependencies, open your computer's Command Prompt, and change to the root directory of the vue project (demo-drone-app/). Then run the following code:
+All dependencies are listed in the package.json file. To install these dependencies, launch a Terminal window, and change to the root directory of the vue project (demo-drone-app/). Then run the following code:
 
 ``` bash
 yarn install
 ```
+For more information on [vue-loader], visit http://vuejs.github.io/vue-loader
 
 ### Build
 
@@ -31,6 +32,4 @@ yarn run build
 ### Installation
 
 ### Run
-
-
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+Open a web browser and visit localhost:8080
