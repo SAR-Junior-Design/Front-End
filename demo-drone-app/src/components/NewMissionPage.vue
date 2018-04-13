@@ -351,20 +351,7 @@
           <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
         </v-card-actions>
       </v-card>
-
-      </v-menu>
-      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="background-color:#1d561a; margin-left:60%">
-        Save Mission
-      </v-btn>
-    </v-navigation-drawer>
-    <v-snackbar top vertical
-      :timeout="timeout"
-      v-model="snackbar"
-      color="white"
-    >
-      <span style="color:black">Mission Successfully Saved</span>
-      <v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
-    </v-snackbar>
+    </v-layout>
   </v-layout>
 </template>
 
@@ -427,7 +414,6 @@
         polygons:[],
         canDraw: false,
         drawer: false,
-        snackbar: false,
         timeout: 6000,
         selectedPolygon: null,
         selectedPolyline: null,
@@ -662,16 +648,25 @@
         var geoJ = this.makeGeoJson();
         var start = this.pickerDate + ' ' + this.pickerStart;
         var end = this.pickerDate + ' ' + this.pickerEnd;
-        this.register_mission(
-          this.title, geoJ,
-          this.description,
-          start,
-          end,
-          response => {
-            if (response.data['code'] == 200) {
-              for (var i = 0; i < this.polygons.length; i++) {
-                this.polygons[i].setEditable(false);
-                this.polygons[i].setDraggable(false);
+        if(this.checkCriteria(this.title, this.description, start, end)) {
+          this.register_mission_v1_1(
+            this.title,
+            geoJ, 
+            this.description,
+            start,
+            end,
+            this.selectedType,
+            response => {
+              if (response['status'] == 200) {
+                for (var i = 0; i < this.polygons.length; i++) {
+                  this.polygons[i].setEditable(false);
+                  this.polygons[i].setDraggable(false);
+                }
+                this.draggable = true;
+                this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
+                this.canDraw = false;
+                this.edit = !this.edit;
+                this.$emit('snackbar',6000, 'Mission Successfully Saved');
               }
               this.draggable = true;
               this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });

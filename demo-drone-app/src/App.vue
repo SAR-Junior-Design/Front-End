@@ -83,7 +83,7 @@ Vue.use(Vuetify, {
     data () {
       return {
         is_flat: true,
-        toolbar_color: "transparent",
+        toolbar_color: "primary",
         sidebar: false,
         logged_in: false,
         snackbar: false,
@@ -126,9 +126,15 @@ Vue.use(Vuetify, {
       	error => {
       		alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
       	})
-    	}
+    	},
+      _snackbar(timeout,text) {
+        this.timeout = timeout
+        this.text = text
+        this.snackbar = true
+      }
     },
     mounted() {
+      this.toolbar_color = 'primary';
     	this.isLoggedIn(
     		response => {
     			if (response.data == 'True') {
