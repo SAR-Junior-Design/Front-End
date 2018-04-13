@@ -225,13 +225,6 @@
       </v-dialog>
 
     </v-layout>
-    <v-navigation-drawer
-      disable-resize-watcher
-      v-model="drawer"
-      light
-      absolute
-      style="width:30%;height:95%; top:64px;"
-    >
     <v-toolbar flat>
       <v-list>
         <v-list-tile>
@@ -322,25 +315,6 @@
         </v-card>
       </v-menu>
 
-      <v-menu
-        ref="menuEnd"
-        persistent
-        lazy
-        :close-on-content-click="false"
-        v-model="menuEnd"
-        transition="scale-transition"
-        full-width
-        :nudge-right="140"
-        :return-value.sync="pickerEnd"
-      >
-        <v-text-field
-          slot="activator"
-          label="Flight End Time"
-          v-model="pickerEnd"
-          prepend-icon="access_time"
-          readonly
-          style="width:40%;float:left;margin:10px;"
-        ></v-text-field>
       <v-card>
         <v-card-title primary-title>
           <div>
@@ -651,7 +625,7 @@
         if(this.checkCriteria(this.title, this.description, start, end)) {
           this.register_mission_v1_1(
             this.title,
-            geoJ, 
+            geoJ,
             this.description,
             start,
             end,
@@ -668,19 +642,12 @@
                 this.edit = !this.edit;
                 this.$emit('snackbar',6000, 'Mission Successfully Saved');
               }
-              this.draggable = true;
-              this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
-              this.canDraw = false;
-              this.edit = !this.edit;
-              this.snackbar =true;
-            } else if (response.data['code'] == 31) {
-              alert("Authentication Error");
+            },
+            error => {
+              alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
             }
-          },
-          error => {
-            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-          }
-        );
+          );
+        }
       }
     }
   };
