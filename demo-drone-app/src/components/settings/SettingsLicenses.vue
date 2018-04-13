@@ -54,7 +54,7 @@
 								    <v-card>
 								        <v-card-title primary-title>
 									        <div>
-									        	<h3 class="headline mb-0">{{currFile}} Upload</h3>
+									        	<h3 class="headline mb-0">{{currFile.type}} Upload</h3>
 									          	<div>
 									            	<div v-if="pdfUrl==null" class="box_input" @mouseover="mouseOver" @mouseout="mouseOut">
 									            		<div class="box_inside">
@@ -84,7 +84,7 @@
 								        </v-card-title>
 								        <v-card-actions>
 								          <v-btn color="primary" flat @click='pickFile'>Upload</v-btn>
-								          <v-btn color="primary" flat @click.stop="editFile=false" @click="saveFile(doc)">Save</v-btn>
+								          <v-btn color="primary" flat @click.stop="editFile=false" @click="saveFile()">Save</v-btn>
 								          <v-btn color="primary" flat @click.stop="editFile=false" @click="clearFile()">Cancel</v-btn>
 								        </v-card-actions>
 								    </v-card>
@@ -138,7 +138,7 @@ export default {
 			pdfUrl: null,
 			pdfName: '',
     		pdfFile: '',
-    		currFile: null,
+    		currFile: {type:null},
     		editFile: false,
     		typeError: false
 		}
@@ -147,8 +147,9 @@ export default {
 		pickFile () {
         	document.getElementById("myBtn").click();
         },
-        saveFile(e) {
+        saveFile() {
         	if (this.pdfUrl != null) {
+        		var e = this.profile_info.documents[this.profile_info.documents.indexOf(this.currFile)];
 	        	e.show=false;
 	        	e.location = this.pdfUrl;
 	        	this.clearFile();
@@ -162,7 +163,7 @@ export default {
       		this.typeError = false;
       	},
         viewFile(e) {
-        	this.currFile = e.type;
+        	this.currFile = e;
         	this.editFile=true;
         },
       	onFilePicked (e) {
