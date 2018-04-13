@@ -44,6 +44,11 @@ localhost:8080
   <li>User can upload profile picture on Settings.</li>
   <li>Polygons can now be deleted on both New Mission and Map page.</li>
   <li>Missions can now be identified by type (recreational, research, commercial)</li>
+  <li>Tabs now disnguish between active and past missions on Home page</li>
+  <li>No missions now directs to new mission if clicked</li>
+  <li>Missions can now be filtered on Mission page</li>
+  <li>Can delete drones on Drone Page</li>
+  <li>Added descriptions to drones on Drone paged</li>
 </ul> 
 
 ### Bug Fixes
@@ -53,6 +58,10 @@ localhost:8080
   <li>Navigation bar no longer disappears when window resizes for some browsers.</li>
   <li>Time and Date can updated if flight details are edited on Map page.</li>
   <li>Clicking outside of a picker no longer closes nav bar</li>
+  <li>Fixed mission card formatting on Home page for consistency</li>
+  <li>Fixed form so as not to give errors when empty after adding drone on Drone page</li>
+  <li>Fixed add drone, so that only one drone is added at a time and not the entire table on Drone page</li>
+  <li>When removing drone, it now only selects one drone instead of all on Drone page</li>
 </ul>
 
 ### Known Bugs
@@ -62,6 +71,7 @@ localhost:8080
   <li>Updating profile picture under Settings does not save it to the server.</li>
   <li>Inactive drones on Map Page show data as null.</li>
   <li>User cannot remove a drone from a mission once added on Map Page.</li>
-  <li>Sometimes a document uploaded as Part 333 replaces the Part 107 document instead.</li>
+  <li>Tabs on home page are dynamically sizing, making Home page jittering</li>
+  <li>Home page is bloated and slow due to API calls and calcultaions</li>
   <li>Mini map component breaks if multiple polygons are drawn in a single mission</li>
 </ul> 
