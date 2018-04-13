@@ -224,6 +224,9 @@ export default {
         alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
       }}
     )
+  },
+  mounted() {
+    this.$emit('change-toolbar-color', 'primary') 
   }
 }
 </script>
