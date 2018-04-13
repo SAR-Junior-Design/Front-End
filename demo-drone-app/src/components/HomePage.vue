@@ -1,10 +1,11 @@
 <template>
-  <v-content class="background">
+  <v-content class="homepage_body">
     <section fill-height>
       <v-container text-xs-center style="margin-top:5%;">
         <v-layout row>
           <v-flex xs12 class="text-xs-center" ma-1>
-            <v-tabs fixed centered>
+            <v-card>
+            <v-tabs fixed centered grow>
               <v-tabs-bar class="light-green darken-4" dark>
                 <v-tabs-slider class="light-green darken-2"></v-tabs-slider>
                 <v-tabs-item
@@ -21,7 +22,7 @@
                   :key="item.id"
                   :id="'tab-' + item.id"
                 >
-                  <v-card flat>
+                  <v-card>
                     <v-card-text>
                       <v-layout row style="overflow-x: scroll;" v-if="item.id == 1 && userMissions.length > 0">
                         <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in userMissions" :key="index">
@@ -48,6 +49,7 @@
                 </v-tabs-content>
               </v-tabs-items>
             </v-tabs>
+          </v-card>
           </v-flex>
         </v-layout>
       </v-container>
@@ -56,12 +58,9 @@
 </template>
 
 <style>
-  .background {
-    background: url(https://i.imgur.com/iuiH5Cu.jpg) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+  .homepage_body {
+		font-family: 'Roboto', sans-serif;
+		background-color: #f0f0f0;
   }
 </style>
 
