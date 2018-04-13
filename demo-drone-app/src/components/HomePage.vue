@@ -2,11 +2,11 @@
   <v-content class="homepage_body">
     <section fill-height>
       <v-container text-xs-center style="margin-top:5%;">
-        <v-layout row>
+        <v-layout style="width:120%;margin-left:-10%" row>
           <v-flex xs12 class="text-xs-center" ma-1>
             <v-card>
             <v-tabs fixed centered grow>
-              <v-tabs-bar class="light-green darken-4" dark>
+              <v-tabs-bar  class="light-green darken-4" dark>
                 <v-tabs-slider class="light-green darken-2"></v-tabs-slider>
                 <v-tabs-item
                   v-for="item in items"
