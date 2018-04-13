@@ -133,37 +133,7 @@
       </v-flex>
       </v-flex>
 
-      <v-btn block color="red" @click.native="snackbar = true">Show Snackbar</v-btn>
-        <v-snackbar
-          :timeout="timeout"
-          :top="y === 'top'"
-          :bottom="y === 'bottom'"
-          :right="x === 'right'"
-          :left="x === 'left'"
-          :multi-line="mode === 'multi-line'"
-          :vertical="mode === 'vertical'"
-          v-model="snackbar"
-          color="blue"
-        >
-      {{ text }}
-      <v-btn flat color="black" @click.native="snackbar = false">Close</v-btn>
-      </v-snackbar>
 
-      <v-btn block color="red" @click.native="snackbar2 = true">Show Snackbar</v-btn>
-        <v-snackbar
-          :timeout="timeout"
-          :top="y === 'top'"
-          :bottom="y === 'bottom'"
-          :right="x === 'right'"
-          :left="x === 'left'"
-          :multi-line="mode === 'multi-line'"
-          :vertical="mode === 'vertical'"
-          v-model="snackbar2"
-          color="blue"
-        >
-      {{ text2 }}
-      <v-btn flat color="black" @click.native="snackbar2 = false">Close</v-btn>
-      </v-snackbar>
     </v-layout>
 </template>
 
@@ -247,6 +217,7 @@ export default {
         response => {
           if (response.status == 200) {
             this.drone_id = true;
+            this.$emit('snackbar',6000, 'Drone Registered Successfully');
             this.getUserDrones();
             this.$refs.form.reset();
           } else if (response.data['code'] == 31) {
@@ -263,7 +234,8 @@ export default {
       this.delete_drone(this.selected,
         response => {
           if (response.status == 200) {
-            this.snackbar2 = true;
+            //this.snackbar2 = true;
+            this.$emit('snackbar',6000, 'Drone Removed Successfully');
             this.getUserDrones();
             this.selected = [];
           } else if (response.data['code'] == 31) {
@@ -315,13 +287,14 @@ export default {
 }
 #drone_ADD {
   margin-top: 80px; 
-  margin-left: 30px;
-  margin-right: 30px;
+  margin-left: 20px;
+  margin-right: 20px;
   margin-bottom: 10px;
 }
 #drone_TABLE {
   margin-top: 80px;
   margin-bottom: 10px;
+  margin-right: 20px;
 }
 #testing {
   margin-top: 70px;
