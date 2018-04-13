@@ -1,6 +1,6 @@
 # Icarus Web Application
 
-## Installation Guide for Icarus
+## Installation Guide for Icarus 1.0
 ### Pre-Requisites
 
 You must have Yarn installed before proceeding. See https://yarnpkg.com/lang/en/docs/install/
@@ -35,7 +35,7 @@ Open a web browser and in the Address Field go to the following
 localhost:8080
 ```
 
-## Release Notes for Icarus
+## Release Notes for Icarus 1.0
 ### New Features
 
 <ul>
