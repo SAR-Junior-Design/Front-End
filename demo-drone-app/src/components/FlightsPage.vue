@@ -175,7 +175,7 @@
 					<v-flex class="text-xs-center">
 						<v-btn flat outline style="margin:10px;"
 							@click="newMission()">
-							NEW MISSION
+							NEW FLIGHT PLAN
 						</v-btn>
 					</v-flex>
 				</v-card>
