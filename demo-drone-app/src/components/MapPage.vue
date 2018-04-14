@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-layout style="width:100%;" fixed  @contextmenu="showDeleteMenu">
+    <v-layout style="width:100%;" fixed  @click="showDeleteMenu">
       <v-card
         v-if="drawer"
         class = "sideNav"
@@ -57,7 +57,7 @@
               <v-list-tile>
                 <v-list-tile-content>
                   <v-list-tile-title>Registered Drones</v-list-tile-title>
-                  <v-list-tile-sub-title>Select a drone to add to your mission.</v-list-tile-sub-title>
+                  <v-list-tile-sub-title>Select a drone to add to your flight.</v-list-tile-sub-title>
                 </v-list-tile-content>
               </v-list-tile>
             </v-list>
@@ -148,7 +148,7 @@
 
         <v-list dense class="pt-0" style="margin:2%;">
           <v-text-field 
-            label="Mission Title"
+            label="Flight Title"
             v-model="title">
           </v-text-field>
           <v-text-field 
@@ -161,7 +161,7 @@
         <v-select
           :items="types"
           v-model="selectedType"
-          label="Mission Type"
+          label="Flight Type"
           single-line
           auto
           hide-details
@@ -291,19 +291,19 @@
         </v-toolbar>
         <v-expansion-panel expand popout>
           <v-expansion-panel-content>
-            <div slot="header">Mission Title</div>
+            <div slot="header">Flight Title</div>
             <v-card>
               <v-card-text class="grey lighten-3">{{title}}</v-card-text>
             </v-card>
           </v-expansion-panel-content>
           <v-expansion-panel-content>
-            <div slot="header">Mission Description</div>
+            <div slot="header">Flight Description</div>
             <v-card>
               <v-card-text class="grey lighten-3">{{description}}</v-card-text>
             </v-card>
           </v-expansion-panel-content>
           <v-expansion-panel-content>
-            <div slot="header">Mission Type</div>
+            <div slot="header">Flight Type</div>
             <v-card>
               <v-card-text class="grey lighten-3">{{type}}</v-card-text>
             </v-card>
@@ -335,7 +335,7 @@
       :center="center"
       :zoom="zoom"
       :map-type-id="mapType"
-      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true}"
+      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true, clickableIcons: false}"
       @click="drawLine($event)">
       <gmap-polyline v-if="paths.length > 0"
           :path="paths"
@@ -378,18 +378,81 @@
           </v-btn>
           <span>Search</span>
         </v-tooltip>
-      <div v-if="edit">
-        <v-btn @click="drawOn()" flat v-if="!canDraw">
-          <v-icon>edit</v-icon>
-          Draw Search Area
-        </v-btn>
-      </div>
-        <v-btn @click="drawOff()" flat v-if="canDraw">
-          <v-icon>pan_tool</v-icon>
-          Edit Map
-        </v-btn>
+        <v-tooltip bottom max-width='100'>
+          <v-btn icon v-if="edit" slot="activator" @click.stop="show = true">
+            <v-icon dark color="primary">help</v-icon>
+          </v-btn>
+          <span>Need Help Selecting a Flight Area?</span>
+        </v-tooltip>
       </v-toolbar>        
     </v-layout>
+
+    <v-tooltip left max-width='100'>
+      <v-speed-dial
+        bottom
+        right
+        fab
+        direction= 'bottom'
+        absolute
+        vertical
+        open-on-hover="true"
+        transition="true"
+        slot="activator"
+        v-if="edit"
+      >
+        <v-btn
+          slot="activator"
+          hover
+          fab
+        >
+          <v-icon>{{currentMode}}</v-icon>
+          <v-icon>close</v-icon>
+        </v-btn>
+        <v-tooltip
+          left
+          max-width='100'
+        >
+          <v-btn
+            fab
+            small
+            slot="activator"
+            @click="drawOn()"
+          >
+            <v-icon> edit </v-icon>
+          </v-btn>
+          <span>Draw Mode</span>
+        </v-tooltip>
+        <v-tooltip
+          left
+          max-width='100'
+        >
+          <v-btn
+            fab
+            small
+            slot="activator"
+            @click="drawOff()"
+          >
+            <v-icon> pan_tool </v-icon>
+          </v-btn>
+          <span>Edit Map Mode</span>
+        </v-tooltip>
+        <v-tooltip
+          left
+          max-width='100'
+        >
+          <v-btn
+            fab
+            small
+            slot="activator"
+            @click="deleteOn()"
+          >
+            <v-icon> delete </v-icon>
+          </v-btn>
+          <span>Delete Mode</span>
+        </v-tooltip>
+      </v-speed-dial>
+      <span>Current Mode</span>
+    </v-tooltip>
 
       <v-layout row>
         <v-btn fixed v-if="!edit" style="left:1%;top:89%; background-color:#1d561a;color:#ffffff;" @click= "swapNav('overView')">Overview</v-btn>
@@ -436,7 +499,7 @@
     }
   });
   export default {
-    name: 'MissionPage',
+    name: 'MapPage',
     mixins: [API],
     data: function data() {
       return {
@@ -454,7 +517,7 @@
         mapType: 'hybrid',
         scrollwheel: false,
         draggable: true,
-        title: "Untitled Mission",
+        title: "Untitled Flight",
         location: "",
         description: "",
 
@@ -492,6 +555,10 @@
         selectedPolygon: null,
         selectedPolyline: null,
         selectedVertex: null,
+
+        deleteable: false,
+        currentMode: "pan_tool",
+        clickedOnPoly: false,
 
         currentSelectedDrone: {
               "id" : '',
@@ -781,13 +848,44 @@
         });
       },
       selectingVertex (e) {
-        if (e.vertex!=undefined) {
-          if (this.selectedPolygon!=null){
-            this.unselectPolygon();
+        if(this.deleteable) {
+          if (e.vertex!=undefined) {
+            if (this.selectedPolygon!=null){
+              this.unselectPolygon();
+            }
+            this.selectedPolyline = this.$refs.polyline.$polylineObject;
+            this.selectedVertex = e.vertex;
+            this.clickedOnPoly = true;
           }
-          this.selectedPolyline = this.$refs.polyline.$polylineObject;
-          this.selectedVertex = e.vertex;
         }
+      },
+      showDeleteMenu (e) {
+        if(this.deleteable) {
+          if (this.clickedOnPoly) {
+            if (this.selectedPolyline != null) {
+                this.deleteMenu = false
+                this.x = e.clientX
+                this.y = e.clientY
+                this.$nextTick(() => {
+                  this.deleteMenu = true
+                })
+            } else {
+              if(this.selectedPolygon != null) {
+                this.deleteMenu = false
+                this.x = e.clientX
+                this.y = e.clientY
+                this.$nextTick(() => {
+                  this.deleteMenu = true
+                })
+              }
+            }
+          }  else {
+            if(this.selectedPolygon != null) {
+              this.unselectPolygon();
+            }
+          }
+        }
+        this.clickedOnPoly = false;
       },
       deletePolygon () {
           this.polygons.splice(this.selectedPolygon.id,1);
@@ -811,33 +909,13 @@
           this.selectedPolygon = null;
           this.selectedVertex = null;
       },
-      showDeleteMenu (e) {
-        if(this.selectedPolyline != null) {
-            this.deleteMenu = false
-            this.x = e.clientX
-            this.y = e.clientY
-            this.$nextTick(() => {
-              this.deleteMenu = true
-            })
-        } else {
-          if(!this.canDraw) {
-            if(this.selectedPolygon != null) {
-              this.deleteMenu = false
-              this.x = e.clientX
-              this.y = e.clientY
-              this.$nextTick(() => {
-                this.deleteMenu = true
-              })
-            }
-          }
-        }
-      },
       setEvent(poly, that){
         google.maps.event.addListener(poly, 'dragend', function (event) {
           that.polygons[poly.id].setPath(poly.getPath());
         });
-        google.maps.event.addListener(poly, 'rightclick', function (event) {
-          if(!that.canDraw) {
+        google.maps.event.addListener(poly, 'click', function (event) {
+          if(that.deleteable) {
+            that.clickedOnPoly = true;
             if (that.selectedPolygon != null) {
               if (that.selectedPolygon != poly) {
                 that.selectedPolygon.setOptions({strokeColor: "#FF0000"});
@@ -881,27 +959,38 @@
               this.paths = [];
             }
           }
+        } else if (this.deleteable) {
+          this.selectingVertex(event);
         }
+      },
+      deleteOn: function() {
+        if (this.canDraw) {
+          this.drawOff()
+        }
+        this.currentMode = "delete";
+        this.deleteable = true;
       },
       drawOn: function() {
         this.canDraw = true;
+        this.deleteable = false;
         this.draggable = false;
-
         this.$refs.map.$mapObject.setOptions({ draggableCursor: 'crosshair' });
-
         for (var i = 0; i < this.polygons.length; i++) {
           this.polygons[i].setEditable(false);
           this.polygons[i].setDraggable(false);
         }
+        this.currentMode = "edit";
       },
       drawOff: function() {
         this.canDraw = false;
+        this.deleteable = false;
         this.draggable = true;
         this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
         for (var i = 0; i < this.polygons.length; i++) {
           this.polygons[i].setEditable(true);
           this.polygons[i].setDraggable(true);
         }
+        this.currentMode = "pan_tool";
       },
       drawLine: function (event) {
         if(this.canDraw) {
