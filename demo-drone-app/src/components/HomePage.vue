@@ -120,6 +120,7 @@ export default {
     }
   },
   mounted() {
+    this.$emit('change-toolbar-color', 'primary')
     this.get_active_missions(
       response => {
         if (response.status == 200) {
