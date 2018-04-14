@@ -8,14 +8,14 @@
         <v-list>
           <v-list-tile>
             <v-list-tile-title class="title">
-              New Mission
+              New Flight
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
       </v-toolbar>
       <v-list dense class="pt-0" style="margin:2%;">
         <v-text-field 
-          label="Mission Title"
+          label="Flight Title"
           v-model="title">
         </v-text-field>
         <v-text-field 
@@ -27,7 +27,7 @@
       <v-select
         :items="types"
         v-model="selectedType"
-        label="Mission Type"
+        label="Flight Type"
         single-line
         auto
         hide-details
@@ -131,7 +131,7 @@
         </v-card>  
       </v-menu>
       <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="background-color:#1d561a; margin-left:60%">
-        Save Mission
+        Save Flight
       </v-btn>
     </v-card>
     <gmap-map
@@ -282,13 +282,13 @@
         <v-card>
         <v-card-title primary-title>
           <div>
-            <h3 class="headline mb-0">Mission Did Not Save</h3>
+            <h3 class="headline mb-0">Flight Did Not Save</h3>
             <h4>Please Make Sure the Following Items are Filled Out:</h4>
             <div>
               <br>
               <ul style="list-style-position: inside; margin-left: 25%;">
-                <li> Mission Title </li>
-                <li> Mission Description </li>
+                <li> Flight Title </li>
+                <li> Flight Description </li>
                 <li> Flight Area </li>
                 <li> Flight Date </li>
                 <li> Start Time </li>
@@ -331,7 +331,7 @@
     }
   });
   export default {
-    name: 'NewMissionPage',
+    name: 'NewFlightsPage',
     mixins: [API],
     data: function data() {
       return {
@@ -646,7 +646,7 @@
                 this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
                 this.canDraw = false;
                 this.edit = !this.edit;
-                this.$emit('snackbar',6000, 'Mission Successfully Saved');
+                this.$emit('snackbar',6000, 'Flight Successfully Saved');
               }
             }, 
             error => {
