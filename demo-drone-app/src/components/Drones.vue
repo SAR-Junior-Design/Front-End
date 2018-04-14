@@ -1,5 +1,5 @@
 <template>
-    <v-layout class="background">
+    <v-layout class="background_drone">
       <v-flex>
       <v-card id="drone_ADD">
         <template>
@@ -133,37 +133,7 @@
       </v-flex>
       </v-flex>
 
-      <v-btn block color="red" @click.native="snackbar = true">Show Snackbar</v-btn>
-        <v-snackbar
-          :timeout="timeout"
-          :top="y === 'top'"
-          :bottom="y === 'bottom'"
-          :right="x === 'right'"
-          :left="x === 'left'"
-          :multi-line="mode === 'multi-line'"
-          :vertical="mode === 'vertical'"
-          v-model="snackbar"
-          color="blue"
-        >
-      {{ text }}
-      <v-btn flat color="black" @click.native="snackbar = false">Close</v-btn>
-      </v-snackbar>
 
-      <v-btn block color="red" @click.native="snackbar2 = true">Show Snackbar</v-btn>
-        <v-snackbar
-          :timeout="timeout"
-          :top="y === 'top'"
-          :bottom="y === 'bottom'"
-          :right="x === 'right'"
-          :left="x === 'left'"
-          :multi-line="mode === 'multi-line'"
-          :vertical="mode === 'vertical'"
-          v-model="snackbar2"
-          color="blue"
-        >
-      {{ text2 }}
-      <v-btn flat color="black" @click.native="snackbar2 = false">Close</v-btn>
-      </v-snackbar>
     </v-layout>
 </template>
 
@@ -181,7 +151,7 @@ export default {
   data () {
     return {
       manufacturer_op: [
-        'AeroVironment', "Ambarella", "DJI", "GoPro", "Parrot", "Yuneec", 
+        'AeroVironment', "Ambarella", "DJI", "GoPro", "Parrot", "Yuneec", "Kespry", "Nutel Robotics", "Institu", "Ehang", "Aeryon Labs", "CyPhy", "senseFly", "Aerialtronics", "Freefly", "FLyability", "draganfly", "ActionDrone",
         "3D Robotics", "CUSTOM BUILD"
       ],
       num_blades_op: [
@@ -247,6 +217,7 @@ export default {
         response => {
           if (response.status == 200) {
             this.drone_id = true;
+            this.$emit('snackbar',6000, 'Drone Registered Successfully');
             this.getUserDrones();
             this.$refs.form.reset();
           } else if (response.data['code'] == 31) {
@@ -259,13 +230,12 @@ export default {
     },
 
     deleteDrone() {
-      console.log("drone to be slected, id: " + JSON.stringify(this.selected)) // just making sure this gives what i want
+      //console.log("drone to be slected, id: " + JSON.stringify(this.selected)) // just making sure this gives what i want
       this.delete_drone(this.selected,
         response => {
           if (response.status == 200) {
-            console.log("response status: " + response.status +"777777777")
-            //this.drone_id = true;
-            this.snackbar2 = true;
+            //this.snackbar2 = true;
+            this.$emit('snackbar',6000, 'Drone Removed Successfully');
             this.getUserDrones();
             this.selected = [];
           } else if (response.data['code'] == 31) {
@@ -294,12 +264,11 @@ export default {
     },
     submit () {
       if (this.$refs.form.validate()) {
-        console.log("IT FINALLY WORKED");
         this.snackbar = true;
       }
     },
     submitting () {
-      console.log("!@#$%^& Ladd Jones")
+      //console.log("!@#$%^& Ladd Jones")
     }
 
   },
@@ -312,22 +281,20 @@ export default {
 
 <!-- styling for the component -->
 <style>
-.background {
+.background_drone {
+  background-image: none;
   background-color: #F0F0F0;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
 }
 #drone_ADD {
-  margin-top: 70px; 
-  margin-left: 30px;
-  margin-right: 30px;
+  margin-top: 80px; 
+  margin-left: 20px;
+  margin-right: 20px;
   margin-bottom: 10px;
 }
 #drone_TABLE {
-  margin-top: 70px;
+  margin-top: 80px;
   margin-bottom: 10px;
+  margin-right: 20px;
 }
 #testing {
   margin-top: 70px;

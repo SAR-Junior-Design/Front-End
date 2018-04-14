@@ -5,11 +5,11 @@ const routerOptions = [
   { path: '/', component: 'LandingPage' },
   { path: '/login', component: 'Login'},
   { path: '/map', component: 'MapPage' },
-  { path: '/newmission', component: 'NewMissionPage' },
+  { path: '/newflight', component: 'NewFlightsPage' },
   { path: '/settings', component: 'Settings'},
   { path: '/homepage', component: 'HomePage'},
   { path: '/drones', component: 'Drones'},
-  { path: '/missions', component: 'MissionsPage'},
+  { path: '/flights', component: 'FlightsPage'},
   { path: '/education', component: 'EducationPage'}
 ]
 

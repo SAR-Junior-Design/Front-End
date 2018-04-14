@@ -1,6 +1,6 @@
 <template>
   <v-card dark style="background-color:#1d561a; height:110%;width:400px;">
-    <v-card-media :src="require('@/assets/exampleMapImage.png')" height="200px">
+    <v-card-media :src="require('@/assets/noMissionImage.png')" height="200px">
     </v-card-media>
     <v-container fluid grid-list-lg>
       <v-layout row justify-left>
