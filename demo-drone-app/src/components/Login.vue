@@ -9,14 +9,18 @@
               <v-flex mt-3>
                 <v-flex class="text-xs-left">
                   <span style="font-size:30px;color:#dadfe8;">Campus Drone Management</span><br/>
-                  <span style="font-size:20px;color:#ffffff;">We make modernization easy.</span>
+                  <span style="font-size:20px;color:#ffffff;">An intuitive drone  policy toolkit.</span>
                 </v-flex>
               </v-flex>
             </v-layout>
             <v-layout column style="float:right;margin-top:8%;">
               <v-flex ma-1>
                 <v-card style="background-color:#ffffff;opacity:0.95">
-                  <form @submit.prevent="userLogin"  @success="onLogin">
+                  <v-form 
+                  @success="onLogin"
+                  lazy-validation
+                  v-model="valid" ref="form"
+                  >
                     <v-card-title>
                       <v-flex class="text-xs-left" style="margin-top:0px;">
                         <h2> Login </h2>
@@ -29,6 +33,7 @@
                             name="loginEmail"
                             label="Email"
                             id="loginEmail"
+                            :rules="emailRules"
                             type="username"
                             v-model="loginEmail"
                             required></v-text-field>
@@ -55,7 +60,7 @@
                         </v-flex>
                       </v-layout>
                     </v-card-text>
-                  </form>
+                  </v-form>
                 </v-card>
               </v-flex>
             </v-layout>
@@ -100,26 +105,37 @@ export default {
       loginPassword: '',
       passwordConfirm: '',
       loginDialog: false,
-      signUpDialog: false
+      signUpDialog: false,
+      valid: true,
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+      ]
     }
   },
   methods: {
     userLogin() {
-      this.login(this.loginEmail, this.loginPassword,
-        response => {
-          if (response.data['code'] == 200) {
-            this.loginDialog = true;
-            this.signUpDialog = false;
-            this.$emit('change-toolbar-color', 'primary')
-            this.$emit('login')
-            router.push('/homepage')
-          } else if (response.data['code'] == 31) {
-            throw error
-          }
-        },
-        error => {
-          alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-        })
+      if (this.$refs.form.validate()) {
+        this.login(this.loginEmail, this.loginPassword,
+          response => {
+            if (response.status == 200) {
+              this.loginDialog = true;
+              this.signUpDialog = false;
+              this.$emit('change-toolbar-color', 'primary')
+              this.$emit('login')
+              router.push('/homepage')
+            } else if (response.status == 400) {
+              this.$emit('snackbar', 6000, 'Bad login info.')
+            } else if (response.status == 500) {
+              throw error
+            }
+          },
+          error => {
+            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+          })
+      } else {
+        this.$emits('snackbar', 6000, 'Fill out login info.')
+      }
     },
     onLogin() {
       router.push('/homepage')

@@ -31,33 +31,20 @@ export default {
       },
     login(email, password, success, failure) {
     	var body = {'email': email, 'password': password}
-      var url = this.base_url + '/v1_0/login'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
-    login_v1_1(email, password, success, failure) {
-      var body = {'email': email, 'password': password}
       var url = this.base_url + '/v1_1/login'
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     logoff(success, failure) {
-    	var url = this.base_url + '/v1_0/logoff'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
-    logoff_v1_1(success, failure) {
-      var url = this.base_url + '/v1_1/logoff'
+    	var url = this.base_url + '/v1_1/logoff'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     register_user(email, password, name, success, failure) {
       var body = {'email': email, 'password': password, 'name': name, 'account_type': "operator"}
-      var url = this.base_url + '/v1_0/register_user'
+      var url = this.base_url + '/v1_1/register_user'
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
