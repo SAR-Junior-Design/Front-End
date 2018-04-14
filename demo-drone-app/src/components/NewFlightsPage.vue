@@ -1,5 +1,5 @@
 <template>
-  <v-layout style="width:100%;height:100%;" fixed @contextmenu="showDeleteMenu">
+  <v-layout style="width:100%;height:100%;" fixed @click="showDeleteMenu">
     <v-card
       :height="cardHeight"
       style="width:40%; top:64px;overflow: scroll;"
@@ -148,8 +148,7 @@
           :path="paths"
           :editable="true"
           ref="polyline"
-          @click="closePolygon($event)"
-          @rightclick="selectingVertex">
+          @click="closePolygon($event)">
       </gmap-polyline>
     </gmap-map>
     <v-menu
@@ -166,9 +165,6 @@
         <v-list-tile v-if="selectedVertex!=null" @click="deleteVertex()">
           <v-list-tile-title>Delete Vertex</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile v-if="selectedPolygon!=null" @click="unselectPolygon()">
-          <v-list-tile-title>Unselect Polygon</v-list-tile-title>
-        </v-list-tile>
       </v-list>
     </v-menu>
     <v-layout>
@@ -183,21 +179,79 @@
         </v-btn>
         <span>Search</span>
       </v-tooltip>
-      <v-btn @click="drawOn()" flat v-if="!canDraw">
-        <v-icon> edit </v-icon>
-        Draw Search Area
-      </v-btn>
-      <v-btn @click="drawOff()" flat v-if="canDraw">
-        <v-icon> pan_tool </v-icon>
-        Edit Map
-      </v-btn>
-      <v-tooltip bottom v-if="canDraw" max-width='100'>
+      <v-tooltip bottom max-width='100'>
         <v-btn icon slot="activator" @click.stop="show = true">
           <v-icon dark color="primary">help</v-icon>
         </v-btn>
         <span>Need Help Selecting a Flight Area?</span>
       </v-tooltip>
     </v-toolbar>
+
+    <v-tooltip left max-width='100'>
+      <v-speed-dial
+        bottom
+        right
+        fab
+        direction= 'bottom'
+        absolute
+        vertical
+        open-on-hover="true"
+        transition="true"
+        slot="activator"
+      >
+        <v-btn
+          slot="activator"
+          hover
+          fab
+        >
+          <v-icon>{{currentMode}}</v-icon>
+          <v-icon>close</v-icon>
+        </v-btn>
+        <v-tooltip
+          left
+          max-width='100'
+        >
+          <v-btn
+            fab
+            small
+            slot="activator"
+            @click="drawOn()"
+          >
+            <v-icon> edit </v-icon>
+          </v-btn>
+          <span>Draw Mode</span>
+        </v-tooltip>
+        <v-tooltip
+          left
+          max-width='100'
+        >
+          <v-btn
+            fab
+            small
+            slot="activator"
+            @click="drawOff()"
+          >
+            <v-icon> pan_tool </v-icon>
+          </v-btn>
+          <span>Edit Map Mode</span>
+        </v-tooltip>
+        <v-tooltip
+          left
+          max-width='100'
+        >
+          <v-btn
+            fab
+            small
+            slot="activator"
+            @click="deleteOn()"
+          >
+            <v-icon> delete </v-icon>
+          </v-btn>
+          <span>Delete Mode</span>
+        </v-tooltip>
+      </v-speed-dial>
+      <span>Current Mode</span>
+    </v-tooltip>
 
       <v-dialog v-model="show" max-width="500px">
         <v-card>
@@ -304,6 +358,7 @@
           'Recreational', 'Commercial', 'Research'
         ],
         selectedType: "Recreational",
+        deleteable: false,
         menuDate: false,
         menuStart: false,
         menuEnd: false,
@@ -318,7 +373,9 @@
         timeout: 6000,
         selectedPolygon: null,
         selectedPolyline: null,
-        selectedVertex: null
+        selectedVertex: null,
+        currentMode: "pan_tool",
+        clickedOnPoly: false
       };
     },
     mounted() {
@@ -326,12 +383,15 @@
     },
     methods: {
       selectingVertex (e) {
-        if (e.vertex!=undefined) {
-          if (this.selectedPolygon!=null){
-            this.unselectPolygon();
+        if(this.deleteable) {
+          if (e.vertex!=undefined) {
+            if (this.selectedPolygon!=null){
+              this.unselectPolygon();
+            }
+            this.selectedPolyline = this.$refs.polyline.$polylineObject;
+            this.selectedVertex = e.vertex;
+            this.clickedOnPoly = true;
           }
-          this.selectedPolyline = this.$refs.polyline.$polylineObject;
-          this.selectedVertex = e.vertex;
         }
       },
       deletePolygon () {
@@ -357,25 +417,32 @@
           this.selectedVertex = null;
       },
       showDeleteMenu (e) {
-        if(this.selectedPolyline != null) {
-            this.deleteMenu = false
-            this.x = e.clientX
-            this.y = e.clientY
-            this.$nextTick(() => {
-              this.deleteMenu = true
-            })
-        } else {
-          if(!this.canDraw) {
+        if(this.deleteable) {
+          if (this.clickedOnPoly) {
+            if (this.selectedPolyline != null) {
+                this.deleteMenu = false
+                this.x = e.clientX
+                this.y = e.clientY
+                this.$nextTick(() => {
+                  this.deleteMenu = true
+                })
+            } else {
+              if(this.selectedPolygon != null) {
+                this.deleteMenu = false
+                this.x = e.clientX
+                this.y = e.clientY
+                this.$nextTick(() => {
+                  this.deleteMenu = true
+                })
+              }
+            }
+          }  else {
             if(this.selectedPolygon != null) {
-              this.deleteMenu = false
-              this.x = e.clientX
-              this.y = e.clientY
-              this.$nextTick(() => {
-                this.deleteMenu = true
-              })
+              this.unselectPolygon();
             }
           }
         }
+        this.clickedOnPoly = false;
       },
       saveDate (date) {
         this.$refs.menuDate.save(date)
@@ -384,8 +451,9 @@
         google.maps.event.addListener(poly, 'dragend', function (event) {
           that.polygons[poly.id].setPath(poly.getPath());
         });
-        google.maps.event.addListener(poly, 'rightclick', function (event) {
-          if(!that.canDraw) {
+        google.maps.event.addListener(poly, 'click', function (event) {
+          if(that.deleteable) {
+            that.clickedOnPoly = true;
             if (that.selectedPolygon != null) {
               if (that.selectedPolygon != poly) {
                 that.selectedPolygon.setOptions({strokeColor: "#FF0000"});
@@ -429,6 +497,8 @@
               this.paths = [];
             }
           }
+        } else if (this.deleteable) {
+          this.selectingVertex(event);
         }
       },
       mouseOff: function(e) {
@@ -441,23 +511,34 @@
           document.body.style.cursor= 'crosshair';
         }
       },
+      deleteOn: function() {
+        if (this.canDraw) {
+          this.drawOff()
+        }
+        this.currentMode = "delete";
+        this.deleteable = true;
+      },
       drawOn: function() {
         this.canDraw = true;
+        this.deleteable = false;
         this.draggable = false;
         this.$refs.map.$mapObject.setOptions({ draggableCursor: 'crosshair' });
         for (var i = 0; i < this.polygons.length; i++) {
           this.polygons[i].setEditable(false);
           this.polygons[i].setDraggable(false);
         }
+        this.currentMode = "edit";
       },
       drawOff: function() {
         this.canDraw = false;
+        this.deleteable = false;
         this.draggable = true;
         this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
         for (var i = 0; i < this.polygons.length; i++) {
           this.polygons[i].setEditable(true);
           this.polygons[i].setDraggable(true);
         }
+        this.currentMode = "pan_tool";
       },
       drawLine: function (event) {
         if (this.drawer) {
