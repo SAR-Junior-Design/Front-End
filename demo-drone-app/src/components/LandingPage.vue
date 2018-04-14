@@ -9,7 +9,7 @@
               <v-flex mt-3>
                 <v-flex class="text-xs-left" style="color:#ffffff">
                   <span style="font-size:30px;color:#ffffff;">Campus Drone Management.</span><br/>
-                  <span style="font-size:20px;color:#ffffff;">Modernization made easy.</span>
+                  <span style="font-size:20px;color:#ffffff;">An intuitive drone  policy toolkit.</span>
                 </v-flex>
               </v-flex>
             </v-layout style="margin-bottom: 10%;">
@@ -188,10 +188,12 @@ export default {
       }
       this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername,
         (response) => {
-          if (response.data['code'] == 200) {
-            this.$emit('snackbar', 6000, 'Signing up!')
+          if (response.status == 200) {
+            this.$emit('snackbar', 6000, 'Account registered.')
             router.push('/login')
-          } else if (response.data['code'] == 31) {
+          } else if (response.status == 400) {
+            this.$emit('snackbar', 6000, 'Bad Registration data.')
+          } else {
             throw error
           }
         },

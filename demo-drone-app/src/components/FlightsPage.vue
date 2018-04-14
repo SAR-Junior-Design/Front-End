@@ -175,7 +175,7 @@
 					<v-flex class="text-xs-center">
 						<v-btn flat outline style="margin:10px;"
 							@click="newMission()">
-							NEW MISSION
+							NEW FLIGHT PLAN
 						</v-btn>
 					</v-flex>
 				</v-card>
@@ -258,14 +258,16 @@
 											flat 
 											@click="deleteMission(props.item.id)"
 											:disabled="!can_delete(props.item.commander_id)">
-												DELETE MISSION
+											<v-icon style="margin-right:5px;"> delete </v-icon>
+												DELETE
 											</v-btn>
 											<v-btn 
 											outline 
 											flat 
 											@click="goToMission(props.item.id)"
 											:disabled="!can_delete(props.item.commander_id)">
-												OPEN MAP
+											<v-icon style="margin-right:5px;"> map </v-icon>
+												MAP
 											</v-btn>
 										</v-flex>
 									</v-layout>
@@ -276,20 +278,6 @@
 				</v-card>
 			</v-layout>
 		</v-layout>
-		<v-snackbar
-			:timeout="timeout"
-			:top="y === 'top'"
-			:bottom="y === 'bottom'"
-			:right="x === 'right'"
-			:left="x === 'left'"
-			:multi-line="mode === 'multi-line'"
-			:vertical="mode === 'vertical'"
-			v-model="snackbar"
-			color="white"
-		>
-			<span style="color:black"> {{ text }} </span>
-			<v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
-		</v-snackbar>
 	</v-content>
 </template>
 
@@ -341,7 +329,7 @@
 					{ text: 'Commander', align: 'center', value: 'commander'},
 					{ text: 'Drones', align: 'center', value: 'Drones#'},
 					{ text: 'Start Date', align: 'center', value: 'starts_at'},
-					{ text: 'Approval Status', align: 'center', value: 'legal_status'}
+					{ text: 'Status', align: 'center', value: 'legal_status'}
 				],
 				items: [],
 				start_date: "1999-01-01",
@@ -357,12 +345,9 @@
 					'DECLINED'
 				],
 				is_gov_official: false,
-				snackbar: false,
 				y: 'top',
 				x: null,
 				mode: '',
-				timeout: 6000,
-				text: 'Clearance updated.',
 				mapLoaded: false
 			}
 		},
@@ -443,7 +428,7 @@
 				this.edit_clearance(
 					item.id, item.clearance.state,
 					response => {
-						this.snackbar = true
+						this.$emit('snackbar', 6000, 'Clearance updated.')
 					},
 					error => {
 						alert('Error connecting to servers!')
@@ -463,7 +448,7 @@
 					})
 			},
 			newMission(){
-			router.push('/newmission')
+			router.push('/newflight')
 			}
 		},
 		beforeMount () {

@@ -95,8 +95,8 @@ Vue.use(Vuetify, {
 				menuItems: [
 				],
 				userMenu: [
-					{ title: 'Missions', path: '/missions', icon: 'home'},
-					{ title: 'New Mission', path: '/newmission', icon: 'lock'},
+					{ title: 'Flights', path: '/flights', icon: 'home'},
+					{ title: 'New Flight', path: '/newflight', icon: 'lock'},
 					{ title: 'Drones', path: '/drones', icon: 'lock'}
 				],
 				notLoggedIn: [
