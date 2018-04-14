@@ -207,28 +207,44 @@
 						<template slot="expand" slot-scope="props">
 							<v-card flat>
 								<v-card-text>
-									<v-layout row>
-										<v-layout column>
-											<v-flex>
+									<v-layout column>
+										<v-layout row>
+											<v-layout column>
 												<h2>
 													{{props.item.title}}
 												</h2>
-											</v-flex>
-											<v-flex>
-												<h4>
+												<span 
+												style="margin-top:10px;
+												height:100px;
+												overflow:scroll;">
 													{{props.item.description}}
-												</h4>
-											</v-flex>
-											<v-flex>
-												<h4>
-													Start Date/Time: {{props.item.starts_at}}
-												</h4>
-												<h4>
-													End Date/Time: {{props.item.ends_at}}
-												</h4>
-												<h4>
-													Type: {{props.item.type}}
-												</h4>
+												</span>
+												<v-layout row style="margin-top:10px;">
+													<v-flex>
+														<h4>Start Date/Time:</h4> <span>{{props.item.starts_at}}</span>
+													</v-flex>
+													<v-flex>
+														<h4>End Date/Time: </h4> <span>{{props.item.ends_at}}</span>
+													</v-flex>
+												</v-layout>
+												<v-flex>
+													<h4>Type: </h4><span>{{props.item.type}}</span>
+												</v-flex>
+											</v-layout>
+											<v-layout column align-center>
+												<v-flex>
+													<component :mission="props.item" is="mapTemplate"></component>
+												</v-flex>
+											</v-layout>
+										</v-layout>
+										<v-layout row>
+											<v-flex v-if="is_gov_official">
+												<v-text-field 
+								          label="Write a short message to the commander to explain how you're setting the status."
+								          multi-line
+								          rows="3"
+								          v-model="description">
+								        </v-text-field>
 											</v-flex>
 											<v-flex v-if="is_gov_official">
 												<h4>
@@ -243,33 +259,35 @@
 												</h4>
 											</v-flex>
 										</v-layout>
-										<v-layout column align-center>
-											<v-flex
-											class="text-xs-center"
-											style="margin:10px;">
-												<component :mission="props.item" is="mapTemplate"></component>
+										<v-layout row>
+											<v-flex class="text-xs-center">
+												<v-btn 
+												outline 
+												flat 
+												@click=""
+												v-if="is_gov_official"
+												>
+												<v-icon style="margin-right:5px;"> update </v-icon>
+													UPDATE
+												</v-btn>
+												<v-btn 
+												outline 
+												flat 
+												@click="deleteMission(props.item.id)"
+												:disabled="!can_delete(props.item.commander_id)">
+												<v-icon style="margin-right:5px;"> delete </v-icon>
+													DELETE
+												</v-btn>
+												<v-btn 
+												outline 
+												flat 
+												@click="goToMission(props.item.id)"
+												:disabled="!can_delete(props.item.commander_id)">
+												<v-icon style="margin-right:5px;"> map </v-icon>
+													MAP
+												</v-btn>
 											</v-flex>
 										</v-layout>
-									</v-layout>
-									<v-layout row>
-										<v-flex class="text-xs-center">
-											<v-btn 
-											outline 
-											flat 
-											@click="deleteMission(props.item.id)"
-											:disabled="!can_delete(props.item.commander_id)">
-											<v-icon style="margin-right:5px;"> delete </v-icon>
-												DELETE
-											</v-btn>
-											<v-btn 
-											outline 
-											flat 
-											@click="goToMission(props.item.id)"
-											:disabled="!can_delete(props.item.commander_id)">
-											<v-icon style="margin-right:5px;"> map </v-icon>
-												MAP
-											</v-btn>
-										</v-flex>
 									</v-layout>
 								</v-card-text>
 							</v-card>
