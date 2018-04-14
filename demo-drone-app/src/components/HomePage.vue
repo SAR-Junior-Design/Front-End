@@ -59,8 +59,8 @@
 
 <style>
   .homepage_body {
-		font-family: 'Roboto', sans-serif;
-		background-color: #f0f0f0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f0f0;
   }
 </style>
 
@@ -72,13 +72,11 @@ import router from '@/router'
 import API from '../mixins/API.js'
 import missionCard from './homepage/missionCard.vue'
 import noMissionCard from './homepage/noMissionCard.vue'
-
 Vue.use(VueAxios, axios)
-
 export default {
   name: 'Login',
   mixins: [API],
-	components: {
+  components: {
     'missionTemplate': missionCard,
     'noMissionTemplate': noMissionCard
   },
@@ -126,7 +124,6 @@ export default {
       response => {
         if (response.status == 200) {
           this.userMissions = response.data;
-
           for (var j = 0; j < this.userMissions.length; j++){
             var area = this.userMissions[j].area
             this.userMissions[j].polygons = []
@@ -177,7 +174,6 @@ export default {
       response => {
         if (response.status == 200) {
           this.pastMissions = response.data;
-
           for (var j = 0; j < this.pastMissions.length; j++){
             var area = this.pastMissions[j].area
             this.pastMissions[j].polygons = []
@@ -224,9 +220,6 @@ export default {
         alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
       }}
     )
-  },
-  mounted() {
-    this.$emit('change-toolbar-color', 'primary') 
   }
 }
 </script>
