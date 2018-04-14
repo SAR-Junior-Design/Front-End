@@ -215,7 +215,7 @@
 												</h2>
 												<span 
 												style="margin-top:10px;
-												height:100px;
+												height:80px;
 												overflow:scroll;">
 													{{props.item.description}}
 												</span>
@@ -238,37 +238,15 @@
 											</v-layout>
 										</v-layout>
 										<v-layout row>
-											<v-flex v-if="is_gov_official">
-												<v-text-field 
-								          label="Write a short message to the commander to explain how you're setting the status."
-								          multi-line
-								          rows="3"
-								          v-model="description">
-								        </v-text-field>
-											</v-flex>
-											<v-flex v-if="is_gov_official">
-												<h4>
-													<v-select
-														:items="clearance_states"
-														v-model="props.item.clearance.state"
-														label="Set Clearance"
-														v-on:input="update_clearance(props.item)"
-														single-line
-														bottom
-													></v-select>
-												</h4>
-											</v-flex>
-										</v-layout>
-										<v-layout row>
 											<v-flex class="text-xs-center">
 												<v-btn 
-												outline 
-												flat 
-												@click=""
-												v-if="is_gov_official"
-												>
-												<v-icon style="margin-right:5px;"> update </v-icon>
-													UPDATE
+													outline 
+													flat 
+													@click=""
+													v-if="is_gov_official"
+													>
+													<v-icon style="margin-right:5px;"> save </v-icon>
+														SAVE MESSAGE
 												</v-btn>
 												<v-btn 
 												outline 
@@ -287,6 +265,30 @@
 													MAP
 												</v-btn>
 											</v-flex>
+										</v-layout>
+										<v-layout row v-if="is_gov_official" >
+											<v-flex style="margin-top:5px;">
+												<v-text-field 
+								          label="Write a short message to the commander to explain how you're setting the status."
+								          multi-line
+								          rows="3"
+								          v-model="description">
+								        </v-text-field>
+											</v-flex>
+											<v-layout column style="margin-left:5px;">
+												<v-flex>
+													<h4>
+														<v-select
+															:items="clearance_states"
+															v-model="props.item.clearance.state"
+															label="Set Clearance"
+															v-on:input="update_clearance(props.item)"
+															single-line
+															bottom
+														></v-select>
+													</h4>
+												</v-flex>
+											</v-layout>
 										</v-layout>
 									</v-layout>
 								</v-card-text>
