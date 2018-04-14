@@ -654,6 +654,9 @@
             }
           );
         }
+      },
+      leaving () {
+        document.body.style.cursor= 'default';
       }
     }
   };
