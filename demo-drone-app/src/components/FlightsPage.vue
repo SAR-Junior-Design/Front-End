@@ -205,74 +205,110 @@
 							From {{ pageStart }} to {{ pageStop }}
 						</template>
 						<template slot="expand" slot-scope="props">
-							<v-toolbar>
-								<v-menu offset-y>
-							      <v-toolbar-side-icon slot="activator"></v-toolbar-side-icon>
-							      <v-list>
-							        <v-list-tile v-if="is_gov_official">
-							          <v-list-tile-title>Save Message</v-list-tile-title>
-							        </v-list-tile>
-							        <v-list-tile @click="deleteMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
-							        	<v-list-tile-title>Delete Flight</v-list-tile-title>
-							        </v-list-tile>
-							        <v-list-tile @click="goToMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
-							        	<v-list-tile-title>Open in Map</v-list-tile-title>
-							        </v-list-tile>
-							      </v-list>
-							    </v-menu>
-							    <v-toolbar-title>{{props.item.title}}</v-toolbar-title>
-							    <v-spacer></v-spacer>
-							    	<v-select
-										:items="clearance_states"
-										v-model="props.item.clearance.state"
-										label="Set Clearance"
-										v-on:input="update_clearance(props.item)"
-										single-line
-										bottom
-									></v-select>
-							</v-toolbar>
-							<v-card flat>
-								<v-card-text>
-									<v-layout column>
-										<v-layout row>
+							<v-tabs>
+								<v-toolbar>
+									<v-menu offset-y>
+								      <v-toolbar-side-icon slot="activator"></v-toolbar-side-icon>
+								      <v-list>
+								        <v-list-tile v-if="is_gov_official">
+								          <v-list-tile-title>Save Message</v-list-tile-title>
+								        </v-list-tile>
+								        <v-list-tile @click="deleteMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
+								        	<v-list-tile-title>Delete Flight</v-list-tile-title>
+								        </v-list-tile>
+								        <v-list-tile @click="goToMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
+								        	<v-list-tile-title>Open in Map</v-list-tile-title>
+								        </v-list-tile>
+								      </v-list>
+								    </v-menu>
+								    <v-toolbar-title>{{props.item.title}}</v-toolbar-title>
+								    <v-tabs-bar slot="extension">
+								        <v-tabs-slider color="primary"></v-tabs-slider>
+								        <v-tabs-item
+								        	href="tab-details"
+								        >
+								          	Flight Details
+								        </v-tabs-item>
+								        <v-tabs-item
+								        	href="tab-clearance"
+								        >
+								        	Clearance
+								        </v-tabs-item>
+								    </v-tabs-bar>
+								</v-toolbar>
+								<v-tabs-items>
+						        <v-tabs-content
+						          id="tab-details"
+						        >
+							        <v-card flat>
+										<v-card-text>
 											<v-layout column>
-												<span 
-												style="margin-top:10px;
-												height:80px;
-												overflow:scroll;">
-													{{props.item.description}}
-												</span>
-												<v-layout row style="margin-top:10px;">
-													<v-flex>
-														<h4>Start Date/Time:</h4> <span>{{props.item.starts_at}}</span>
-													</v-flex>
-													<v-flex>
-														<h4>End Date/Time: </h4> <span>{{props.item.ends_at}}</span>
+												<v-layout row>
+													<v-layout column>
+														<v-layout row style="margin-top:10px;">
+															<v-flex>
+																<h4>Start Date/Time:</h4> <span>{{props.item.starts_at}}</span>
+															</v-flex>
+															<v-flex>
+																<h4>End Date/Time: </h4> <span>{{props.item.ends_at}}</span>
+															</v-flex>
+														</v-layout>
+														<v-flex>
+															<h4>Type: </h4><span>{{props.item.type}}</span>
+														</v-flex>
+													</v-layout>
+													<v-layout column align-center>
+														<v-flex>
+															<component :mission="props.item" is="mapTemplate"></component>
+														</v-flex>
+													</v-layout>
+												</v-layout>
+												<v-layout row v-if="is_gov_official" >
+													<v-flex style="margin-top:5px;">
+														<span 
+														style="margin-top:10px;
+														height:80px;
+														overflow:scroll;">
+															{{props.item.description}}
+														</span>
 													</v-flex>
 												</v-layout>
-												<v-flex>
-													<h4>Type: </h4><span>{{props.item.type}}</span>
-												</v-flex>
 											</v-layout>
-											<v-layout column align-center>
-												<v-flex>
-													<component :mission="props.item" is="mapTemplate"></component>
-												</v-flex>
+										</v-card-text>
+									</v-card>
+						        </v-tabs-content>
+						      </v-tabs-items>
+						      <v-tabs-content
+						          id="tab-clearance"
+						        >
+							        <v-card flat>
+										<v-card-text>
+											<v-layout column>
+												<v-layout row v-if="is_gov_official" >
+													<v-flex style="margin-top:5px;">
+														<v-text-field 
+												          label="Write a short message to the commander to explain how you're setting the status."
+												          multi-line
+												          rows="3"
+												          v-model="message"
+												        >
+										        		</v-text-field>
+													</v-flex>
+													<v-select
+														:items="clearance_states"
+														v-model="props.item.clearance.state"
+														label="Set Clearance"
+														v-on:input="update_clearance(props.item)"
+														single-line
+														bottom
+													></v-select>
+												</v-layout>
 											</v-layout>
-										</v-layout>
-										<v-layout row v-if="is_gov_official" >
-											<v-flex style="margin-top:5px;">
-												<v-text-field 
-								          label="Write a short message to the commander to explain how you're setting the status."
-								          multi-line
-								          rows="3"
-								          v-model="message">
-								        </v-text-field>
-											</v-flex>
-										</v-layout>
-									</v-layout>
-								</v-card-text>
-							</v-card>
+										</v-card-text>
+									</v-card>
+						        </v-tabs-content>
+						      </v-tabs-items>
+							</v-tabs>
 						</template>
 					</v-data-table>
 				</v-card>
@@ -441,7 +477,7 @@
 			deleteMission(mission) {
 				this.delete_mission(mission,
 					response => {
-						alert('Mission deleted!')
+						this.$emit('snackbar', 6000, 'Flight Deleted.')
 						this.getMissions()
 					},
 					error => {
