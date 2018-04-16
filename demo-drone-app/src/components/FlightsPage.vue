@@ -265,10 +265,12 @@
 												</v-layout>
 												<v-layout row v-if="is_gov_official" >
 													<v-flex style="margin-top:5px;">
+														<h4>Flight Description:</h4>
 														<span 
-														style="margin-top:10px;
-														height:80px;
-														overflow:scroll;">
+															style="margin-top:10px;
+															height:80px;
+															overflow:scroll;"
+														>
 															{{props.item.description}}
 														</span>
 													</v-flex>
