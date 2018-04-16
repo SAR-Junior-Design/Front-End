@@ -14,15 +14,15 @@
 						<v-flex>
 							<v-layout row>
 								<v-menu
-											ref="menuDate"
-											lazy
-											:close-on-content-click="false"
-											v-model="start_menu"
-											transition="scale-transition"
-											offset-y
-											full-width
-											:nudge-right="40"
-											min-width="290px"
+									ref="menuDate"
+									lazy
+									:close-on-content-click="false"
+									v-model="start_menu"
+									transition="scale-transition"
+									offset-y
+									full-width
+									:nudge-right="40"
+									min-width="290px"
 									>
 											<v-text-field
 												slot="activator"
@@ -205,14 +205,37 @@
 							From {{ pageStart }} to {{ pageStop }}
 						</template>
 						<template slot="expand" slot-scope="props">
+							<v-toolbar>
+								<v-menu offset-y>
+							      <v-toolbar-side-icon slot="activator"></v-toolbar-side-icon>
+							      <v-list>
+							        <v-list-tile v-if="is_gov_official">
+							          <v-list-tile-title>Save Message</v-list-tile-title>
+							        </v-list-tile>
+							        <v-list-tile @click="deleteMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
+							        	<v-list-tile-title>Delete Flight</v-list-tile-title>
+							        </v-list-tile>
+							        <v-list-tile @click="goToMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
+							        	<v-list-tile-title>Open in Map</v-list-tile-title>
+							        </v-list-tile>
+							      </v-list>
+							    </v-menu>
+							    <v-toolbar-title>{{props.item.title}}</v-toolbar-title>
+							    <v-spacer></v-spacer>
+							    	<v-select
+										:items="clearance_states"
+										v-model="props.item.clearance.state"
+										label="Set Clearance"
+										v-on:input="update_clearance(props.item)"
+										single-line
+										bottom
+									></v-select>
+							</v-toolbar>
 							<v-card flat>
 								<v-card-text>
 									<v-layout column>
 										<v-layout row>
 											<v-layout column>
-												<h2>
-													{{props.item.title}}
-												</h2>
 												<span 
 												style="margin-top:10px;
 												height:80px;
@@ -237,58 +260,15 @@
 												</v-flex>
 											</v-layout>
 										</v-layout>
-										<v-layout row>
-											<v-flex class="text-xs-center">
-												<v-btn 
-													outline 
-													flat 
-													@click=""
-													v-if="is_gov_official"
-													>
-													<v-icon style="margin-right:5px;"> save </v-icon>
-														SAVE MESSAGE
-												</v-btn>
-												<v-btn 
-												outline 
-												flat 
-												@click="deleteMission(props.item.id)"
-												:disabled="!can_delete(props.item.commander_id)">
-												<v-icon style="margin-right:5px;"> delete </v-icon>
-													DELETE
-												</v-btn>
-												<v-btn 
-												outline 
-												flat 
-												@click="goToMission(props.item.id)"
-												:disabled="!can_delete(props.item.commander_id)">
-												<v-icon style="margin-right:5px;"> map </v-icon>
-													MAP
-												</v-btn>
-											</v-flex>
-										</v-layout>
 										<v-layout row v-if="is_gov_official" >
 											<v-flex style="margin-top:5px;">
 												<v-text-field 
 								          label="Write a short message to the commander to explain how you're setting the status."
 								          multi-line
 								          rows="3"
-								          v-model="description">
+								          v-model="message">
 								        </v-text-field>
 											</v-flex>
-											<v-layout column style="margin-left:5px;">
-												<v-flex>
-													<h4>
-														<v-select
-															:items="clearance_states"
-															v-model="props.item.clearance.state"
-															label="Set Clearance"
-															v-on:input="update_clearance(props.item)"
-															single-line
-															bottom
-														></v-select>
-													</h4>
-												</v-flex>
-											</v-layout>
 										</v-layout>
 									</v-layout>
 								</v-card-text>
@@ -359,6 +339,7 @@
 				end_date: "2020-01-01",
 				end_menu: false,
 				end_time: "00:00:00",
+				message: null,
 				end_time_menu: false,
 				clearance_states: [
 					'APPROVED',
