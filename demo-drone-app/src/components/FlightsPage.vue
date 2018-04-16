@@ -207,21 +207,22 @@
 						<template slot="expand" slot-scope="props">
 							<v-tabs>
 								<v-toolbar>
-									<v-menu offset-y>
-								      <v-toolbar-side-icon slot="activator"></v-toolbar-side-icon>
-								      <v-list>
-								        <v-list-tile v-if="is_gov_official">
-								          <v-list-tile-title>Save Message</v-list-tile-title>
-								        </v-list-tile>
-								        <v-list-tile @click="deleteMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
-								        	<v-list-tile-title>Delete Flight</v-list-tile-title>
-								        </v-list-tile>
-								        <v-list-tile @click="goToMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
-								        	<v-list-tile-title>Open in Map</v-list-tile-title>
-								        </v-list-tile>
-								      </v-list>
-								    </v-menu>
 								    <v-toolbar-title>{{props.item.title}}</v-toolbar-title>
+								    <v-spacer></v-spacer>
+									    <v-toolbar-items class="hidden-sm-and-down">
+									    	<v-tooltip left>
+										    	<v-btn flat slot="activator" icon @click="deleteMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
+										    		<v-icon> delete </v-icon>
+										    	</v-btn>
+										    	<span>Delete Flight</span>
+      										</v-tooltip>
+      										<v-tooltip left>
+											    	<v-btn flat slot="activator" icon @click="goToMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
+											    		<v-icon> map </v-icon>
+											    	</v-btn>
+												<span>Open in Map</span>
+      										</v-tooltip>
+									    </v-toolbar-items>
 								    <v-tabs-bar slot="extension">
 								        <v-tabs-slider color="primary"></v-tabs-slider>
 								        <v-tabs-item
@@ -305,6 +306,7 @@
 														bottom
 													></v-select>
 												</v-layout>
+												<v-btn v-if="is_gov_official" flat>Save Message</v-btn>
 											</v-layout>
 										</v-card-text>
 									</v-card>
