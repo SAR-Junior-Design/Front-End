@@ -14,15 +14,15 @@
 						<v-flex>
 							<v-layout row>
 								<v-menu
-											ref="menuDate"
-											lazy
-											:close-on-content-click="false"
-											v-model="start_menu"
-											transition="scale-transition"
-											offset-y
-											full-width
-											:nudge-right="40"
-											min-width="290px"
+									ref="menuDate"
+									lazy
+									:close-on-content-click="false"
+									v-model="start_menu"
+									transition="scale-transition"
+									offset-y
+									full-width
+									:nudge-right="40"
+									min-width="290px"
 									>
 											<v-text-field
 												slot="activator"
@@ -90,15 +90,15 @@
 							<v-flex>
 								<v-layout row>
 								<v-menu
-											ref="menuDate"
-											lazy
-											:close-on-content-click="false"
-											v-model="end_menu"
-											transition="scale-transition"
-											offset-y
-											full-width
-											:nudge-right="40"
-											min-width="290px"
+									ref="menuDate"
+									lazy
+									:close-on-content-click="false"
+									v-model="end_menu"
+									transition="scale-transition"
+									offset-y
+									full-width
+									:nudge-right="40"
+									min-width="290px"
 									>
 											<v-text-field
 												slot="activator"
@@ -205,94 +205,126 @@
 							From {{ pageStart }} to {{ pageStop }}
 						</template>
 						<template slot="expand" slot-scope="props">
-							<v-card flat>
-								<v-card-text>
-									<v-layout column>
-										<v-layout row>
+							<v-tabs>
+								<v-toolbar>
+								    <v-toolbar-title>{{props.item.title}}</v-toolbar-title>
+								    <v-spacer></v-spacer>
+									    <v-toolbar-items class="hidden-sm-and-down">
+									    	<v-tooltip left>
+										    	<v-btn flat slot="activator" icon @click="showDeleteWarning=true" :disabled="!can_delete(props.item.commander_id)">
+										    		<v-icon> delete </v-icon>
+										    	</v-btn>
+										    	<span>Delete Flight</span>
+      										</v-tooltip>
+											<v-dialog v-model="showDeleteWarning" max-width="500px">
+										        <v-card>
+										        <v-card-title primary-title>
+										          <div>
+										            <h3 class="headline mb-0">Are you sure you would like to delete flight {{props.item.title}}</h3>
+										          </div>
+										        </v-card-title>
+										        <v-card-actions>
+										          <v-btn color="primary" flat @click.stop="showDeleteWarning=false">Close</v-btn>
+										          <v-btn color="primary" flat @click="deleteMission(props.item.id)">Delete Flight</v-btn>
+										        </v-card-actions>
+										      </v-card>
+										    </v-dialog>
+      										<v-tooltip left>
+											    	<v-btn flat slot="activator" icon @click="goToMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
+											    		<v-icon> map </v-icon>
+											    	</v-btn>
+												<span>Open in Map</span>
+      										</v-tooltip>
+									    </v-toolbar-items>
+								    <v-tabs-bar slot="extension">
+								        <v-tabs-slider color="primary"></v-tabs-slider>
+								        <v-tabs-item
+								        	href="tab-details"
+								        >
+								          	Flight Details
+								        </v-tabs-item>
+								        <v-tabs-item
+								        	href="tab-clearance"
+								        >
+								        	Clearance
+								        </v-tabs-item>
+								    </v-tabs-bar>
+								</v-toolbar>
+								<v-tabs-items>
+						        <v-tabs-content
+						          id="tab-details"
+						        >
+							        <v-card flat>
+										<v-card-text>
 											<v-layout column>
-												<h2>
-													{{props.item.title}}
-												</h2>
-												<span 
-												style="margin-top:10px;
-												height:80px;
-												overflow:scroll;">
-													{{props.item.description}}
-												</span>
-												<v-layout row style="margin-top:10px;">
-													<v-flex>
-														<h4>Start Date/Time:</h4> <span>{{props.item.starts_at}}</span>
-													</v-flex>
-													<v-flex>
-														<h4>End Date/Time: </h4> <span>{{props.item.ends_at}}</span>
+												<v-layout row>
+													<v-layout column>
+														<v-layout row style="margin-top:10px;">
+															<v-flex>
+																<h4>Start Date/Time:</h4> <span>{{props.item.starts_at}}</span>
+															</v-flex>
+															<v-flex>
+																<h4>End Date/Time: </h4> <span>{{props.item.ends_at}}</span>
+															</v-flex>
+														</v-layout>
+														<v-flex>
+															<h4>Type: </h4><span>{{props.item.type}}</span>
+														</v-flex>
+													</v-layout>
+													<v-layout column align-center>
+														<v-flex>
+															<component :mission="props.item" is="mapTemplate"></component>
+														</v-flex>
+													</v-layout>
+												</v-layout>
+												<v-layout row v-if="is_gov_official" >
+													<v-flex style="margin-top:5px;">
+														<h4>Flight Description:</h4>
+														<span 
+															style="margin-top:10px;
+															height:80px;
+															overflow:scroll;"
+														>
+															{{props.item.description}}
+														</span>
 													</v-flex>
 												</v-layout>
-												<v-flex>
-													<h4>Type: </h4><span>{{props.item.type}}</span>
-												</v-flex>
 											</v-layout>
-											<v-layout column align-center>
-												<v-flex>
-													<component :mission="props.item" is="mapTemplate"></component>
-												</v-flex>
+										</v-card-text>
+									</v-card>
+						        </v-tabs-content>
+						      </v-tabs-items>
+						      <v-tabs-content
+						          id="tab-clearance"
+						        >
+							        <v-card flat>
+										<v-card-text>
+											<v-layout column>
+												<v-layout row v-if="is_gov_official" >
+													<v-flex style="margin-top:5px;">
+														<v-text-field 
+												          label="Write a short message to the commander to explain how you're setting the status."
+												          multi-line
+												          rows="3"
+												          v-model="message"
+												        >
+										        		</v-text-field>
+													</v-flex>
+													<v-select
+														:items="clearance_states"
+														v-model="currState"
+														label="Set Clearance"
+														single-line
+														bottom
+													></v-select>
+												</v-layout>
+												<v-btn v-if="is_gov_official" @click="update_clearance(props.item)" flat>Save Clearance</v-btn>
 											</v-layout>
-										</v-layout>
-										<v-layout row>
-											<v-flex class="text-xs-center">
-												<v-btn 
-													outline 
-													flat 
-													@click=""
-													v-if="is_gov_official"
-													>
-													<v-icon style="margin-right:5px;"> save </v-icon>
-														SAVE MESSAGE
-												</v-btn>
-												<v-btn 
-												outline 
-												flat 
-												@click="deleteMission(props.item.id)"
-												:disabled="!can_delete(props.item.commander_id)">
-												<v-icon style="margin-right:5px;"> delete </v-icon>
-													DELETE
-												</v-btn>
-												<v-btn 
-												outline 
-												flat 
-												@click="goToMission(props.item.id)"
-												:disabled="!can_delete(props.item.commander_id)">
-												<v-icon style="margin-right:5px;"> map </v-icon>
-													MAP
-												</v-btn>
-											</v-flex>
-										</v-layout>
-										<v-layout row v-if="is_gov_official" >
-											<v-flex style="margin-top:5px;">
-												<v-text-field 
-								          label="Write a short message to the commander to explain how you're setting the status."
-								          multi-line
-								          rows="3"
-								          v-model="description">
-								        </v-text-field>
-											</v-flex>
-											<v-layout column style="margin-left:5px;">
-												<v-flex>
-													<h4>
-														<v-select
-															:items="clearance_states"
-															v-model="props.item.clearance.state"
-															label="Set Clearance"
-															v-on:input="update_clearance(props.item)"
-															single-line
-															bottom
-														></v-select>
-													</h4>
-												</v-flex>
-											</v-layout>
-										</v-layout>
-									</v-layout>
-								</v-card-text>
-							</v-card>
+										</v-card-text>
+									</v-card>
+						        </v-tabs-content>
+						      </v-tabs-items>
+							</v-tabs>
 						</template>
 					</v-data-table>
 				</v-card>
@@ -352,6 +384,8 @@
 					{ text: 'Status', align: 'center', value: 'legal_status'}
 				],
 				items: [],
+				showDeleteWarning: false,
+				currState: null,
 				start_date: "1999-01-01",
 				start_menu: false,
 				start_time: "00:00:00",
@@ -359,6 +393,7 @@
 				end_date: "2020-01-01",
 				end_menu: false,
 				end_time: "00:00:00",
+				message: null,
 				end_time_menu: false,
 				clearance_states: [
 					'APPROVED',
@@ -445,6 +480,7 @@
 					});
 				},
 			update_clearance(item) {
+				item.clearance.state = this.currState;
 				this.edit_clearance(
 					item.id, item.clearance.state,
 					response => {
@@ -460,12 +496,13 @@
 			deleteMission(mission) {
 				this.delete_mission(mission,
 					response => {
-						alert('Mission deleted!')
+						this.$emit('snackbar', 6000, 'Flight Deleted.')
 						this.getMissions()
 					},
 					error => {
 
 					})
+				this.showDeleteWarning=false;
 			},
 			newMission(){
 			router.push('/newflight')
