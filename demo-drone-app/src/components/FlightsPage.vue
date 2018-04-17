@@ -90,15 +90,15 @@
 							<v-flex>
 								<v-layout row>
 								<v-menu
-											ref="menuDate"
-											lazy
-											:close-on-content-click="false"
-											v-model="end_menu"
-											transition="scale-transition"
-											offset-y
-											full-width
-											:nudge-right="40"
-											min-width="290px"
+									ref="menuDate"
+									lazy
+									:close-on-content-click="false"
+									v-model="end_menu"
+									transition="scale-transition"
+									offset-y
+									full-width
+									:nudge-right="40"
+									min-width="290px"
 									>
 											<v-text-field
 												slot="activator"
@@ -211,11 +211,24 @@
 								    <v-spacer></v-spacer>
 									    <v-toolbar-items class="hidden-sm-and-down">
 									    	<v-tooltip left>
-										    	<v-btn flat slot="activator" icon @click="deleteMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
+										    	<v-btn flat slot="activator" icon @click="showDeleteWarning=true" :disabled="!can_delete(props.item.commander_id)">
 										    		<v-icon> delete </v-icon>
 										    	</v-btn>
 										    	<span>Delete Flight</span>
       										</v-tooltip>
+											<v-dialog v-model="showDeleteWarning" max-width="500px">
+										        <v-card>
+										        <v-card-title primary-title>
+										          <div>
+										            <h3 class="headline mb-0">Are you sure you would like to delete flight {{props.item.title}}</h3>
+										          </div>
+										        </v-card-title>
+										        <v-card-actions>
+										          <v-btn color="primary" flat @click.stop="showDeleteWarning=false">Close</v-btn>
+										          <v-btn color="primary" flat @click="deleteMission(props.item.id)">Delete Flight</v-btn>
+										        </v-card-actions>
+										      </v-card>
+										    </v-dialog>
       										<v-tooltip left>
 											    	<v-btn flat slot="activator" icon @click="goToMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
 											    		<v-icon> map </v-icon>
@@ -299,14 +312,13 @@
 													</v-flex>
 													<v-select
 														:items="clearance_states"
-														v-model="props.item.clearance.state"
+														v-model="currState"
 														label="Set Clearance"
-														v-on:input="update_clearance(props.item)"
 														single-line
 														bottom
 													></v-select>
 												</v-layout>
-												<v-btn v-if="is_gov_official" flat>Save Message</v-btn>
+												<v-btn v-if="is_gov_official" @click="update_clearance(props.item)" flat>Save Clearance</v-btn>
 											</v-layout>
 										</v-card-text>
 									</v-card>
@@ -372,6 +384,8 @@
 					{ text: 'Status', align: 'center', value: 'legal_status'}
 				],
 				items: [],
+				showDeleteWarning: false,
+				currState: null,
 				start_date: "1999-01-01",
 				start_menu: false,
 				start_time: "00:00:00",
@@ -466,6 +480,7 @@
 					});
 				},
 			update_clearance(item) {
+				item.clearance.state = this.currState;
 				this.edit_clearance(
 					item.id, item.clearance.state,
 					response => {
@@ -487,6 +502,7 @@
 					error => {
 
 					})
+				this.showDeleteWarning=false;
 			},
 			newMission(){
 			router.push('/newflight')
