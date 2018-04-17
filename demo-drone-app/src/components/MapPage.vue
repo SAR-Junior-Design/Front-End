@@ -360,9 +360,6 @@
         <v-list-tile v-if="selectedVertex!=null" @click="deleteVertex()">
           <v-list-tile-title>Delete Vertex</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile v-if="selectedPolygon!=null" @click="unselectPolygon()">
-          <v-list-tile-title>Unselect Polygon</v-list-tile-title>
-        </v-list-tile>
       </v-list>
     </v-menu>
 
