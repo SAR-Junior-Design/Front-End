@@ -11,8 +11,8 @@ Vue.use(VueAxios, axios)
 export default {
   data () {
   	return {
-  		base_url: 'https://backend.icarusmap.com'
-      //base_url: 'http://localhost:5000'
+  		//base_url: 'https://backend.icarusmap.com'
+      base_url: 'http://localhost:5000'
   	}
   },
   methods: {
@@ -70,20 +70,13 @@ export default {
 
     //DRONE API CALLS
     get_user_drones(success, failure){
-      var url = this.base_url + '/v1_1/get_user_drones'
+      var url = this.base_url + '/v1_0/get_user_drones'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
-    register_drone(description, success, failure) {
+    register_drone(description, manufacturer, type, color, number_of_blades, success, failure) {
       var url = this.base_url + '/v1_0/register_drone'
-      var body = {'description': description}
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
-    register_drone_v1_1(description, manufacturer, type, color, number_of_blades, success, failure) {
-      var url = this.base_url + '/v1_1/register_drone'
       var body = {'description': description,
               "manufacturer": manufacturer,
               "type": type,
@@ -100,14 +93,6 @@ export default {
         .catch(failure);
     },
     //MISSION API CALLS
-    register_mission(title, area, description, starts_at, ends_at, success, failure) {
-      var body = {'title': title, 'area': area, 'description': description,
-                  'starts_at': starts_at, 'ends_at': ends_at}
-      var url = this.base_url + '/v1_0/register_mission'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
     register_mission_v1_1(title, area, description, starts_at, ends_at, type, success, failure) {
       var body = {'title': title, 'area': area, 'description': description,
                   'starts_at': starts_at, 'ends_at': ends_at, 'type': type}
@@ -129,13 +114,6 @@ export default {
         .then(success)
         .catch(failure);
     },
-    get_mission_info(mission_id, success, failure){
-      var body = {'mission_id': mission_id}
-      var url = this.base_url + '/v1_0/get_mission_info'
-      axios.post(url, body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
     get_mission_info_v1_1(mission_id, success, failure){
       var body = {'mission_id': mission_id}
       var url = this.base_url + '/v1_1/get_mission_info'
@@ -150,12 +128,6 @@ export default {
         .then(success)
         .catch(failure);
     },
-    get_missions(success, failure){
-      var url = this.base_url + '/v1_0/get_missions'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
     get_missions_v1_1(starts_at, ends_at, success, failure){
       var body = {'starts_at': starts_at, 'ends_at': ends_at}
       var url = this.base_url + '/v1_1/get_missions'
@@ -165,7 +137,7 @@ export default {
     },
     get_possible_mission_conflicts(starts_at, ends_at, success, failure){
       var body = {'starts_at': starts_at, 'ends_at': ends_at}
-      var url = this.base_url + '/v1_1/get_possible_mission_conflicts'
+      var url = this.base_url + '/v1_0/get_possible_mission_conflicts'
       axios.get(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
@@ -186,26 +158,6 @@ export default {
     get_past_missions(success, failure){
       var url = this.base_url + '/v1_1/get_past_missions'
       axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
-    // Details must be a dictionary with any combination
-    // of 'area', 'description', and 'title'. If you don't
-    // want to change a value, don't put it in the
-    // dictionary, just leave it out. Ex.:
-    // to change area, and title:
-    // {
-    //   'area': <area description>,
-    //   'title': 'New Title'
-    // }
-    // to change title and description:
-    // {
-    //   'title': 'New Title',
-    //   'description': 'New description.'
-    // }
-    edit_mission_details(details, success, failure) {
-      var url = this.base_url + '/v1_0/edit_mission_details'
-      axios.post(url,details, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
@@ -233,7 +185,7 @@ export default {
         .catch(failure);
     },
     edit_clearance(mission_id,new_clearance_state, success, failure) {
-      var url = this.base_url + '/v1_0/edit_clearance'
+      var url = this.base_url + '/v1_1/edit_clearance'
       var body = {'mission_id' : mission_id, 'new_clearance_state': new_clearance_state}
       axios.post(url,body, {withCredentials:true})
         .then(success)
