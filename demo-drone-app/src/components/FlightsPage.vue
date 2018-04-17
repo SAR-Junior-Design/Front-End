@@ -425,7 +425,6 @@
 					response => {
 							this.items = response.data
 							for (var j = 0; j < this.items.length; j++){
-								console.log('started iterations!')
 								var area = this.items[j].area
 								this.items[j].polygons = []
 								this.items[j].paths = []
@@ -458,7 +457,6 @@
 											}
 											avg_lng += area.features[i].geometry.coordinates[a][1]
 									}
-								console.log('iterated!')
 							}
 							if (this.items.length != 0) {
 								lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
@@ -469,9 +467,7 @@
 								this.items[j].paths = paths
 								this.items[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
 								}
-								console.log('final calcs!')
 							}
-							console.log('here!')
 						}
 				},
 				error => {
@@ -527,12 +523,11 @@
 			this.get_user_info(response => {
 				if (response.status == 200) {
 					this.user_info = response.data
-				} else {
-					throw error;
 				}
 			},
 			error => {
 				console.log('Error grabbing user data!')
+				throw error;
 			})
 		}
 	}
