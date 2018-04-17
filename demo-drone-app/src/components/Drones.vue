@@ -213,14 +213,14 @@ export default {
       if (this.descr == null) {
         this.descr = "No description added"
       }
-      this.register_drone_v1_1(this.descr, this.man1, this.type0, this.color3, this.blades2,
+      this.register_drone(this.descr, this.man1, this.type0, this.color3, this.blades2,
         response => {
           if (response.status == 200) {
             this.drone_id = true;
             this.$emit('snackbar',6000, 'Drone Registered Successfully');
             this.getUserDrones();
             this.$refs.form.reset();
-          } else if (response.data['code'] == 31) {
+          } else if (response.status == 400) {
             throw error;
           }
         },
