@@ -184,9 +184,10 @@ export default {
         .then(success)
         .catch(failure);
     },
-    edit_clearance(mission_id,new_clearance_state, success, failure) {
+    edit_clearance(mission_id,new_clearance_state, message, success, failure) {
       var url = this.base_url + '/v1_1/edit_clearance'
-      var body = {'mission_id' : mission_id, 'new_clearance_state': new_clearance_state}
+      var body = {'mission_id' : mission_id, 'new_clearance_state': new_clearance_state,
+                  'message': message}
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
