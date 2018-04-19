@@ -558,12 +558,11 @@
 			this.get_user_info(response => {
 				if (response.status == 200) {
 					this.user_info = response.data
-				} else {
-					throw error;
 				}
 			},
 			error => {
 				console.log('Error grabbing user data!')
+				throw error;
 			})
 		}
 	}
