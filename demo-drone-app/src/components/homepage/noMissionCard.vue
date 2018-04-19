@@ -6,10 +6,10 @@
       <v-layout row justify-left>
         <v-flex class="text-xs-center">
           <div>
-            <div class="text-xs-center" style="font-size:25px;">  No Missions Available </div>
+            <div class="text-xs-center" style="font-size:25px;">  No Flights Available </div>
             <v-divider></v-divider>
             <v-flex class="text-xs-center">
-              <v-btn v-on:click="newMission" class="light-green darken-2">New Mission</v-btn>
+              <v-btn v-on:click="newMission" class="light-green darken-2">New Flight</v-btn>
             </v-flex>
           </div>
         </v-flex>
