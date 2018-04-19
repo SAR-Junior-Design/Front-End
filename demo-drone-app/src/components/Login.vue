@@ -124,14 +124,14 @@ export default {
               this.$emit('change-toolbar-color', 'primary')
               this.$emit('login')
               router.push('/homepage')
-            } else if (response.status == 400) {
-              this.$emit('snackbar', 6000, 'Bad login info.')
-            } else if (response.status == 500) {
-              throw error
             }
           },
           error => {
-            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+            if (error.response.status == 400) {
+              this.$emit('snackbar', 6000, error.response.data['message'])
+            } else if (error.response.status == 500) {
+              throw error
+            }
           })
       } else {
         this.$emits('snackbar', 6000, 'Fill out login info.')

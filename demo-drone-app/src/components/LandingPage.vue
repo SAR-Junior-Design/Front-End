@@ -191,14 +191,14 @@ export default {
           if (response.status == 200) {
             this.$emit('snackbar', 6000, 'Account registered.')
             router.push('/login')
-          } else if (response.status == 400) {
-            this.$emit('snackbar', 6000, 'Bad Registration data.')
+          } 
+        },
+        error => {
+          if (error.response.status == 400) {
+            this.$emit('snackbar', 6000, error.response.data['message'])
           } else {
             throw error
           }
-        },
-        error => {
-          alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
         })
     },
     handleScroll(event){

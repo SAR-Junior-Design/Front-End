@@ -28,7 +28,7 @@ import router from '@/router'
 export default {
 	methods: {
     newMission() {
-      router.push('/newmission')
+      router.push('/newflight')
     }
 	}
 }
