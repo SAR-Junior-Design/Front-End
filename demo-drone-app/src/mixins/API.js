@@ -161,6 +161,12 @@ export default {
         .then(success)
         .catch(failure);
     },
+    get_upcoming_missions(success, failure){
+      var url = this.base_url + '/v1_1/get_upcoming_missions'
+      axios.get(url, {withCredentials:true})
+        .then(success)
+        .catch(failure);
+    },
     // Details must be a dictionary with any combination
     // of 'area', 'description', 'title', 'type', 'starts_at', 'ends_at'. If you don't
     // want to change a value, don't put it in the

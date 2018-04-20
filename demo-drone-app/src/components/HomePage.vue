@@ -24,22 +24,32 @@
                 >
                   <v-card>
                     <v-card-text>
-                      <v-layout row style="overflow-x: scroll;" v-if="item.id == 1 && userMissions.length > 0">
-                        <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in userMissions" :key="index">
+                      <v-layout row style="overflow-x: scroll;" v-if="item.id == 1 && todaysFlights.length > 0">
+                        <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in todaysFlights" :key="index">
                           <component :mission="currentMission" is="missionTemplate"></component>
                         </v-flex>
                       </v-layout>
-                      <v-layout row v-else-if="item.id == 1 && userMissions.length == 0">
+                      <v-layout row v-else-if="item.id == 1 && todaysFlights.length == 0">
                         <v-flex pa-3 class="text-xs-center">
                           <component is="noMissionTemplate"></component>
                         </v-flex>
                       </v-layout>
-                      <v-layout row style="overflow-x: scroll;" v-else-if="item.id == 2 && pastMissions.length > 0">
-                        <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in pastMissions" :key="index">
+                      <v-layout row style="overflow-x: scroll;" v-else-if="item.id == 2 && pastFlights.length > 0">
+                        <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in pastFlights" :key="index">
                           <component :mission="currentMission" is="missionTemplate"></component>
                         </v-flex>
                       </v-layout>
-                      <v-layout row style="overflow-x: scroll;" v-else-if="item.id == 1 && pastMissions.length == 0">
+                      <v-layout row style="overflow-x: scroll;" v-else-if="item.id == 2 && pastFlights.length == 0">
+                        <v-flex pa-3 class="text-xs-center">
+                          <component is="noMissionTemplate"></component>
+                        </v-flex>
+                      </v-layout>
+                      <v-layout row style="overflow-x: scroll;" v-else-if="item.id == 3 && upcomingFlights.length > 0">
+                        <v-flex pa-3 class="text-xs-center" v-for="(currentMission, index) in upcomingFlights" :key="index">
+                          <component :mission="currentMission" is="missionTemplate"></component>
+                        </v-flex>
+                      </v-layout>
+                      <v-layout row style="overflow-x: scroll;" v-else-if="item.id == 3 && upcomingFlights.length == 0">
                         <v-flex pa-3 class="text-xs-center">
                           <component is="noMissionTemplate"></component>
                         </v-flex>
@@ -82,28 +92,38 @@ export default {
   },
   data () {
     return {
-      userMissions: {
+      todaysFlights: {
         commanding: {
           title: 'No Active Missions Available'
         }
       },
-      pastMissions: {
+      pastFlights: {
         commanding: {
           title: 'No Past Missions Available'
         }
       },
-      userMissionsCount: 0,
+      upcomingFlights: {
+        commanding: {
+          title: 'No Past Missions Available'
+        }
+      },
+      todaysFlightsCount: 0,
       currentMission: {},
       items: [
           {
-              title: "Active Missions",
+              title: "Today's Flights",
               text: "This is the first text",
               id: 1
           },
           {
-              title: "Past Missions",
+              title: "Past Flights",
               text: "This is the second text",
               id: 2
+          },
+          {
+              title: "Upcoming Flights",
+              text: "This is the third text",
+              id: 3
           }
       ],
     }
@@ -124,11 +144,11 @@ export default {
     this.get_active_missions(
       response => {
         if (response.status == 200) {
-          this.userMissions = response.data;
-          for (var j = 0; j < this.userMissions.length; j++){
-            var area = this.userMissions[j].area
-            this.userMissions[j].polygons = []
-            this.userMissions[j].paths = []
+          this.todaysFlights = response.data;
+          for (var j = 0; j < this.todaysFlights.length; j++){
+            var area = this.todaysFlights[j].area
+            this.todaysFlights[j].polygons = []
+            this.todaysFlights[j].paths = []
             var paths = []
             var avg_lat = 0
             var lat_range = {min: 200, max: -200, range: 0}
@@ -162,9 +182,9 @@ export default {
             lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
             var range = Math.max(lat_range.range, lng_range.range)
             var zoom_coefficient = 2
-            this.userMissions[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
-            this.userMissions[j].paths = paths
-            this.userMissions[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+            this.todaysFlights[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+            this.todaysFlights[j].paths = paths
+            this.todaysFlights[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
             }
       }
       error => {
@@ -174,11 +194,11 @@ export default {
     this.get_past_missions(
       response => {
         if (response.status == 200) {
-          this.pastMissions = response.data;
-          for (var j = 0; j < this.pastMissions.length; j++){
-            var area = this.pastMissions[j].area
-            this.pastMissions[j].polygons = []
-            this.pastMissions[j].paths = []
+          this.pastFlights = response.data;
+          for (var j = 0; j < this.pastFlights.length; j++){
+            var area = this.pastFlights[j].area
+            this.pastFlights[j].polygons = []
+            this.pastFlights[j].paths = []
             var paths = []
             var avg_lat = 0
             var lat_range = {min: 200, max: -200, range: 0}
@@ -212,9 +232,59 @@ export default {
             lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
             var range = Math.max(lat_range.range, lng_range.range)
             var zoom_coefficient = 2
-            this.pastMissions[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
-            this.pastMissions[j].paths = paths
-            this.pastMissions[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+            this.pastFlights[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+            this.pastFlights[j].paths = paths
+            this.pastFlights[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+            }
+      }
+      error => {
+        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
+      }}
+    )
+    this.get_upcoming_missions(
+      response => {
+        if (response.status == 200) {
+          this.upcomingFlights = response.data;
+          for (var j = 0; j < this.upcomingFlights.length; j++){
+            var area = this.upcomingFlights[j].area
+            this.upcomingFlights[j].polygons = []
+            this.upcomingFlights[j].paths = []
+            var paths = []
+            var avg_lat = 0
+            var lat_range = {min: 200, max: -200, range: 0}
+            var avg_lng = 0
+            var lng_range = {min: 200, max: -200, range: 0}
+            var num_coords = area.features[0].geometry.coordinates.length
+            for(var i = 0; i < area.features.length; i++) {
+              for (var a in area.features[i].geometry.coordinates) {
+                paths.push({
+                lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
+                });
+                //avg_lat
+                avg_lat += area.features[i].geometry.coordinates[a][0]
+                if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+                  lat_range.max = area.features[i].geometry.coordinates[a][0]
+                }
+                if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+                  lat_range.min = area.features[i].geometry.coordinates[a][0]
+                }
+                //avg_lng
+                if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+                  lng_range.max = area.features[i].geometry.coordinates[a][1]
+                }
+                if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+                  lng_range.min = area.features[i].geometry.coordinates[a][1]
+                }
+                avg_lng += area.features[i].geometry.coordinates[a][1]
+              }
+            }
+            lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+            lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+            var range = Math.max(lat_range.range, lng_range.range)
+            var zoom_coefficient = 2
+            this.upcomingFlights[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+            this.upcomingFlights[j].paths = paths
+            this.upcomingFlights[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
             }
       }
       error => {
