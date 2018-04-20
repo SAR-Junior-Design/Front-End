@@ -217,17 +217,20 @@
 										    	<span>Delete Flight</span>
       										</v-tooltip>
 											<v-dialog v-model="showDeleteWarning" max-width="500px">
+												<v-toolbar dark color="primary">
+													<v-icon>warning</v-icon>
+								    				<v-toolbar-title>Warning</v-toolbar-title>
+								    			</v-toolbar>
 										        <v-card>
-										        <v-card-title primary-title>
-										          <div>
-										            <h3 class="headline mb-0">Are you sure you would like to delete flight {{props.item.title}}</h3>
-										          </div>
-										        </v-card-title>
-										        <v-card-actions>
-										          <v-btn color="primary" flat @click.stop="showDeleteWarning=false">Close</v-btn>
-										          <v-btn color="primary" flat @click="deleteMission(props.item.id)">Delete Flight</v-btn>
-										        </v-card-actions>
-										      </v-card>
+											        <v-card-title primary-title>
+											            <h1 class="headline mb-0">Are you sure?</h1>
+											        </v-card-title>
+											        <v-subheader>The following flight will be deleted and cannot be restored: {{props.item.title}}</v-subheader>
+											        <v-card-actions>
+											          <v-btn flat @click.stop="showDeleteWarning=false">Cancel</v-btn>
+											          <v-btn color="primary" @click="deleteMission(props.item.id)">Delete Flight</v-btn>
+											        </v-card-actions>
+										      	</v-card>
 										    </v-dialog>
       										<v-tooltip left>
 											    	<v-btn flat slot="activator" icon @click="goToMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
@@ -317,6 +320,37 @@
 														single-line
 														bottom
 													></v-select>
+												</v-layout>
+												<v-layout row v-if=" !is_gov_official" >
+													<v-flex style="margin-top:5px;">
+														<h4>Message:</h4>
+														<span 
+															style="margin-top:10px;
+															height:80px;
+															overflow:scroll;"
+															v-if="message!=null"
+														>
+															{{message}}
+														</span>
+														<span 
+															style="margin-top:10px;
+															height:80px;
+															overflow:scroll;"
+															v-else-if="message==null"
+														>
+															No message currently
+														</span>
+													</v-flex>
+													<v-flex style="margin-top:5px;">
+														<h4>Clearance:</h4>
+														<span 
+															style="margin-top:10px;
+															height:80px;
+															overflow:scroll;"
+														>
+															{{props.item.clearance.state}}
+														</span>
+													</v-flex>
 												</v-layout>
 												<v-btn v-if="is_gov_official" @click="update_clearance(props.item)" flat>Save Clearance</v-btn>
 											</v-layout>
@@ -423,57 +457,58 @@
 					starts_at,
 					ends_at,
 					response => {
-							this.items = response.data
-							for (var j = 0; j < this.items.length; j++){
-								var area = this.items[j].area
-								this.items[j].polygons = []
-								this.items[j].paths = []
-								var paths = []
-								var avg_lat = 0
-								var lat_range = {min: 200, max: -200, range: 0}
-								var avg_lng = 0
-								var lng_range = {min: 200, max: -200, range: 0}
-								if(area.features.length>0) {
-									var num_coords = area.features[0].geometry.coordinates.length
-									for(var i = 0; i < area.features.length; i++) {
+						this.items = response.data
+						for (var j = 0; j < this.items.length; j++){
+							var area = this.items[j].area
+							this.items[j].polygons = []
+							this.items[j].paths = []
+							var paths = []
+							var avg_lat = 0
+							var lat_range = {min: 200, max: -200, range: 0}
+							var avg_lng = 0
+							var lng_range = {min: 200, max: -200, range: 0}
+							if(area.features.length>0) {
+								var num_coords = area.features[0].geometry.coordinates.length
+								for(var i = 0; i < area.features.length; i++) {
 									for (var a in area.features[i].geometry.coordinates) {
-											paths.push({
-											lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
-											});
-											//avg_lat
-											avg_lat += area.features[i].geometry.coordinates[a][0]
-											if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
-												lat_range.max = area.features[i].geometry.coordinates[a][0]
-											}
-											if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
-												lat_range.min = area.features[i].geometry.coordinates[a][0]
-											}
-											//avg_lng
-											if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
-												lng_range.max = area.features[i].geometry.coordinates[a][1]
-											}
-											if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
-												lng_range.min = area.features[i].geometry.coordinates[a][1]
-											}
-											avg_lng += area.features[i].geometry.coordinates[a][1]
+										paths.push({
+										lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
+										});
+										//avg_lat
+										avg_lat += area.features[i].geometry.coordinates[a][0]
+										if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+											lat_range.max = area.features[i].geometry.coordinates[a][0]
+										}
+										if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+											lat_range.min = area.features[i].geometry.coordinates[a][0]
+										}
+										//avg_lng
+										if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+											lng_range.max = area.features[i].geometry.coordinates[a][1]
+										}
+										if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+											lng_range.min = area.features[i].geometry.coordinates[a][1]
+										}
+										avg_lng += area.features[i].geometry.coordinates[a][1]
 									}
-							}
-							if (this.items.length != 0) {
-								lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
-								lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
-								var range = Math.max(lat_range.range, lng_range.range)
-								var zoom_coefficient = 2
-								this.items[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
-								this.items[j].paths = paths
-								this.items[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+								}
+								if (this.items.length != 0) {
+									lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+									lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+									var range = Math.max(lat_range.range, lng_range.range)
+									var zoom_coefficient = 2
+									this.items[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+									this.items[j].paths = paths
+									this.items[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
 								}
 							}
 						}
 				},
 				error => {
-				alert('Issues grabbing missions.')
-					console.log(error)
-				})
+					alert('Issues grabbing missions.')
+						console.log(error)
+					}
+				)
 			},
 				setEvent(poly, that){
 					google.maps.event.addListener(poly, 'dragend', function (event) {
@@ -483,7 +518,7 @@
 			update_clearance(item) {
 				item.clearance.state = this.currState;
 				this.edit_clearance(
-					item.id, item.clearance.state,
+					item.id, item.clearance.state, this.message,
 					response => {
 						this.$emit('snackbar', 6000, 'Clearance updated.')
 					},
