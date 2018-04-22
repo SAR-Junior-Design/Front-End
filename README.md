@@ -53,7 +53,7 @@ info Lockfile not saved, no dependencies.
 ```
 Check you are in the right directory (demo-drone-app) and try again.
 
-<li> Build is crashing the cloud instance. In that case, your cloud instance is too small, and build it locally.
+<li> If the build is crashing the cloud instance, then, your cloud instance is too small. Try to build the instance locally.
 
 </ul>
 
