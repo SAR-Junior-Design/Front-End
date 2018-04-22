@@ -37,7 +37,9 @@ localhost:8080
 
 ### Troubleshooting
 
-If you recieve the following after yarn install:
+<ul>
+
+<li> If you recieve the following after yarn install:
 
 ``` bash
 yarn install v1.1.0
@@ -50,6 +52,10 @@ info No lockfile found.
 info Lockfile not saved, no dependencies.
 ```
 Check you are in the right directory (demo-drone-app) and try again.
+
+<li> Build is crashing the cloud instance. In that case, your cloud instance is too small, and build it locally.
+
+</ul>
 
 ## Release Notes for Icarus 1.0
 ### New Features
