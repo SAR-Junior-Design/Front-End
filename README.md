@@ -35,6 +35,10 @@ Open a web browser and in the Address Field go to the following
 localhost:8080
 ```
 
+### Troubleshooting
+
+
+
 ## Release Notes for Icarus 1.0
 ### New Features
 
