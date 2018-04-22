@@ -37,7 +37,19 @@ localhost:8080
 
 ### Troubleshooting
 
+If you recieve the following after yarn install:
 
+``` bash
+yarn install v1.1.0
+info No lockfile found.
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+
+info Lockfile not saved, no dependencies.
+```
+Check you are in the right directory (demo-drone-app) and try again.
 
 ## Release Notes for Icarus 1.0
 ### New Features
@@ -78,4 +90,5 @@ localhost:8080
   <li>Tabs on home page are dynamically sizing, making Home page jittering</li>
   <li>Home page is bloated and slow due to API calls and calcultaions</li>
   <li>Mini map component breaks if multiple polygons are drawn in a single mission</li>
+  <li>Cursor stays crosshair, if user leaves while drawing area</li>
 </ul> 
