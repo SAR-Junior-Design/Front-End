@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-layout style="width:100%;" fixed  @click="showDeleteMenu">
+    <v-layout style="width:100%;" fixed @click="showDeleteMenu">
       <v-card
         v-if="drawer"
         class = "sideNav"
@@ -492,7 +492,7 @@
   Vue.use(VueGoogleMaps, {
     load: {
       installComponents: true,
-      key: 'AIzaSyCtbjOc1SD9ozYtUVzrtxd0PDxRpN-0JGs',
+      key: 'AIzaSyDVtHXFgYBtVI2G3fNUkk3Nwes-sayKTOw',
     }
   });
   export default {
