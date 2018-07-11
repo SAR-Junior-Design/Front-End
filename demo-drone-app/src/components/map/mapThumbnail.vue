@@ -37,7 +37,7 @@
 	Vue.use(VueGoogleMaps, {
     load: {
       installComponents: true,
-      key: 'IzaSyDVtHXFgYBtVI2G3fNUkk3Nwes-sayKTOw'
+      key: 'AIzaSyDVtHXFgYBtVI2G3fNUkk3Nwes-sayKTOw'
     }
   });
 
