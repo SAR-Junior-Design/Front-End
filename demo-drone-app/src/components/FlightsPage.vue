@@ -388,7 +388,7 @@
 	Vue.use(VueGoogleMaps, {
 		load: {
 			installComponents: true,
-			key: 'AIzaSyCtbjOc1SD9ozYtUVzrtxd0PDxRpN-0JGs'
+			key: 'AIzaSyDVtHXFgYBtVI2G3fNUkk3Nwes-sayKTOw'
 		}
 	});
 
