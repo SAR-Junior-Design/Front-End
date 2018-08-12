@@ -33,9 +33,9 @@
 				</v-list>
 			</v-menu>
 			<v-toolbar-items class="hidden-sm-and-down" v-if="!logged_in">
-				<v-btn 
-				style="color:white;" 
-				flat 
+				<v-btn
+				style="color:white;"
+				flat
 				to="/login"
 				>
 					<v-icon style="margin-right:5px">lock_outline</v-icon>
@@ -53,6 +53,7 @@
 			:vertical="mode === 'vertical'"
 			v-model="snackbar"
 			color="white"
+			class="hidden-sm-and-down"
 		>
 			<span style="color:black"> {{ text }} </span>
 			<v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>

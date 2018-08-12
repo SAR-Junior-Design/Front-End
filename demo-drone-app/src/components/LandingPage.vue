@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['https://s3.amazonaws.com/icarus-media/doneVID.mp4']" style="height:610px;">
+      <video-bg :sources="['https://s3.amazonaws.com/icarus-media/doneVID.mp4']" class="hidden-sm-and-down"style="height:610px;">
         <v-container>
           <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
           <v-layout row wrap style="margin-top:10%;margin-bottom:10%;">
@@ -87,17 +87,35 @@
         class="my-5"
         align-center
       >
-        <v-flex xs12 sm4 class="my-3">
-          <div class="text-xs-center">
-            <h2 class="headline" style="margin-bottom:5px;">Be ahead of the curve.</h2>
-            <span class="subheading">
-              Have a drone policy that fuels innovation.
-            </span>
-          </div>
-        </v-flex>
         <v-flex xs12>
           <v-container grid-list-xl>
             <v-layout row wrap align-center>
+              <v-flex xs12 md4>
+                <v-card class="elevation-0 transparent">
+                  <v-card-text class="text-xs-center">
+                    <v-icon x-large color="primary">phonelink_erase</v-icon>
+                  </v-card-text>
+                  <v-card-title primary-title class="layout justify-center">
+                    <div class="headline text-xs-center">Mobile Support Under Development.</div>
+                  </v-card-title>
+                  <v-card-text>
+                    Our platform strives to provide a clean, crisp experience. Therefore our application currently only supports desktop browsers. Please use any of the major desktop browsers until further notice.
+                  </v-card-text>
+                </v-card>
+              </v-flex>
+              <v-flex xs12 md4>
+                <v-card class="elevation-0 transparent">
+                  <v-card-text class="text-xs-center">
+                    <v-icon x-large color="primary">trending_up</v-icon>
+                  </v-card-text>
+                  <v-card-title primary-title class="layout justify-center">
+                    <div class="headline text-xs-center">Be ahead of the curve.</div>
+                  </v-card-title>
+                  <v-card-text>
+                    Have a drone policy that fuels innovation.
+                  </v-card-text>
+                </v-card>
+              </v-flex>
               <v-flex xs12 md4>
                 <v-card class="elevation-0 transparent">
                   <v-card-text class="text-xs-center">
@@ -191,7 +209,7 @@ export default {
           if (response.status == 200) {
             this.$emit('snackbar', 6000, 'Account registered.')
             router.push('/login')
-          } 
+          }
         },
         error => {
           if (error.response.status == 400) {
