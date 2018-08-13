@@ -1,6 +1,6 @@
 <template>
 	<v-app id="inspire">
-		<v-toolbar transparent fixed :flat = "is_flat" :color="toolbar_color">
+		<v-toolbar primary fixed :flat = "is_flat" :color="toolbar_color">
 			<v-toolbar-title style="margin-right:20px;">
 				<router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: white;">
 					ICARUS
@@ -84,7 +84,7 @@ Vue.use(Vuetify, {
 		data () {
 			return {
 				is_flat: true,
-				toolbar_color: "transparent",
+				toolbar_color: "primary",
 				sidebar: false,
 				logged_in: false,
 				snackbar: false,
@@ -144,7 +144,7 @@ Vue.use(Vuetify, {
 					} else {
 						this.logged_in = false
 						this.menuItems = this.notLoggedIn
-						this.toolbar_color = 'transparent'
+						this.toolbar_color = 'primary'
 					}
 				},
 				error => {

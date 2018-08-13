@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['https://s3.amazonaws.com/icarus-media/doneVID.mp4']" class="hidden-sm-and-down"style="height:610px;">
+      <video-bg :sources="['https://s3.amazonaws.com/icarus-media/doneVID.mp4']" class="hidden-sm-and-down"style="height:100vh">
         <v-container>
           <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
           <v-layout row wrap style="margin-top:10%;margin-bottom:10%;">
@@ -89,7 +89,7 @@
       >
         <v-flex xs12>
           <v-container grid-list-xl>
-            <v-layout row wrap align-center>
+            <v-layout column align-center>
               <v-flex xs12 md4>
                 <v-card class="elevation-0 transparent">
                   <v-card-text class="text-xs-center">
@@ -224,7 +224,7 @@ export default {
         console.log('GOT SOMEWHERE')
         this.$emit('change-toolbar-color', 'primary')
       } else {
-        this.$emit('change-toolbar-color', 'transparent')
+        this.$emit('change-toolbar-color', 'primary')
       }
     }
   },
@@ -234,7 +234,7 @@ export default {
     }
   },
   mounted() {
-    this.$emit('change-toolbar-color', 'transparent')
+    this.$emit('change-toolbar-color', 'primary')
     this.isLoggedIn(
       response => {
         if (response.data == 'True') {
