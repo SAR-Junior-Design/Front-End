@@ -30,12 +30,11 @@
                       <v-layout column>
                         <v-flex>
                           <v-text-field
-                            name="loginEmail"
-                            label="Email"
-                            id="loginEmail"
-                            :rules="emailRules"
+                            name="loginUsername"
+                            label="Username"
+                            id="loginUsername"
                             type="username"
-                            v-model="loginEmail"
+                            v-model="loginUsername"
                             required></v-text-field>
                         </v-flex>
                         <v-flex>
@@ -101,7 +100,7 @@ export default {
       signUpUsername: '',
       signUpEmail: '',
       signUpPassword: '',
-      loginEmail: '',
+      loginUsername: '',
       loginPassword: '',
       passwordConfirm: '',
       loginDialog: false,
@@ -116,7 +115,7 @@ export default {
   methods: {
     userLogin() {
       if (this.$refs.form.validate()) {
-        this.login(this.loginEmail, this.loginPassword,
+        this.login(this.loginUsername, this.loginPassword,
           response => {
             if (response.status == 200) {
               this.loginDialog = true;

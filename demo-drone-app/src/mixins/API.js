@@ -11,58 +11,52 @@ Vue.use(VueAxios, axios)
 export default {
   data () {
   	return {
-  		base_url: 'https://backend.icarusmap.com'
-      //base_url: 'http://localhost:5000'
+  		//base_url: 'http://devapi.icarusmap.com'
+      base_url: 'http://localhost:8000'
   	}
   },
   methods: {
     //USER API CALLS
     isLoggedIn(success, failure) {
-    	var url = this.base_url + '/v1_0/isLoggedIn'
+    	var url = this.base_url + '/user/is_logged_in/'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     is_government_official(success, failure) {
-      var url = this.base_url + '/v1_0/is_government_official'
+      var url = this.base_url + '/official/is_government_official/'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
       },
-    login(email, password, success, failure) {
-    	var body = {'email': email, 'password': password}
-      var url = this.base_url + '/v1_1/login'
+    login(username, password, success, failure) {
+    	var body = {'username': username, 'password': password}
+      var url = this.base_url + '/user/login/'
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     logoff(success, failure) {
-    	var url = this.base_url + '/v1_1/logoff'
+    	var url = this.base_url + '/user/logout/'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     register_user(email, password, name, success, failure) {
-      var body = {'email': email, 'password': password, 'name': name}
-      var url = this.base_url + '/v1_1/register_user'
+      var body = {'email': email, 'password': password, 'username': name}
+      var url = this.base_url + '/user/register_user/'
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
-    list_all_users(success, failure) {
-      var url = this.base_url + '/v1_0/list_all_users'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
     get_user_info(success, failure) {
-      var url = this.base_url + '/v1_0/get_user_info'
+      var url = this.base_url + '/user/get/'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     update_user_info(user_info, success, failure) {
-      var url = this.base_url + '/v1_0/update_user_info'
+      var url = this.base_url + '/v1_0/update_user_info/'
       axios.post(url,user_info, {withCredentials:true})
         .then(success)
         .catch(failure);
@@ -70,13 +64,13 @@ export default {
 
     //DRONE API CALLS
     get_user_drones(success, failure){
-      var url = this.base_url + '/v1_0/get_user_drones'
+      var url = this.base_url + '/drone/get_user_drones/'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     register_drone(description, manufacturer, type, color, number_of_blades, success, failure) {
-      var url = this.base_url + '/v1_0/register_drone'
+      var url = this.base_url + '/drone/register_drone/'
       var body = {'description': description,
               "manufacturer": manufacturer,
               "type": type,
@@ -87,82 +81,83 @@ export default {
         .catch(failure);
     },
     delete_drone(drone_array, success, failure) {
-      var url = this.base_url + '/v1_0/delete_drone'
+      var url = this.base_url + '/drone/delete_drone/'
       axios.post(url,drone_array, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
+
     //MISSION API CALLS
     register_mission_v1_1(title, area, description, starts_at, ends_at, type, success, failure) {
       var body = {'title': title, 'area': area, 'description': description,
                   'starts_at': starts_at, 'ends_at': ends_at, 'type': type}
-      var url = this.base_url + '/v1_1/register_mission'
+      var url = this.base_url + '/mission/register_mission/'
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     get_mission_drones(mission_id, success, failure) {
       var body = {'mission_id': mission_id}
-      var url = this.base_url + '/v1_0/get_mission_drones'
+      var url = this.base_url + '/mission/get_mission_drones/'
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     get_user_missions(success, failure){
-      var url = this.base_url + '/v1_0/get_user_missions'
+      var url = this.base_url + '/mission/get_user_missions/'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     get_mission_info_v1_1(mission_id, success, failure){
       var body = {'mission_id': mission_id}
-      var url = this.base_url + '/v1_1/get_mission_info'
+      var url = this.base_url + '/mission/get_mission_info/'
       axios.post(url, body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     add_drone_to_mission(drone_id, mission_id, operator_id, success, failure) {
       var body = {'drone_id': drone_id, 'mission_id': mission_id, 'operator_id': operator_id}
-      var url = this.base_url + '/v1_0/add_drone_to_mission'
+      var url = this.base_url + '/mission/add_drone_to_mission/'
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     get_missions_v1_1(starts_at, ends_at, success, failure){
       var body = {'starts_at': starts_at, 'ends_at': ends_at}
-      var url = this.base_url + '/v1_1/get_missions'
+      var url = this.base_url + '/mission/get_missions/'
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     get_possible_mission_conflicts(starts_at, ends_at, success, failure){
       var body = {'starts_at': starts_at, 'ends_at': ends_at}
-      var url = this.base_url + '/v1_0/get_possible_mission_conflicts'
+      var url = this.base_url + '/v1_0/get_possible_mission_conflicts/'
       axios.get(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     delete_mission(mission_id, success, failure) {
       var body = {'mission_id': mission_id}
-      var url = this.base_url + '/v1_0/delete_mission'
+      var url = this.base_url + '/mission/delete_mission/'
       axios.post(url,body, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     get_active_missions(success, failure){
-      var url = this.base_url + '/v1_1/get_active_missions'
+      var url = this.base_url + '/mission/get_current_missions/'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     get_past_missions(success, failure){
-      var url = this.base_url + '/v1_1/get_past_missions'
+      var url = this.base_url + '/mission/get_past_missions/'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);
     },
     get_upcoming_missions(success, failure){
-      var url = this.base_url + '/v1_1/get_upcoming_missions'
+      var url = this.base_url + '/mission/get_upcoming_missions/'
       axios.get(url, {withCredentials:true})
         .then(success)
         .catch(failure);

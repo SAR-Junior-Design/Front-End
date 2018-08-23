@@ -324,6 +324,7 @@
   import axios from 'axios'
   import VueAxios from 'vue-axios'
   import API from '../mixins/API.js'
+  import moment from 'moment'
   Vue.use(VueGoogleMaps, {
     load: {
       installComponents: true,
@@ -625,9 +626,12 @@
         return false;
       },
       saveMission() {
+        alert('saving mission!')
         var geoJ = this.makeGeoJson();
         var start = this.pickerDate + ' ' + this.pickerStart;
         var end = this.pickerDate + ' ' + this.pickerEnd;
+        start = moment(start, 'YYYY-MM-DD HH:mm').toISOString()
+        end = moment(end, 'YYYY-MM-DD HH:mm').toISOString()
         if(this.checkCriteria(this.title, this.description, start, end)) {
           this.register_mission_v1_1(
             this.title,

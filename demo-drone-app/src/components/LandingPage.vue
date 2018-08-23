@@ -80,7 +80,7 @@
 
 
 
-    <section>
+    <section style = "height:95vh;">
       <v-layout
         column
         wrap
