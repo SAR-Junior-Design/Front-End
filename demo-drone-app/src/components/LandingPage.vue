@@ -90,7 +90,7 @@
         <v-flex xs12>
           <v-container grid-list-xl>
             <v-layout column align-center>
-              <v-flex xs12 md4>
+              <v-flex xs12 md4 class="hidden-sm-and-up">
                 <v-card class="elevation-0 transparent">
                   <v-card-text class="text-xs-center">
                     <v-icon x-large color="primary">phonelink_erase</v-icon>
@@ -103,7 +103,7 @@
                   </v-card-text>
                 </v-card>
               </v-flex>
-              <v-flex xs12 md4>
+              <v-flex xs12 md8>
                 <v-card class="elevation-0 transparent">
                   <v-card-text class="text-xs-center">
                     <v-icon x-large color="primary">trending_up</v-icon>
@@ -116,6 +116,8 @@
                   </v-card-text>
                 </v-card>
               </v-flex>
+            </v-layout>
+            <v-layout row wrap align-center>
               <v-flex xs12 md4>
                 <v-card class="elevation-0 transparent">
                   <v-card-text class="text-xs-center">
