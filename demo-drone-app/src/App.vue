@@ -133,22 +133,21 @@
 				this.snackbar = true
 			}
 		},
-		mounted() {
-			this.isLoggedIn(
-				response => {
-					if (response.data == 'True') {
-						this.logged_in = true
-						this.menuItems = this.userMenu
-						this.toolbar_color = 'primary'
-					} else {
-						this.logged_in = false
-						this.menuItems = this.notLoggedIn
-						this.toolbar_color = 'transparent'
-					}
-				},
-				error => {
-					alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-				})
+		async mounted() {
+			const response = await this.isLoggedIn(
+				this.$store.state.access_token
+			);
+			console.log(`is logged in: ${response.data}`)
+			if (JSON.stringify(response.data) == 'true') {
+				this.logged_in = true
+				this.menuItems = this.userMenu
+				this.toolbar_color = 'primary'
+				console.log('changed color!!!!')
+			} else {
+				this.logged_in = false
+				this.menuItems = this.notLoggedIn
+				this.toolbar_color = 'transparent'
+			}
 		}
 	}
 </script>

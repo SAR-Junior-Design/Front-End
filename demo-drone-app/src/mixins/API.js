@@ -20,9 +20,11 @@ export default {
   },
   methods: {
     //USER API CALLS
-    async isLoggedIn(success, failure) {
+    async isLoggedIn(token) {
     	var url = this.base_url + '/user/is_logged_in/'
-      return await axios.get(url);
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
     async is_government_official(token) {
       var url = this.base_url + '/official/is_government_official/'
@@ -111,12 +113,12 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
-    get_mission_drones(mission_id, success, failure) {
+    async get_mission_drones(mission_id, token) {
       var body = {'mission_id': mission_id}
       var url = this.base_url + '/mission/get_mission_drones/'
-      axios.post(url,body)
-        .then(success)
-        .catch(failure);
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
     get_user_missions(success, failure){
       var url = this.base_url + '/mission/get_user_missions/'
@@ -124,12 +126,12 @@ export default {
         .then(success)
         .catch(failure);
     },
-    get_mission_info_v1_1(mission_id, success, failure){
+    async get_mission_info(mission_id, token){
       var body = {'mission_id': mission_id}
       var url = this.base_url + '/mission/get_mission_info/'
-      axios.post(url, body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.post(url, body, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
     add_drone_to_mission(drone_id, mission_id, operator_id, success, failure) {
       var body = {'drone_id': drone_id, 'mission_id': mission_id, 'operator_id': operator_id}

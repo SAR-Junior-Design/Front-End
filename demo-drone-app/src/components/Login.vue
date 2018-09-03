@@ -138,15 +138,6 @@ export default {
     comparePasswords () {
       return this.signUpPassword === this.passwordConfirm ? true : 'Passwords don\'t match'
     }
-  },
-  async mounted() {
-    const response = await this.isLoggedIn();
-    if (response.data == 'True') {
-      this.$emit('change-toolbar-color', 'primary')
-      router.push('/homepage')
-    } else {
-      this.$emit('change-toolbar-color', 'transparent')
-    }
   }
 }
 </script>
