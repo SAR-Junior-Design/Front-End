@@ -1,6 +1,6 @@
 <template>
 	<v-app id="inspire">
-		<v-toolbar transparent fixed :flat = "is_flat" :color="toolbar_color">
+		<v-toolbar primary fixed :flat = "is_flat" :color="toolbar_color">
 			<v-toolbar-title style="margin-right:20px;">
 				<router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: white;">
 					ICARUS
@@ -33,9 +33,9 @@
 				</v-list>
 			</v-menu>
 			<v-toolbar-items class="hidden-sm-and-down" v-if="!logged_in">
-				<v-btn 
-				style="color:white;" 
-				flat 
+				<v-btn
+				style="color:white;"
+				flat
 				to="/login"
 				>
 					<v-icon style="margin-right:5px">lock_outline</v-icon>
@@ -53,6 +53,7 @@
 			:vertical="mode === 'vertical'"
 			v-model="snackbar"
 			color="white"
+			class="hidden-sm-and-down"
 		>
 			<span style="color:black"> {{ text }} </span>
 			<v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
@@ -83,7 +84,7 @@
 		data () {
 			return {
 				is_flat: true,
-				toolbar_color: "transparent",
+				toolbar_color: "primary",
 				sidebar: false,
 				logged_in: false,
 				snackbar: false,

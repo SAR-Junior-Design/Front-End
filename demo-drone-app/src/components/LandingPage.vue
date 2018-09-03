@@ -87,16 +87,36 @@
         class="my-5"
         align-center
       >
-        <v-flex xs12 sm4 class="my-3">
-          <div class="text-xs-center">
-            <h2 class="headline" style="margin-bottom:5px;">Be ahead of the curve.</h2>
-            <span class="subheading">
-              Have a drone policy that fuels innovation.
-            </span>
-          </div>
-        </v-flex>
         <v-flex xs12>
           <v-container grid-list-xl>
+            <v-layout column align-center>
+              <v-flex xs12 md4 class="hidden-sm-and-up">
+                <v-card class="elevation-0 transparent">
+                  <v-card-text class="text-xs-center">
+                    <v-icon x-large color="primary">phonelink_erase</v-icon>
+                  </v-card-text>
+                  <v-card-title primary-title class="layout justify-center">
+                    <div class="headline text-xs-center">Mobile Support Under Development.</div>
+                  </v-card-title>
+                  <v-card-text>
+                    Our platform strives to provide a clean, crisp experience. Therefore our application currently only supports desktop browsers. Please use any of the major desktop browsers until further notice.
+                  </v-card-text>
+                </v-card>
+              </v-flex>
+              <v-flex xs12 md8>
+                <v-card class="elevation-0 transparent">
+                  <v-card-text class="text-xs-center">
+                    <v-icon x-large color="primary">trending_up</v-icon>
+                  </v-card-text>
+                  <v-card-title primary-title class="layout justify-center">
+                    <div class="headline text-xs-center">Be ahead of the curve.</div>
+                  </v-card-title>
+                  <v-card-text>
+                    Have a drone policy that fuels innovation.
+                  </v-card-text>
+                </v-card>
+              </v-flex>
+            </v-layout>
             <v-layout row wrap align-center>
               <v-flex xs12 md4>
                 <v-card class="elevation-0 transparent">
@@ -186,18 +206,35 @@ export default {
       if (this.comparePasswords !== true) {
         return
       }
+<<<<<<< HEAD
       const response = await this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername);
       if (response.status == 200) {
         this.$emit('snackbar', 6000, 'Account registered.')
         router.push('/login')
       } 
+=======
+      this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername,
+        (response) => {
+          if (response.status == 200) {
+            this.$emit('snackbar', 6000, 'Account registered.')
+            router.push('/login')
+          }
+        },
+        error => {
+          if (error.response.status == 400) {
+            this.$emit('snackbar', 6000, error.response.data['message'])
+          } else {
+            throw error
+          }
+        })
+>>>>>>> master
     },
     handleScroll(event){
       if (window.scrollY > 350) {
         console.log('GOT SOMEWHERE')
         this.$emit('change-toolbar-color', 'primary')
       } else {
-        this.$emit('change-toolbar-color', 'transparent')
+        this.$emit('change-toolbar-color', 'primary')
       }
     }
   },
@@ -207,7 +244,7 @@ export default {
     }
   },
   mounted() {
-    this.$emit('change-toolbar-color', 'transparent')
+    this.$emit('change-toolbar-color', 'primary')
     this.isLoggedIn(
       response => {
         if (response.data == 'True') {
