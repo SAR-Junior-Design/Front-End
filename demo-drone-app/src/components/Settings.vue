@@ -65,12 +65,11 @@
 			}
 		},
 		methods: {
-			_get_user_info() {
-				this.get_user_info(response => {
-					this.user_info = response.data
-				}, error => {
-					alert ('Could not get user info!')
-				});
+			async _get_user_info() {
+				const response = await this.get_user_info(
+					this.$store.state.access_token
+				);
+				this.user_info = response.data
 			},
 			on_nav_click(item) {
 				this.current_item = this.item

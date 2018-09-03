@@ -24,12 +24,12 @@ export default {
     	var url = this.base_url + '/user/is_logged_in/'
       return await axios.get(url);
     },
-    is_government_official(success, failure) {
+    async is_government_official(token) {
       var url = this.base_url + '/official/is_government_official/'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-      },
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
     async login(username, password) {
     	var body = {'username': username, 'password': password}
       var url = this.base_url + '/o/token/'
@@ -55,22 +55,20 @@ export default {
     },
     async logoff(success, failure) {
     	var url = this.base_url + '/user/logout/'
-      response = await axios.get(url, {withCredentials:true})
+      response = await axios.get(url)
         .then()
         .catch(failure);
     },
-    register_user(email, password, name, success, failure) {
-      var body = {'email': email, 'password': password, 'username': name}
+    async register_user(email, password, username) {
+      var body = {email, password, username}
       var url = this.base_url + '/user/register_user/'
-      axios.post(url,body)
-        .then(success)
-        .catch(failure);
+      return await axios.post(url,body);
     },
-    get_user_info(success, failure) {
+    async get_user_info(token) {
       var url = this.base_url + '/user/get/'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
     update_user_info(user_info, success, failure) {
       var url = this.base_url + '/v1_0/update_user_info/'
@@ -105,13 +103,13 @@ export default {
     },
 
     //MISSION API CALLS
-    register_mission_v1_1(title, area, description, starts_at, ends_at, type, success, failure) {
+    async register_mission(title, area, description, starts_at, ends_at, type, token) {
       var body = {'title': title, 'area': area, 'description': description,
                   'starts_at': starts_at, 'ends_at': ends_at, 'type': type}
       var url = this.base_url + '/mission/register_mission/'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.post(url,body,{
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
     get_mission_drones(mission_id, success, failure) {
       var body = {'mission_id': mission_id}
@@ -140,12 +138,12 @@ export default {
         .then(success)
         .catch(failure);
     },
-    get_missions(starts_at, ends_at, success, failure){
+    async get_missions(starts_at, ends_at, token){
       var body = {'starts_at': starts_at, 'ends_at': ends_at}
       var url = this.base_url + '/mission/get_missions/'
-      axios.post(url,body)
-        .then(success)
-        .catch(failure);
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
     get_possible_mission_conflicts(starts_at, ends_at, success, failure){
       var body = {'starts_at': starts_at, 'ends_at': ends_at}

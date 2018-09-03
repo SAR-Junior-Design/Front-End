@@ -182,24 +182,15 @@ export default {
     }
   },
   methods: {
-    userSignUp() {
+    async userSignUp() {
       if (this.comparePasswords !== true) {
         return
       }
-      this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername,
-        (response) => {
-          if (response.status == 200) {
-            this.$emit('snackbar', 6000, 'Account registered.')
-            router.push('/login')
-          } 
-        },
-        error => {
-          if (error.response.status == 400) {
-            this.$emit('snackbar', 6000, error.response.data['message'])
-          } else {
-            throw error
-          }
-        })
+      const response = await this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername);
+      if (response.status == 200) {
+        this.$emit('snackbar', 6000, 'Account registered.')
+        router.push('/login')
+      } 
     },
     handleScroll(event){
       if (window.scrollY > 350) {
