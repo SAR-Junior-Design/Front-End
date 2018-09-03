@@ -206,28 +206,11 @@ export default {
       if (this.comparePasswords !== true) {
         return
       }
-<<<<<<< HEAD
       const response = await this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername);
       if (response.status == 200) {
         this.$emit('snackbar', 6000, 'Account registered.')
         router.push('/login')
       } 
-=======
-      this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername,
-        (response) => {
-          if (response.status == 200) {
-            this.$emit('snackbar', 6000, 'Account registered.')
-            router.push('/login')
-          }
-        },
-        error => {
-          if (error.response.status == 400) {
-            this.$emit('snackbar', 6000, error.response.data['message'])
-          } else {
-            throw error
-          }
-        })
->>>>>>> master
     },
     handleScroll(event){
       if (window.scrollY > 350) {
