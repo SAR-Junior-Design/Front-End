@@ -626,7 +626,6 @@
         return false;
       },
       saveMission() {
-        alert('saving mission!')
         var geoJ = this.makeGeoJson();
         var start = this.pickerDate + ' ' + this.pickerStart;
         var end = this.pickerDate + ' ' + this.pickerEnd;

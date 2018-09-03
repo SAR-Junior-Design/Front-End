@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['https://s3.amazonaws.com/icarus-media/doneVID.mp4']" style="height:600px;overflow:scroll">
+      <video-bg :sources="['src/assets/doneVID.mp4']" style="height:600px;overflow:scroll">
         <v-container>
           <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
           <v-layout row wrap style="margin-top:10%;">
@@ -123,6 +123,7 @@ export default {
               this.$emit('change-toolbar-color', 'primary')
               this.$emit('login')
               router.push('/homepage')
+              console.log('logged in!!')
             }
           },
           error => {

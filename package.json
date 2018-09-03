@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@vue/cli": "^3.0.1",
+    "global": "^4.3.2",
+    "npm": "^6.4.0",
+    "vue": "^2.5.17"
+  },
+  "devDependencies": {
+    "vue-cli-plugin-vuetify": "^0.1.6"
+  }
+}

@@ -384,6 +384,7 @@
 	import router from '@/router'
 	import API from '../mixins/API.js'
 	import mapThumbnail from '@/components/map/mapThumbnail.vue'
+	import moment from 'moment'
 
 	Vue.use(VueGoogleMaps, {
 		load: {
@@ -452,11 +453,14 @@
 			},
 			getMissions() {
 				var starts_at = this.start_date + ' ' + this.start_time;
+				starts_at = moment(starts_at, 'YYYY-MM-DD HH:mm').toISOString()
 				var ends_at = this.end_date + ' ' + this.end_time;
+				ends_at = moment(ends_at, 'YYYY-MM-DD HH:mm').toISOString()
 				this.get_missions_v1_1(
 					starts_at,
 					ends_at,
 					response => {
+						console.log(response.data)
 						this.items = response.data
 						for (var j = 0; j < this.items.length; j++){
 							var area = this.items[j].area
