@@ -78,28 +78,28 @@ export default {
     },
 
     //DRONE API CALLS
-    get_user_drones(success, failure){
+    async get_user_drones(token){
       var url = this.base_url + '/drone/get_user_drones/'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.get(url, {
+          headers: {'Authorization': 'Bearer ' + token}
+        });
     },
-    register_drone(description, manufacturer, type, color, number_of_blades, success, failure) {
+    async register_drone(description, manufacturer, type, color, number_of_blades, token) {
       var url = this.base_url + '/drone/register_drone/'
       var body = {'description': description,
               "manufacturer": manufacturer,
               "type": type,
               "color": color,
               "number_of_blades": number_of_blades}
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.post(url,body, {
+          headers: {'Authorization': 'Bearer ' + token}
+        });
     },
-    delete_drone(drone_array, success, failure) {
+    async delete_drone(drone_array, token) {
       var url = this.base_url + '/drone/delete_drone/'
-      axios.post(url,drone_array, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.post(url,drone_array, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
 
     //MISSION API CALLS
@@ -114,7 +114,7 @@ export default {
     get_mission_drones(mission_id, success, failure) {
       var body = {'mission_id': mission_id}
       var url = this.base_url + '/mission/get_mission_drones/'
-      axios.post(url,body, {withCredentials:true})
+      axios.post(url,body)
         .then(success)
         .catch(failure);
     },

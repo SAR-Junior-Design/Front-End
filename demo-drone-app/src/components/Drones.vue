@@ -196,55 +196,43 @@ export default {
     }
   },
   methods: {
-    getUserDrones() {
-      this.get_user_drones(
-        response => {
-          this.drone_data = response.data
-          this.items = []
-          for(var i=0; i<this.drone_data.length; i++) {
-            this.items.push(this.drone_data[i])
-          }
-      },
-      error => {
-        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
-      })
+    async getUserDrones() {
+      const response = await this.get_user_drones(this.$store.state.access_token)
+      this.drone_data = response.data
+      this.items = []
+      for(var i=0; i<this.drone_data.length; i++) {
+        this.items.push(this.drone_data[i])
+      }
     },
     registerDrone() {
       if (this.descr == null) {
         this.descr = "No description added"
       }
-      this.register_drone(this.descr, this.man1, this.type0, this.color3, this.blades2,
-        response => {
-          if (response.status == 200) {
-            this.drone_id = true;
-            this.$emit('snackbar',6000, 'Drone Registered Successfully');
-            this.getUserDrones();
-            this.$refs.form.reset();
-          } else if (response.status == 400) {
-            throw error;
-          }
-        },
-        error => {
-          console.log('It didn\'t work...')
-        })
+      const response = this.register_drone(this.descr, this.man1, this.type0, this.color3, this.blades2,
+        this.$store.state.access_token
+      );
+      if (response.status == 200) {
+          this.drone_id = true;
+          this.$emit('snackbar',6000, 'Drone Registered Successfully');
+          this.getUserDrones();
+          this.$refs.form.reset();
+        } else if (response.status == 400) {
+          throw error;
+        }
     },
 
-    deleteDrone() {
+    async deleteDrone() {
       //console.log("drone to be slected, id: " + JSON.stringify(this.selected)) // just making sure this gives what i want
-      this.delete_drone(this.selected,
-        response => {
-          if (response.status == 200) {
-            //this.snackbar2 = true;
-            this.$emit('snackbar',6000, 'Drone Removed Successfully');
-            this.getUserDrones();
-            this.selected = [];
-          } else if (response.data['code'] == 31) {
-            throw error;
-          }
-        }, 
-        error => {
-          console.log('The Drone was not able to be removed...')
-        })
+      console.log(JSON.stringify(this.selected) )
+      var response = await this.delete_drone(this.selected, this.$store.state.access_token);
+      if (response.status == 200) {
+        //this.snackbar2 = true;
+        this.$emit('snackbar',6000, 'Drone Removed Successfully');
+        this.getUserDrones();
+        this.selected = [];
+      } else if (response.data['code'] == 31) {
+        throw error;
+      }
     },
 
     toggleAll () {
