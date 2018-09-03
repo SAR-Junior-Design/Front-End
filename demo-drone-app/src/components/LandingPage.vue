@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['https://s3.amazonaws.com/icarus-media/doneVID.mp4']" class="hidden-sm-and-down"style="height:100vh">
+      <video-bg :sources="['src/assets/doneVID.mp4']" style="height:610px;">
         <v-container>
           <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
           <v-layout row wrap style="margin-top:10%;margin-bottom:10%;">
@@ -80,7 +80,7 @@
 
 
 
-    <section>
+    <section style = "height:95vh;">
       <v-layout
         column
         wrap
@@ -202,24 +202,15 @@ export default {
     }
   },
   methods: {
-    userSignUp() {
+    async userSignUp() {
       if (this.comparePasswords !== true) {
         return
       }
-      this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername,
-        (response) => {
-          if (response.status == 200) {
-            this.$emit('snackbar', 6000, 'Account registered.')
-            router.push('/login')
-          }
-        },
-        error => {
-          if (error.response.status == 400) {
-            this.$emit('snackbar', 6000, error.response.data['message'])
-          } else {
-            throw error
-          }
-        })
+      const response = await this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername);
+      if (response.status == 200) {
+        this.$emit('snackbar', 6000, 'Account registered.')
+        router.push('/login')
+      } 
     },
     handleScroll(event){
       if (window.scrollY > 350) {
@@ -241,6 +232,7 @@ export default {
       response => {
         if (response.data == 'True') {
           router.push('/homepage')
+          alert('logged in!')
         }
       },
       error => {

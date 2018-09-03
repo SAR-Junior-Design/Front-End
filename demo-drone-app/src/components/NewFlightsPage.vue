@@ -324,6 +324,7 @@
   import axios from 'axios'
   import VueAxios from 'vue-axios'
   import API from '../mixins/API.js'
+  import moment from 'moment'
   Vue.use(VueGoogleMaps, {
     load: {
       installComponents: true,
@@ -624,35 +625,34 @@
         this.alertMissingCriteria = true;
         return false;
       },
-      saveMission() {
+      async saveMission() {
         var geoJ = this.makeGeoJson();
         var start = this.pickerDate + ' ' + this.pickerStart;
         var end = this.pickerDate + ' ' + this.pickerEnd;
+        start = moment(start, 'YYYY-MM-DD HH:mm').toISOString()
+        end = moment(end, 'YYYY-MM-DD HH:mm').toISOString()
         if(this.checkCriteria(this.title, this.description, start, end)) {
-          this.register_mission_v1_1(
+          var response = await this.register_mission(
             this.title,
             geoJ, 
             this.description,
             start,
             end,
             this.selectedType,
-            response => {
-              if (response['status'] == 200) {
-                for (var i = 0; i < this.polygons.length; i++) {
-                  this.polygons[i].setEditable(false);
-                  this.polygons[i].setDraggable(false);
-                }
-                this.draggable = true;
-                this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
-                this.canDraw = false;
-                this.edit = !this.edit;
-                this.$emit('snackbar',6000, 'Flight Successfully Saved');
-              }
-            }, 
-            error => {
-              alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-            }
+            this.$store.state.access_token
           );
+          if (response['status'] == 200) {
+            console.log('saved mission!!')
+            for (var i = 0; i < this.polygons.length; i++) {
+              this.polygons[i].setEditable(false);
+              this.polygons[i].setDraggable(false);
+            }
+            this.draggable = true;
+            this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
+            this.canDraw = false;
+            this.edit = !this.edit;
+            this.$emit('snackbar',6000, 'Flight Successfully Saved');
+          }
         }
       },
       leaving () {

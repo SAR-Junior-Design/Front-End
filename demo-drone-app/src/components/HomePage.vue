@@ -139,158 +139,147 @@ export default {
       document.body.style.cursor= 'default';
     }
   },
-  mounted() {
+  async mounted() {
     this.$emit('change-toolbar-color', 'primary')
-    this.get_active_missions(
-      response => {
-        if (response.status == 200) {
-          this.todaysFlights = response.data;
-          for (var j = 0; j < this.todaysFlights.length; j++){
-            var area = this.todaysFlights[j].area
-            this.todaysFlights[j].polygons = []
-            this.todaysFlights[j].paths = []
-            var paths = []
-            var avg_lat = 0
-            var lat_range = {min: 200, max: -200, range: 0}
-            var avg_lng = 0
-            var lng_range = {min: 200, max: -200, range: 0}
-            var num_coords = area.features[0].geometry.coordinates.length
-            for(var i = 0; i < area.features.length; i++) {
-              for (var a in area.features[i].geometry.coordinates) {
-                paths.push({
-                lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
-                });
-                //avg_lat
-                avg_lat += area.features[i].geometry.coordinates[a][0]
-                if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
-                  lat_range.max = area.features[i].geometry.coordinates[a][0]
-                }
-                if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
-                  lat_range.min = area.features[i].geometry.coordinates[a][0]
-                }
-                //avg_lng
-                if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
-                  lng_range.max = area.features[i].geometry.coordinates[a][1]
-                }
-                if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
-                  lng_range.min = area.features[i].geometry.coordinates[a][1]
-                }
-                avg_lng += area.features[i].geometry.coordinates[a][1]
-              }
+    console.log(`access_token: ${this.$store.state.access_token}`);
+    var response = await this.get_current_missions(this.$store.state.access_token);
+    
+    if (response.status == 200) {
+      this.todaysFlights = response.data;
+      for (var j = 0; j < this.todaysFlights.length; j++){
+        var area = this.todaysFlights[j].area
+        this.todaysFlights[j].polygons = []
+        this.todaysFlights[j].paths = []
+        var paths = []
+        var avg_lat = 0
+        var lat_range = {min: 200, max: -200, range: 0}
+        var avg_lng = 0
+        var lng_range = {min: 200, max: -200, range: 0}
+        var num_coords = area.features[0].geometry.coordinates.length
+        for(var i = 0; i < area.features.length; i++) {
+          for (var a in area.features[i].geometry.coordinates) {
+            paths.push({
+            lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
+            });
+            //avg_lat
+            avg_lat += area.features[i].geometry.coordinates[a][0]
+            if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+              lat_range.max = area.features[i].geometry.coordinates[a][0]
             }
-            lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
-            lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
-            var range = Math.max(lat_range.range, lng_range.range)
-            var zoom_coefficient = 2
-            this.todaysFlights[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
-            this.todaysFlights[j].paths = paths
-            this.todaysFlights[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+            if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+              lat_range.min = area.features[i].geometry.coordinates[a][0]
             }
+            //avg_lng
+            if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+              lng_range.max = area.features[i].geometry.coordinates[a][1]
+            }
+            if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+              lng_range.min = area.features[i].geometry.coordinates[a][1]
+            }
+            avg_lng += area.features[i].geometry.coordinates[a][1]
+          }
+        }
+        lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+        lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+        var range = Math.max(lat_range.range, lng_range.range)
+        var zoom_coefficient = 2
+        this.todaysFlights[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+        this.todaysFlights[j].paths = paths
+        this.todaysFlights[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
       }
-      error => {
-        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-      }}
-    )
-    this.get_past_missions(
-      response => {
-        if (response.status == 200) {
-          this.pastFlights = response.data;
-          for (var j = 0; j < this.pastFlights.length; j++){
-            var area = this.pastFlights[j].area
-            this.pastFlights[j].polygons = []
-            this.pastFlights[j].paths = []
-            var paths = []
-            var avg_lat = 0
-            var lat_range = {min: 200, max: -200, range: 0}
-            var avg_lng = 0
-            var lng_range = {min: 200, max: -200, range: 0}
-            var num_coords = area.features[0].geometry.coordinates.length
-            for(var i = 0; i < area.features.length; i++) {
-              for (var a in area.features[i].geometry.coordinates) {
-                paths.push({
-                lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
-                });
-                //avg_lat
-                avg_lat += area.features[i].geometry.coordinates[a][0]
-                if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
-                  lat_range.max = area.features[i].geometry.coordinates[a][0]
-                }
-                if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
-                  lat_range.min = area.features[i].geometry.coordinates[a][0]
-                }
-                //avg_lng
-                if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
-                  lng_range.max = area.features[i].geometry.coordinates[a][1]
-                }
-                if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
-                  lng_range.min = area.features[i].geometry.coordinates[a][1]
-                }
-                avg_lng += area.features[i].geometry.coordinates[a][1]
-              }
+    }
+
+    response = await this.get_past_missions(this.$store.state.access_token);
+    if (response.status == 200) {
+      this.pastFlights = response.data;
+      for (var j = 0; j < this.pastFlights.length; j++){
+        var area = this.pastFlights[j].area
+        this.pastFlights[j].polygons = []
+        this.pastFlights[j].paths = []
+        var paths = []
+        var avg_lat = 0
+        var lat_range = {min: 200, max: -200, range: 0}
+        var avg_lng = 0
+        var lng_range = {min: 200, max: -200, range: 0}
+        var num_coords = area.features[0].geometry.coordinates.length
+        for(var i = 0; i < area.features.length; i++) {
+          for (var a in area.features[i].geometry.coordinates) {
+            paths.push({
+            lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
+            });
+            //avg_lat
+            avg_lat += area.features[i].geometry.coordinates[a][0]
+            if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+              lat_range.max = area.features[i].geometry.coordinates[a][0]
             }
-            lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
-            lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
-            var range = Math.max(lat_range.range, lng_range.range)
-            var zoom_coefficient = 2
-            this.pastFlights[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
-            this.pastFlights[j].paths = paths
-            this.pastFlights[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+            if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+              lat_range.min = area.features[i].geometry.coordinates[a][0]
             }
+            //avg_lng
+            if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+              lng_range.max = area.features[i].geometry.coordinates[a][1]
+            }
+            if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+              lng_range.min = area.features[i].geometry.coordinates[a][1]
+            }
+            avg_lng += area.features[i].geometry.coordinates[a][1]
+          }
+        }
+        lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+        lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+        var range = Math.max(lat_range.range, lng_range.range)
+        var zoom_coefficient = 2
+        this.pastFlights[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+        this.pastFlights[j].paths = paths
+        this.pastFlights[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
       }
-      error => {
-        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-      }}
-    )
-    this.get_upcoming_missions(
-      response => {
-        if (response.status == 200) {
-          this.upcomingFlights = response.data;
-          for (var j = 0; j < this.upcomingFlights.length; j++){
-            var area = this.upcomingFlights[j].area
-            this.upcomingFlights[j].polygons = []
-            this.upcomingFlights[j].paths = []
-            var paths = []
-            var avg_lat = 0
-            var lat_range = {min: 200, max: -200, range: 0}
-            var avg_lng = 0
-            var lng_range = {min: 200, max: -200, range: 0}
-            var num_coords = area.features[0].geometry.coordinates.length
-            for(var i = 0; i < area.features.length; i++) {
-              for (var a in area.features[i].geometry.coordinates) {
-                paths.push({
-                lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
-                });
-                //avg_lat
-                avg_lat += area.features[i].geometry.coordinates[a][0]
-                if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
-                  lat_range.max = area.features[i].geometry.coordinates[a][0]
-                }
-                if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
-                  lat_range.min = area.features[i].geometry.coordinates[a][0]
-                }
-                //avg_lng
-                if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
-                  lng_range.max = area.features[i].geometry.coordinates[a][1]
-                }
-                if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
-                  lng_range.min = area.features[i].geometry.coordinates[a][1]
-                }
-                avg_lng += area.features[i].geometry.coordinates[a][1]
-              }
+    }
+    response = this.get_upcoming_missions(this.$store.state.access_token)
+    
+    if (response.status == 200) {
+      this.upcomingFlights = response.data;
+      for (var j = 0; j < this.upcomingFlights.length; j++){
+        var area = this.upcomingFlights[j].area
+        this.upcomingFlights[j].polygons = []
+        this.upcomingFlights[j].paths = []
+        var paths = []
+        var avg_lat = 0
+        var lat_range = {min: 200, max: -200, range: 0}
+        var avg_lng = 0
+        var lng_range = {min: 200, max: -200, range: 0}
+        var num_coords = area.features[0].geometry.coordinates.length
+        for(var i = 0; i < area.features.length; i++) {
+          for (var a in area.features[i].geometry.coordinates) {
+            paths.push({
+            lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
+            });
+            //avg_lat
+            avg_lat += area.features[i].geometry.coordinates[a][0]
+            if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+              lat_range.max = area.features[i].geometry.coordinates[a][0]
             }
-            lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
-            lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
-            var range = Math.max(lat_range.range, lng_range.range)
-            var zoom_coefficient = 2
-            this.upcomingFlights[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
-            this.upcomingFlights[j].paths = paths
-            this.upcomingFlights[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+            if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+              lat_range.min = area.features[i].geometry.coordinates[a][0]
             }
+            //avg_lng
+            if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+              lng_range.max = area.features[i].geometry.coordinates[a][1]
+            }
+            if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+              lng_range.min = area.features[i].geometry.coordinates[a][1]
+            }
+            avg_lng += area.features[i].geometry.coordinates[a][1]
+          }
+        }
+        lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+        lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+        var range = Math.max(lat_range.range, lng_range.range)
+        var zoom_coefficient = 2
+        this.upcomingFlights[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+        this.upcomingFlights[j].paths = paths
+        this.upcomingFlights[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
       }
-      error => {
-        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-      }}
-    )
+    }  
   }
 }
 </script>

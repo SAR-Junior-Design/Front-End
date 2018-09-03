@@ -612,43 +612,39 @@
         if (this.selected.length) this.selected = []
         else this.selected = this.items.slice()
       },
-      getMissionDrones() {
-        this.get_mission_drones(
+      async getMissionDrones() {
+        const response = await this.get_mission_drones(
           this.mission_id,
-          response => {
-            if (response.status == 200) {
-              this.drones = [];
-              if (true) {
-                var arr = Object.keys(response.data);
-                for (var i = 0; i < arr.length; i++) {
-                  this.drones.push(
-                    {
-                      "id" : arr[i],
-                      "battery_info" : {
-                        "voltage" : 'null',
-                        "current_consumption" : 'null',
-                        "energy_remaining" : 'null'
-                      },
-                      "location" : {
-                        latitude: 'null',
-                        longitude: 'null'
-                      },
-                      "altitude" : 'null',
-                      "connection" : 'null',
-                      "CURRENT_BEHAVIOR" : 'null',
-                      "velocity" : { "x" : 'null', "y" : 'null', "z" : 'null'}
-                    }
-                  );
-                }
-              }
-            } else if (response.data['code'] == 31) {
-              alert(response.data.message);
-            }
-          },
-          error => {
-            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-          }
+          this.$store.state.access_token
         );
+        if (response.status == 200) {
+          this.drones = [];
+          if (true) {
+            var arr = Object.keys(response.data);
+            for (var i = 0; i < arr.length; i++) {
+              this.drones.push(
+                {
+                  "id" : arr[i],
+                  "battery_info" : {
+                    "voltage" : 'null',
+                    "current_consumption" : 'null',
+                    "energy_remaining" : 'null'
+                  },
+                  "location" : {
+                    latitude: 'null',
+                    longitude: 'null'
+                  },
+                  "altitude" : 'null',
+                  "connection" : 'null',
+                  "CURRENT_BEHAVIOR" : 'null',
+                  "velocity" : { "x" : 'null', "y" : 'null', "z" : 'null'}
+                }
+              );
+            }
+          }
+        } else if (response.data['code'] == 31) {
+          alert(response.data.message);
+        }
       },
       getUserID() {
         this.get_user_info(
@@ -673,83 +669,79 @@
           }
         )
       },
-      fetch_mission_info() {
-        this.get_mission_info_v1_1(
+      async fetch_mission_info() {
+        const response = await this.get_mission_info(
           this.mission_id,
-          response => {
-            if (response.status == 200) {
-              this.title = response.data.title;
-              this.description = response.data.description;
-              var area = response.data.area;
-              var timeArray = response.data.starts_at.split(" ");
-              this.starts = timeArray[1];
-              this.pickerStart = this.starts;
-              this.date = timeArray[0];
-              this.pickerDate = this.date;
-              this.type = response.data.type;
-              this.selectedType = this.type;
-              this.ends = response.data.ends_at.split(" ")[1];
-              this.pickerEnd = this.ends;
-              for(var i = 0; i < area.features.length; i++) {
-                var paths = [];
-                var avg_lat = 0
-                var lat_range = {min: 200, max: -200, range: 0}
-                var avg_lng = 0
-                var lng_range = {min: 200, max: -200, range: 0}
-                var num_coords = area.features[0].geometry.coordinates.length
-                for (var a in area.features[i].geometry.coordinates) {
-                  paths.push({
-                  lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
-                  });
-
-                  //avg_lat
-                  avg_lat += area.features[i].geometry.coordinates[a][0]
-                  if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
-                    lat_range.max = area.features[i].geometry.coordinates[a][0]
-                  }
-                  if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
-                    lat_range.min = area.features[i].geometry.coordinates[a][0]
-                  }
-                  //avg_lng
-                  if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
-                    lng_range.max = area.features[i].geometry.coordinates[a][1]
-                  }
-                  if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
-                    lng_range.min = area.features[i].geometry.coordinates[a][1]
-                  }
-                  avg_lng += area.features[i].geometry.coordinates[a][1]
-                }
-
-                lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
-                lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
-                var range = Math.max(lat_range.range, lng_range.range)
-                var zoom_coefficient = 2
-                this.zoom = -1.420533814 * Math.log(range) + 6.8957137
-                this.center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
-
-                var poly = new google.maps.Polygon({
-                  paths: paths,
-                  id : i,
-                  strokeColor: '#FF0000',
-                  strokeOpacity: 0.8,
-                  strokeWeight: 2,
-                  fillColor: '#FF0000',
-                  fillOpacity: 0.35,
-                  editable:false,
-                  draggable:false
-                });
-                poly.setMap(this.$refs.map.$mapObject);
-                this.setEvent(poly, this);
-                this.polygons.push(poly);
-              }
-            } else if (response.data['code'] == 31) {
-              alert("Authentication Error");
-            }
-          },
-          error => {
-            alert(error);
-          }
+          this.$store.state.access_token
         );
+        if (response.status == 200) {
+          this.title = response.data.title;
+          this.description = response.data.description;
+          var area = response.data.area;
+          var timeArray = response.data.starts_at.split(" ");
+          this.starts = timeArray[1];
+          this.pickerStart = this.starts;
+          this.date = timeArray[0];
+          this.pickerDate = this.date;
+          this.type = response.data.type;
+          this.selectedType = this.type;
+          this.ends = response.data.ends_at.split(" ")[1];
+          this.pickerEnd = this.ends;
+          for(var i = 0; i < area.features.length; i++) {
+            var paths = [];
+            var avg_lat = 0
+            var lat_range = {min: 200, max: -200, range: 0}
+            var avg_lng = 0
+            var lng_range = {min: 200, max: -200, range: 0}
+            var num_coords = area.features[0].geometry.coordinates.length
+            for (var a in area.features[i].geometry.coordinates) {
+              paths.push({
+              lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
+              });
+
+              //avg_lat
+              avg_lat += area.features[i].geometry.coordinates[a][0]
+              if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+                lat_range.max = area.features[i].geometry.coordinates[a][0]
+              }
+              if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+                lat_range.min = area.features[i].geometry.coordinates[a][0]
+              }
+              //avg_lng
+              if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+                lng_range.max = area.features[i].geometry.coordinates[a][1]
+              }
+              if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+                lng_range.min = area.features[i].geometry.coordinates[a][1]
+              }
+              avg_lng += area.features[i].geometry.coordinates[a][1]
+            }
+
+            lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+            lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+            var range = Math.max(lat_range.range, lng_range.range)
+            var zoom_coefficient = 2
+            this.zoom = -1.420533814 * Math.log(range) + 6.8957137
+            this.center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+
+            var poly = new google.maps.Polygon({
+              paths: paths,
+              id : i,
+              strokeColor: '#FF0000',
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: '#FF0000',
+              fillOpacity: 0.35,
+              editable:false,
+              draggable:false
+            });
+            poly.setMap(this.$refs.map.$mapObject);
+            this.setEvent(poly, this);
+            this.polygons.push(poly);
+          }
+        } else if (response.data['code'] == 31) {
+          alert("Authentication Error");
+        }
       },
       mouseOver () {
         document.body.style.cursor= 'pointer';

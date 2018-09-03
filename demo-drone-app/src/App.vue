@@ -62,22 +62,22 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import axios from 'axios'
-import VueAxios from 'vue-axios'
-import router from '@/router'
-import API from './mixins/API.js'
-import Vuetify from 'vuetify'
+	import Vue from 'vue';
+	import axios from 'axios'
+	import VueAxios from 'vue-axios'
+	import router from '@/router'
+	import API from './mixins/API.js'
+	import Vuetify from 'vuetify'
 
-Vue.use(VueAxios, axios)
-Vue.use(Vuetify, {
-	theme: {
-		primary: '#1d561a',
-		secondary: '#b0bec5',
-		accent: '#8c9eff',
-		error: '#b71c1c'
-	}
-})
+	Vue.use(VueAxios, axios)
+	Vue.use(Vuetify, {
+		theme: {
+			primary: '#1d561a',
+			secondary: '#b0bec5',
+			accent: '#8c9eff',
+			error: '#b71c1c'
+		}
+	})
 
 	export default {
 		mixins: [API],
@@ -134,22 +134,21 @@ Vue.use(Vuetify, {
 				this.snackbar = true
 			}
 		},
-		mounted() {
-			this.isLoggedIn(
-				response => {
-					if (response.data == 'True') {
-						this.logged_in = true
-						this.menuItems = this.userMenu
-						this.toolbar_color = 'primary'
-					} else {
-						this.logged_in = false
-						this.menuItems = this.notLoggedIn
-						this.toolbar_color = 'primary'
-					}
-				},
-				error => {
-					alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-				})
+		async mounted() {
+			const response = await this.isLoggedIn(
+				this.$store.state.access_token
+			);
+			console.log(`is logged in: ${response.data}`)
+			if (JSON.stringify(response.data) == 'true') {
+				this.logged_in = true
+				this.menuItems = this.userMenu
+				this.toolbar_color = 'primary'
+				console.log('changed color!!!!')
+			} else {
+				this.logged_in = false
+				this.menuItems = this.notLoggedIn
+				this.toolbar_color = 'transparent'
+			}
 		}
 	}
 </script>

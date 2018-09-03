@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['https://s3.amazonaws.com/icarus-media/doneVID.mp4']" style="height:600px;overflow:scroll">
+      <video-bg :sources="['src/assets/doneVID.mp4']" style="height:600px;overflow:scroll">
         <v-container>
           <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
           <v-layout row wrap style="margin-top:10%;">
@@ -30,12 +30,11 @@
                       <v-layout column>
                         <v-flex>
                           <v-text-field
-                            name="loginEmail"
-                            label="Email"
-                            id="loginEmail"
-                            :rules="emailRules"
+                            name="loginUsername"
+                            label="Username"
+                            id="loginUsername"
                             type="username"
-                            v-model="loginEmail"
+                            v-model="loginUsername"
                             required></v-text-field>
                         </v-flex>
                         <v-flex>
@@ -101,7 +100,7 @@ export default {
       signUpUsername: '',
       signUpEmail: '',
       signUpPassword: '',
-      loginEmail: '',
+      loginUsername: '',
       loginPassword: '',
       passwordConfirm: '',
       loginDialog: false,
@@ -114,25 +113,19 @@ export default {
     }
   },
   methods: {
-    userLogin() {
+    async userLogin() {
       if (this.$refs.form.validate()) {
-        this.login(this.loginEmail, this.loginPassword,
-          response => {
-            if (response.status == 200) {
-              this.loginDialog = true;
-              this.signUpDialog = false;
-              this.$emit('change-toolbar-color', 'primary')
-              this.$emit('login')
-              router.push('/homepage')
-            }
-          },
-          error => {
-            if (error.response.status == 400) {
-              this.$emit('snackbar', 6000, error.response.data['message'])
-            } else if (error.response.status == 500) {
-              throw error
-            }
-          })
+        const response = await this.login(this.loginUsername, this.loginPassword)
+        if (response.status == 200) {
+          this.loginDialog = true;
+          this.signUpDialog = false;
+          const data = response.data;
+          this.$store.commit('setAccessToken', data['access_token'])
+          localStorage.setItem('access_token', data['access_token'])
+          this.$emit('change-toolbar-color', 'primary')
+          this.$emit('login')
+          router.push('/homepage')
+        }
       } else {
         this.$emits('snackbar', 6000, 'Fill out login info.')
       }
@@ -145,20 +138,6 @@ export default {
     comparePasswords () {
       return this.signUpPassword === this.passwordConfirm ? true : 'Passwords don\'t match'
     }
-  },
-  mounted() {
-    this.isLoggedIn(
-      response => {
-        if (response.data == 'True') {
-          this.$emit('change-toolbar-color', 'primary')
-          router.push('/homepage')
-        } else {
-          this.$emit('change-toolbar-color', 'transparent')
-        }
-      },
-      error => {
-        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-      })
   }
 }
 </script>

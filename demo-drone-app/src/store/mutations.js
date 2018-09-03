@@ -1,1 +1,5 @@
-export const mutations = {}
+export const mutations = {
+    setAccessToken (state, newAccessToken) {
+        state.access_token = newAccessToken;
+    }
+}

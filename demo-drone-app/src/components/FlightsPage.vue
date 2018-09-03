@@ -384,6 +384,7 @@
 	import router from '@/router'
 	import API from '../mixins/API.js'
 	import mapThumbnail from '@/components/map/mapThumbnail.vue'
+	import moment from 'moment'
 
 	Vue.use(VueGoogleMaps, {
 		load: {
@@ -442,6 +443,8 @@
 		},
 		methods: {
 			can_delete(id){
+				console.log(`id parameter: ${id}`)
+				console.log(`user info: ${this.user_info.id}`)
 				return this.user_info.id == id
 			},
 			_state(clearance) {
@@ -450,65 +453,63 @@
 				}
 				return clearance["state"]
 			},
-			getMissions() {
+			async getMissions() {
 				var starts_at = this.start_date + ' ' + this.start_time;
+				starts_at = moment(starts_at, 'YYYY-MM-DD HH:mm').toISOString()
 				var ends_at = this.end_date + ' ' + this.end_time;
-				this.get_missions_v1_1(
+				ends_at = moment(ends_at, 'YYYY-MM-DD HH:mm').toISOString()
+				var response = await this.get_missions(
 					starts_at,
 					ends_at,
-					response => {
-						this.items = response.data
-						for (var j = 0; j < this.items.length; j++){
-							var area = this.items[j].area
-							this.items[j].polygons = []
-							this.items[j].paths = []
-							var paths = []
-							var avg_lat = 0
-							var lat_range = {min: 200, max: -200, range: 0}
-							var avg_lng = 0
-							var lng_range = {min: 200, max: -200, range: 0}
-							if(area.features.length>0) {
-								var num_coords = area.features[0].geometry.coordinates.length
-								for(var i = 0; i < area.features.length; i++) {
-									for (var a in area.features[i].geometry.coordinates) {
-										paths.push({
-										lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
-										});
-										//avg_lat
-										avg_lat += area.features[i].geometry.coordinates[a][0]
-										if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
-											lat_range.max = area.features[i].geometry.coordinates[a][0]
-										}
-										if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
-											lat_range.min = area.features[i].geometry.coordinates[a][0]
-										}
-										//avg_lng
-										if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
-											lng_range.max = area.features[i].geometry.coordinates[a][1]
-										}
-										if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
-											lng_range.min = area.features[i].geometry.coordinates[a][1]
-										}
-										avg_lng += area.features[i].geometry.coordinates[a][1]
-									}
+					this.$store.state.access_token
+				);
+				console.log(response.data)
+				this.items = response.data
+				for (var j = 0; j < this.items.length; j++){
+					var area = this.items[j].area
+					this.items[j].polygons = []
+					this.items[j].paths = []
+					var paths = []
+					var avg_lat = 0
+					var lat_range = {min: 200, max: -200, range: 0}
+					var avg_lng = 0
+					var lng_range = {min: 200, max: -200, range: 0}
+					if(area.features.length>0) {
+						var num_coords = area.features[0].geometry.coordinates.length
+						for(var i = 0; i < area.features.length; i++) {
+							for (var a in area.features[i].geometry.coordinates) {
+								paths.push({
+								lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
+								});
+								//avg_lat
+								avg_lat += area.features[i].geometry.coordinates[a][0]
+								if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
+									lat_range.max = area.features[i].geometry.coordinates[a][0]
 								}
-								if (this.items.length != 0) {
-									lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
-									lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
-									var range = Math.max(lat_range.range, lng_range.range)
-									var zoom_coefficient = 2
-									this.items[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
-									this.items[j].paths = paths
-									this.items[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+								if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
+									lat_range.min = area.features[i].geometry.coordinates[a][0]
 								}
+								//avg_lng
+								if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
+									lng_range.max = area.features[i].geometry.coordinates[a][1]
+								}
+								if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
+									lng_range.min = area.features[i].geometry.coordinates[a][1]
+								}
+								avg_lng += area.features[i].geometry.coordinates[a][1]
 							}
 						}
-				},
-				error => {
-					alert('Issues grabbing missions.')
-						console.log(error)
+						if (this.items.length != 0) {
+							lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
+							lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
+							var range = Math.max(lat_range.range, lng_range.range)
+							var zoom_coefficient = 2
+							this.items[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
+							this.items[j].paths = paths
+							this.items[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
+						}
 					}
-				)
+				}
 			},
 				setEvent(poly, that){
 					google.maps.event.addListener(poly, 'dragend', function (event) {
@@ -544,26 +545,16 @@
 			router.push('/newflight')
 			}
 		},
-		mounted () {
-			this.is_government_official(response => {
-				if (response.data == 'True') {
-						this.is_gov_official = true
-					} else {
-						this.is_gov_official = false
-					}
-			}, error => {
-				alert ('Error checking if is_government_official.')
-			})
-			this.getMissions();
-			this.get_user_info(response => {
-				if (response.status == 200) {
-					this.user_info = response.data
-				}
-			},
-			error => {
-				console.log('Error grabbing user data!')
-				throw error;
-			})
+		async mounted () {
+			var response = await this.is_government_official(this.$store.state.access_token);
+			if (response.data == 'True') {
+				this.is_gov_official = true
+			}
+			await this.getMissions();
+			response = await this.get_user_info(this.$store.state.access_token);
+			if (response.status == 200) {
+				this.user_info = response.data
+			}
 		}
 	}
 </script>
