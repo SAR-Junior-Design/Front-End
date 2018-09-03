@@ -61,22 +61,22 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import axios from 'axios'
-import VueAxios from 'vue-axios'
-import router from '@/router'
-import API from './mixins/API.js'
-import Vuetify from 'vuetify'
+	import Vue from 'vue';
+	import axios from 'axios'
+	import VueAxios from 'vue-axios'
+	import router from '@/router'
+	import API from './mixins/API.js'
+	import Vuetify from 'vuetify'
 
-Vue.use(VueAxios, axios)
-Vue.use(Vuetify, {
-	theme: {
-		primary: '#1d561a',
-		secondary: '#b0bec5',
-		accent: '#8c9eff',
-		error: '#b71c1c'
-	}
-})
+	Vue.use(VueAxios, axios)
+	Vue.use(Vuetify, {
+		theme: {
+			primary: '#1d561a',
+			secondary: '#b0bec5',
+			accent: '#8c9eff',
+			error: '#b71c1c'
+		}
+	})
 
 	export default {
 		mixins: [API],

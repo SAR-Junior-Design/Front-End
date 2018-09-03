@@ -1,1 +1,3 @@
-export const state = {}
+export const state = {
+    access_token: ''
+}

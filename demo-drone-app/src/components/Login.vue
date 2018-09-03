@@ -113,26 +113,19 @@ export default {
     }
   },
   methods: {
-    userLogin() {
+    async userLogin() {
       if (this.$refs.form.validate()) {
-        this.login(this.loginUsername, this.loginPassword,
-          response => {
-            if (response.status == 200) {
-              this.loginDialog = true;
-              this.signUpDialog = false;
-              this.$emit('change-toolbar-color', 'primary')
-              this.$emit('login')
-              router.push('/homepage')
-              console.log('logged in!!')
-            }
-          },
-          error => {
-            if (error.response.status == 400) {
-              this.$emit('snackbar', 6000, error.response.data['message'])
-            } else if (error.response.status == 500) {
-              throw error
-            }
-          })
+        const response = await this.login(this.loginUsername, this.loginPassword)
+        if (response.status == 200) {
+          this.loginDialog = true;
+          this.signUpDialog = false;
+          const data = response.data;
+          this.$store.commit('setAccessToken', data['access_token'])
+          localStorage.setItem('access_token', data['access_token'])
+          this.$emit('change-toolbar-color', 'primary')
+          this.$emit('login')
+          router.push('/homepage')
+        }
       } else {
         this.$emits('snackbar', 6000, 'Fill out login info.')
       }
@@ -146,19 +139,14 @@ export default {
       return this.signUpPassword === this.passwordConfirm ? true : 'Passwords don\'t match'
     }
   },
-  mounted() {
-    this.isLoggedIn(
-      response => {
-        if (response.data == 'True') {
-          this.$emit('change-toolbar-color', 'primary')
-          router.push('/homepage')
-        } else {
-          this.$emit('change-toolbar-color', 'transparent')
-        }
-      },
-      error => {
-        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-      })
+  async mounted() {
+    const response = await this.isLoggedIn();
+    if (response.data == 'True') {
+      this.$emit('change-toolbar-color', 'primary')
+      router.push('/homepage')
+    } else {
+      this.$emit('change-toolbar-color', 'transparent')
+    }
   }
 }
 </script>

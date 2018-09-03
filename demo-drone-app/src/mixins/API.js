@@ -5,23 +5,24 @@ import Vue from 'vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from '@/router'
+import qs from 'qs';
 
 Vue.use(VueAxios, axios)
 
 export default {
   data () {
   	return {
-  		//base_url: 'http://devapi.icarusmap.com'
-      base_url: 'http://localhost:8000'
+      base_url: 'https://devapi.icarusmap.com',
+      client_id: 'U2b84Xxpx3mS4yF6oVegnvYMsOOPhx3UmbXWytU3',
+      client_secret: 'lE1UpGZREIiRGsxwe716850lJZpJPxgWRqB6W06sQujETf1efyvHVf5UAUbMhc44hnYqXjydzFrGRFe9rcaimLqhrQJY57sA3xDIORZEYj7hAReCAIvyyxWCVISMxD6g'
+      //base_url: 'http://localhost:8000'
   	}
   },
   methods: {
     //USER API CALLS
-    isLoggedIn(success, failure) {
+    async isLoggedIn(success, failure) {
     	var url = this.base_url + '/user/is_logged_in/'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.get(url);
     },
     is_government_official(success, failure) {
       var url = this.base_url + '/official/is_government_official/'
@@ -29,23 +30,39 @@ export default {
         .then(success)
         .catch(failure);
       },
-    login(username, password, success, failure) {
+    async login(username, password) {
     	var body = {'username': username, 'password': password}
-      var url = this.base_url + '/user/login/'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      var url = this.base_url + '/o/token/'
+      var data = { 'grant_type': 'password',
+        client_id: this.client_id,
+        client_secret: this.client_secret,
+        username,
+        password
+      };
+      data = qs.stringify(data)
+      const response = await axios(
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data,
+          url
+        }
+      );
+      const response_body = response.data
+      return response;
     },
-    logoff(success, failure) {
+    async logoff(success, failure) {
     	var url = this.base_url + '/user/logout/'
-      axios.get(url, {withCredentials:true})
-        .then(success)
+      response = await axios.get(url, {withCredentials:true})
+        .then()
         .catch(failure);
     },
     register_user(email, password, name, success, failure) {
       var body = {'email': email, 'password': password, 'username': name}
       var url = this.base_url + '/user/register_user/'
-      axios.post(url,body, {withCredentials:true})
+      axios.post(url,body)
         .then(success)
         .catch(failure);
     },
@@ -123,10 +140,10 @@ export default {
         .then(success)
         .catch(failure);
     },
-    get_missions_v1_1(starts_at, ends_at, success, failure){
+    get_missions(starts_at, ends_at, success, failure){
       var body = {'starts_at': starts_at, 'ends_at': ends_at}
       var url = this.base_url + '/mission/get_missions/'
-      axios.post(url,body, {withCredentials:true})
+      axios.post(url,body)
         .then(success)
         .catch(failure);
     },
@@ -144,23 +161,23 @@ export default {
         .then(success)
         .catch(failure);
     },
-    get_active_missions(success, failure){
+    async get_current_missions(token){
       var url = this.base_url + '/mission/get_current_missions/'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    get_past_missions(success, failure){
+    async get_past_missions(token){
       var url = this.base_url + '/mission/get_past_missions/'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    get_upcoming_missions(success, failure){
+    async get_upcoming_missions(token){
       var url = this.base_url + '/mission/get_upcoming_missions/'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer '+token}
+      });
     },
     // Details must be a dictionary with any combination
     // of 'area', 'description', 'title', 'type', 'starts_at', 'ends_at'. If you don't

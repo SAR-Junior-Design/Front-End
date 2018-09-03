@@ -456,7 +456,7 @@
 				starts_at = moment(starts_at, 'YYYY-MM-DD HH:mm').toISOString()
 				var ends_at = this.end_date + ' ' + this.end_time;
 				ends_at = moment(ends_at, 'YYYY-MM-DD HH:mm').toISOString()
-				this.get_missions_v1_1(
+				this.get_missions(
 					starts_at,
 					ends_at,
 					response => {
