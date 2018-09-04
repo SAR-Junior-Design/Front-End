@@ -115,17 +115,24 @@ export default {
   methods: {
     async userLogin() {
       if (this.$refs.form.validate()) {
-        const response = await this.login(this.loginUsername, this.loginPassword)
-        if (response.status == 200) {
-          this.loginDialog = true;
-          this.signUpDialog = false;
-          const data = response.data;
-          this.$store.commit('setAccessToken', data['access_token'])
-          localStorage.setItem('access_token', data['access_token'])
-          this.$emit('change-toolbar-color', 'primary')
-          this.$emit('login')
-          router.push('/homepage')
+        try {
+          const response = await this.login(this.loginUsername, this.loginPassword)
+          if (response.status == 200) {
+            this.loginDialog = true;
+            this.signUpDialog = false;
+            const data = response.data;
+            this.$store.commit('setAccessToken', data['access_token'])
+            localStorage.setItem('access_token', data['access_token'])
+            this.$emit('change-toolbar-color', 'primary')
+            this.$emit('login')
+            router.push('/homepage')
+          }
         }
+        catch(error) {
+          console.log(error)
+          this.$emit('snackbar', 6000, 'Invalid login info.')
+        }
+
       } else {
         this.$emits('snackbar', 6000, 'Fill out login info.')
       }
