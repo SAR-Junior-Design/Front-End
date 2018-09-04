@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['static/doneVID.mp4']" style="height:610px;">
+      <video-bg :sources="['static/drone_landing_page.mp4']" style="height:610px;">
         <v-container>
           <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
           <v-layout row wrap style="margin-top:10%;margin-bottom:10%;">
