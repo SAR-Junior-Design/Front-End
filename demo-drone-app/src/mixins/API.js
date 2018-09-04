@@ -4,7 +4,6 @@
 import Vue from 'vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import router from '@/router'
 import qs from 'qs';
 
 Vue.use(VueAxios, axios)
@@ -13,8 +12,8 @@ export default {
   data () {
   	return {
       base_url: 'https://devapi.icarusmap.com',
-      client_id: 'U2b84Xxpx3mS4yF6oVegnvYMsOOPhx3UmbXWytU3',
-      client_secret: 'lE1UpGZREIiRGsxwe716850lJZpJPxgWRqB6W06sQujETf1efyvHVf5UAUbMhc44hnYqXjydzFrGRFe9rcaimLqhrQJY57sA3xDIORZEYj7hAReCAIvyyxWCVISMxD6g'
+      client_id: '7Ax4cZd34x6lwGw24eJhSPEw2Ia7rLwSW74nldoG',
+      client_secret: 'ybWAUwOiNyTrgB0IUicVmY0Ogyu4lackx6YSg8gU0Kq9rwvjtjutGbx3FdeneXi4iKDd1M1Pev9KC9EKqAdmQvAaN2FZQstynolzpY2evEMJ3gI3JtrPSOv39SG0dg6D'
       //base_url: 'http://localhost:8000'
   	}
   },
@@ -213,13 +212,13 @@ export default {
         headers: {'Authorization': 'Bearer '+token}
       });
     },
-    edit_clearance(mission_id,new_clearance_state, message, success, failure) {
-      var url = this.base_url + '/v1_1/edit_clearance'
-      var body = {'mission_id' : mission_id, 'new_clearance_state': new_clearance_state,
+    async edit_clearance(mission_id,new_clearance_state, message, token) {
+      var url = this.base_url + '/mission/edit_clearance/'
+      var body = {'mission_id' : mission_id, 'state': new_clearance_state,
                   'message': message}
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer '+token}
+      });
     }
   }
 }
