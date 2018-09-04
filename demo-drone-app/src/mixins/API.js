@@ -55,11 +55,11 @@ export default {
       const response_body = response.data
       return response;
     },
-    async logoff(success, failure) {
+    async logout(token) {
     	var url = this.base_url + '/user/logout/'
-      response = await axios.get(url)
-        .then()
-        .catch(failure);
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
     async register_user(email, password, username) {
       var body = {email, password, username}
