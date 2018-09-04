@@ -165,12 +165,12 @@ export default {
         .then(success)
         .catch(failure);
     },
-    delete_mission(mission_id, success, failure) {
+    async delete_mission(mission_id, token) {
       var body = {'mission_id': mission_id}
-      var url = this.base_url + '/mission/delete_mission/'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      var url = this.base_url + '/mission/delete_missions/'
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
     async get_current_missions(token){
       var url = this.base_url + '/mission/get_current_missions/'
@@ -207,11 +207,11 @@ export default {
     //   'description': 'New description.',
     //   'ends_at': <datetime>
     // }
-    edit_mission_details_v1_1(details, success, failure) {
-      var url = this.base_url + '/v1_1/edit_mission_details'
-      axios.post(url,details, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async edit_mission_details(details, token) {
+      var url = this.base_url + '/mission/edit_mission_details/'
+      return await axios.post(url,details, {
+        headers: {'Authorization': 'Bearer '+token}
+      });
     },
     edit_clearance(mission_id,new_clearance_state, message, success, failure) {
       var url = this.base_url + '/v1_1/edit_clearance'

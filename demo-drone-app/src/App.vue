@@ -143,7 +143,6 @@
 				this.logged_in = true
 				this.menuItems = this.userMenu
 				this.toolbar_color = 'primary'
-				router.push('/homepage')
 			} else {
 				this.logged_in = false
 				this.menuItems = this.notLoggedIn

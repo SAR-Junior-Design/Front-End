@@ -191,7 +191,7 @@
 						<template slot="items" slot-scope="props">
 							<tr @click.prevent="props.expanded = !props.expanded">
 								<td class="text-xs-left">{{ props.item.title }}</td>
-								<td class="text-xs-center">{{ props.item.commander }}</td>
+								<td class="text-xs-center">{{ props.item.commander_id }}</td>
 								<td class="text-xs-center">{{ props.item.num_drones }}</td>
 								<td class="text-xs-center">{{ props.item.starts_at }}</td>
 								<td class="text-xs-center">
@@ -463,7 +463,6 @@
 					ends_at,
 					this.$store.state.access_token
 				);
-				console.log(response.data)
 				this.items = response.data
 				for (var j = 0; j < this.items.length; j++){
 					var area = this.items[j].area
@@ -530,15 +529,14 @@
 			goToMission(mission) {
 					router.push('map?id='+mission);
 			},
-			deleteMission(mission) {
-				this.delete_mission(mission,
-					response => {
-						this.$emit('snackbar', 6000, 'Flight Deleted.')
-						this.getMissions()
-					},
-					error => {
-
-					})
+			async deleteMission(mission) {
+				const response = await this.delete_mission(mission,
+					this.$store.state.access_token
+				);
+				if (response.status == 200) {
+					this.$emit('snackbar', 6000, 'Flight Deleted.')
+					this.getMissions()
+				}
 				this.showDeleteWarning=false;
 			},
 			newMission(){
