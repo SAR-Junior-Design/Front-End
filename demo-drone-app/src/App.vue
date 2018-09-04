@@ -143,11 +143,11 @@
 				this.logged_in = true
 				this.menuItems = this.userMenu
 				this.toolbar_color = 'primary'
-				console.log('changed color!!!!')
 			} else {
 				this.logged_in = false
 				this.menuItems = this.notLoggedIn
 				this.toolbar_color = 'transparent'
+				console.log('here!!')
 			}
 		}
 	}

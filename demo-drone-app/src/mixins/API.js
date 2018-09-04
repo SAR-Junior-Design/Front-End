@@ -42,7 +42,7 @@ export default {
         password
       };
       data = qs.stringify(data)
-      const response = await axios(
+      return await axios(
         {
           method: 'POST',
           headers: {
@@ -52,14 +52,25 @@ export default {
           url
         }
       );
-      const response_body = response.data
-      return response;
     },
     async logout(token) {
-    	var url = this.base_url + '/user/logout/'
-      return await axios.get(url, {
-        headers: {'Authorization': 'Bearer ' + token}
-      });
+      var url = this.base_url + '/o/revoke_token/'
+      var data = { 'grant_type': 'password',
+        client_id: this.client_id,
+        client_secret: this.client_secret,
+        token
+      };
+      data = qs.stringify(data)
+      return await axios(
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data,
+          url
+        }
+      );
     },
     async register_user(email, password, username) {
       var body = {email, password, username}

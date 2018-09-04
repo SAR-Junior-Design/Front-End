@@ -1,2 +1,2 @@
 node_modules/
-demo-drone-app/dist/
+demo-drone-app/dist/**

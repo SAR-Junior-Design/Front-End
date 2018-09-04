@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['src/assets/doneVID.mp4']" style="height:600px;overflow:scroll">
+      <video-bg :sources="['static/doneVID.mp4']" style="height:600px;overflow:scroll">
         <v-container>
           <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
           <v-layout row wrap style="margin-top:10%;">
