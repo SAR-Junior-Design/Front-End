@@ -309,19 +309,13 @@
             </v-card>
           </v-expansion-panel-content>
           <v-expansion-panel-content>
-            <div slot="header">Scheduled Flight Date</div>
-            <v-card>
-              <v-card-text class="grey lighten-3">{{date}}</v-card-text>
-            </v-card>
-          </v-expansion-panel-content>
-          <v-expansion-panel-content>
-            <div slot="header">Start Time</div>
+            <div slot="header">Start Datetime</div>
             <v-card>
               <v-card-text class="grey lighten-3">{{starts}}</v-card-text>
             </v-card>
           </v-expansion-panel-content>
           <v-expansion-panel-content>
-            <div slot="header">End Time</div>
+            <div slot="header">End Datetime</div>
             <v-card>
               <v-card-text class="grey lighten-3">{{ends}}</v-card-text>
             </v-card>
@@ -488,6 +482,7 @@
   import axios from 'axios'
   import VueAxios from 'vue-axios'
   import API from '../mixins/API.js'
+  import moment from 'moment'
 
   Vue.use(VueGoogleMaps, {
     load: {
@@ -540,7 +535,6 @@
         pickerStart:null,
         pickerEnd:null,
 
-        date: null,
         type: null,
         starts: null,
         ends: null,
@@ -646,28 +640,16 @@
           alert(response.data.message);
         }
       },
-      getUserID() {
-        this.get_user_info(
-          response => {
-            this.userID = response.data.id
-          },
-          error => {
-            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
-          }
-        )
+      async getUserID() {
+        const response = await this.get_user_info(this.$store.state.access_token);
+        this.userID = response.data.id
       },
-      getUserDrones() {
-        this.get_user_drones(
-          response => {
-            this.drone_data = response.data
-            for(var i=0; i<this.drone_data.length; i++) {
-              this.myDrones.push(this.drone_data[i])
-            }
-          },
-          error => {
-            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry Ladd!')
-          }
-        )
+      async getUserDrones() {
+        const response = await this.get_user_drones(this.$store.state.access_token);
+        this.drone_data = response.data
+        for(var i=0; i<this.drone_data.length; i++) {
+          this.myDrones.push(this.drone_data[i])
+        }
       },
       async fetch_mission_info() {
         const response = await this.get_mission_info(
@@ -678,15 +660,13 @@
           this.title = response.data.title;
           this.description = response.data.description;
           var area = response.data.area;
-          var timeArray = response.data.starts_at.split(" ");
-          this.starts = timeArray[1];
-          this.pickerStart = this.starts;
-          this.date = timeArray[0];
-          this.pickerDate = this.date;
+          this.pickerStart = moment(response.data.starts_at).local().format('YYYY-DD-MM HH:mm:ss');
+          this.starts = this.pickerStart;
+          console.log(`picker start: ${moment(response.data.starts_at).local().format('YYYY-DD-MM HH:mm:ss')}`);
           this.type = response.data.type;
           this.selectedType = this.type;
-          this.ends = response.data.ends_at.split(" ")[1];
-          this.pickerEnd = this.ends;
+          this.pickerEnd = moment(response.data.ends_at).local().format('YYYY-DD-MM HH:mm:ss');
+          this.ends = this.pickerEnd;
           for(var i = 0; i < area.features.length; i++) {
             var paths = [];
             var avg_lat = 0
@@ -794,22 +774,19 @@
           this.selected_drone_drawer = true;
         }
       },
-      addDrone () {
+      async addDrone () {
         for(var i=0; i< this.selected.length; i++) {
-          this.add_drone_to_mission(
+          const response = await this.add_drone_to_mission(
             this.selected[i].id,
             this.mission_id,
             this.userID,
-            response => {
-              if (response.data['code'] == 200) {
-                this.getMissionDrones();
-              } else if (response.data['code'] == 31) {
-                alert(response.data.message);
-              }
-            },
-            error => {
-              alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-            });
+            this.$store.state.access_token
+          );
+          if (response.data['code'] == 200) {
+            this.getMissionDrones();
+          } else if (response.data['code'] == 31) {
+            alert(response.data.message);
+          }
         }
         this.menu = false;
       },
@@ -1049,38 +1026,37 @@
           }
           return gJson;
       },
-      saveMission() {
+      async saveMission() {
         var geoJ = this.makeGeoJson();
-        this.starts = this.pickerStart;
-        this.ends = this.pickerEnd;
         this.date = this.pickerDate;
+        this.starts = this.pickerDate + ' ' + this.pickerStart;
+        this.starts = moment(this.starts, 'YYYY-MM-DD HH:mm').toISOString()
+        this.ends = this.pickerDate + ' ' + this.pickerEnd;
+        this.ends = moment(this.ends, 'YYYY-MM-DD HH:mm').toISOString()
         this.type = this.selectedType;
         var body = {'mission_id': this.mission_id, 'area': geoJ, 'title': this.title, 'description': this.description, 'starts_at': this.pickerDate + ' ' + this.starts, 'ends_at': this.pickerDate + ' ' + this.ends, 'type': this.selectedType}
-        this.edit_mission_details_v1_1(
+        const response = await this.edit_mission_details(
           body,
-          response => {
-            if (response['status'] == 200) {
-              for (var i = 0; i < this.polygons.length; i++) {
-                this.polygons[i].setEditable(false);
-                this.polygons[i].setDraggable(false);
-              }
-              this.draggable = true;
-              this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
-              this.canDraw = false;
-              this.edit = !this.edit;
-              this.edit_drawer = false;
-              this.drawer = false;
-              this.flight_drawer = true;
-              this.selected_drone_drawer = false;
-              this.paths=[];
-            } else if (response.data['code'] == 31) {
-              alert(response.data.message);
-            }
-          },
-          error => {
-            alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-          }
+          this.$store.state.access_token
         );
+        if (response['status'] == 200) {
+          for (var i = 0; i < this.polygons.length; i++) {
+            this.polygons[i].setEditable(false);
+            this.polygons[i].setDraggable(false);
+          }
+          this.draggable = true;
+          this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
+          this.canDraw = false;
+          this.edit = !this.edit;
+          this.edit_drawer = false;
+          this.drawer = false;
+          this.flight_drawer = true;
+          this.selected_drone_drawer = false;
+          this.paths=[];
+          this.$emit('snackbar', 6000, 'Flight updated.')
+        } else if (response.data['code'] == 31) {
+          alert(response.data.message);
+        }
       },
       saveDate (date) {
         this.$refs.menuDate.save(date)

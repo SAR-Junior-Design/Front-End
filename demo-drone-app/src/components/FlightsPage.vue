@@ -191,7 +191,7 @@
 						<template slot="items" slot-scope="props">
 							<tr @click.prevent="props.expanded = !props.expanded">
 								<td class="text-xs-left">{{ props.item.title }}</td>
-								<td class="text-xs-center">{{ props.item.commander }}</td>
+								<td class="text-xs-center">{{ props.item.commander_id }}</td>
 								<td class="text-xs-center">{{ props.item.num_drones }}</td>
 								<td class="text-xs-center">{{ props.item.starts_at }}</td>
 								<td class="text-xs-center">
@@ -328,9 +328,9 @@
 															style="margin-top:10px;
 															height:80px;
 															overflow:scroll;"
-															v-if="message!=null"
+															v-if="props.item.clearance.message!=null"
 														>
-															{{message}}
+															{{props.item.clearance.message}}
 														</span>
 														<span 
 															style="margin-top:10px;
@@ -453,6 +453,12 @@
 				}
 				return clearance["state"]
 			},
+			_message(clearance) {
+				if (clearance == null){
+					return false
+				}
+				return clearance["message"]
+			},
 			async getMissions() {
 				var starts_at = this.start_date + ' ' + this.start_time;
 				starts_at = moment(starts_at, 'YYYY-MM-DD HH:mm').toISOString()
@@ -463,7 +469,6 @@
 					ends_at,
 					this.$store.state.access_token
 				);
-				console.log(response.data)
 				this.items = response.data
 				for (var j = 0; j < this.items.length; j++){
 					var area = this.items[j].area
@@ -516,29 +521,27 @@
 						that.polygons[poly.id].setPath(poly.getPath());
 					});
 				},
-			update_clearance(item) {
+			async update_clearance(item) {
 				item.clearance.state = this.currState;
-				this.edit_clearance(
+				const response = await this.edit_clearance(
 					item.id, item.clearance.state, this.message,
-					response => {
-						this.$emit('snackbar', 6000, 'Clearance updated.')
-					},
-					error => {
-						alert('Error connecting to servers!')
-					})
+					this.$store.state.access_token
+				);
+				if (response.status == 200) {
+					this.$emit('snackbar', 6000, 'Clearance updated.')
+				}
 			},
 			goToMission(mission) {
 					router.push('map?id='+mission);
 			},
-			deleteMission(mission) {
-				this.delete_mission(mission,
-					response => {
-						this.$emit('snackbar', 6000, 'Flight Deleted.')
-						this.getMissions()
-					},
-					error => {
-
-					})
+			async deleteMission(mission) {
+				const response = await this.delete_mission(mission,
+					this.$store.state.access_token
+				);
+				if (response.status == 200) {
+					this.$emit('snackbar', 6000, 'Flight Deleted.')
+					this.getMissions()
+				}
 				this.showDeleteWarning=false;
 			},
 			newMission(){
@@ -547,7 +550,7 @@
 		},
 		async mounted () {
 			var response = await this.is_government_official(this.$store.state.access_token);
-			if (response.data == 'True') {
+			if (JSON.stringify(response.data) == 'true') {
 				this.is_gov_official = true
 			}
 			await this.getMissions();

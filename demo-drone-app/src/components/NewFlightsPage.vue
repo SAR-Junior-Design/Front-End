@@ -325,6 +325,8 @@
   import VueAxios from 'vue-axios'
   import API from '../mixins/API.js'
   import moment from 'moment'
+  import router from '@/router'
+
   Vue.use(VueGoogleMaps, {
     load: {
       installComponents: true,
@@ -652,6 +654,7 @@
             this.canDraw = false;
             this.edit = !this.edit;
             this.$emit('snackbar',6000, 'Flight Successfully Saved');
+            router.push('/flights')
           }
         }
       },

@@ -204,11 +204,11 @@ export default {
         this.items.push(this.drone_data[i])
       }
     },
-    registerDrone() {
+    async registerDrone() {
       if (this.descr == null) {
         this.descr = "No description added"
       }
-      const response = this.register_drone(this.descr, this.man1, this.type0, this.color3, this.blades2,
+      const response = await this.register_drone(this.descr, this.man1, this.type0, this.color3, this.blades2,
         this.$store.state.access_token
       );
       if (response.status == 200) {
