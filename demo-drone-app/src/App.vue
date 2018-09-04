@@ -27,7 +27,7 @@
 					<v-list-tile to="/settings">
 						<v-list-tile-title> settings</v-list-tile-title>
 					</v-list-tile>
-					<v-list-tile @click="_logoff()">
+					<v-list-tile @click="_logout()">
 						<v-list-tile-title> sign out</v-list-tile-title>
 					</v-list-tile>
 				</v-list>
@@ -118,15 +118,15 @@
 				this.logged_in = true
 				this.menuItems = this.userMenu
 			},
-			_logoff() {
-				this.logoff(response => {
+			async _logout() {
+				const response = await this.logout(
+					this.$store.state.access_token
+				);
+				if (response.status == 200) {
 					this.logged_in = false
 					this.menuItems = this.notLoggedIn
 					router.push('/')
-				},
-				error => {
-					alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-				})
+				}
 			},
 			_snackbar(timeout,text) {
 				this.timeout = timeout
@@ -143,11 +143,12 @@
 				this.logged_in = true
 				this.menuItems = this.userMenu
 				this.toolbar_color = 'primary'
-				console.log('changed color!!!!')
+				router.push('/homepage')
 			} else {
 				this.logged_in = false
 				this.menuItems = this.notLoggedIn
 				this.toolbar_color = 'transparent'
+				console.log('here!!')
 			}
 		}
 	}

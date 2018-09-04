@@ -140,7 +140,6 @@ export default {
     }
   },
   async mounted() {
-    this.$emit('change-toolbar-color', 'primary')
     console.log(`access_token: ${this.$store.state.access_token}`);
     var response = await this.get_current_missions(this.$store.state.access_token);
     

@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['src/assets/doneVID.mp4']" style="height:610px;">
+      <video-bg :sources="['static/drone_landing_page.mp4']" style="height:610px;">
         <v-container>
           <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
           <v-layout row wrap style="margin-top:10%;margin-bottom:10%;">
@@ -217,7 +217,7 @@ export default {
         console.log('GOT SOMEWHERE')
         this.$emit('change-toolbar-color', 'primary')
       } else {
-        this.$emit('change-toolbar-color', 'primary')
+        this.$emit('change-toolbar-color', 'transparent')
       }
     }
   },
@@ -225,19 +225,6 @@ export default {
     comparePasswords () {
       return this.signUpPassword === this.passwordConfirm ? true : 'Passwords don\'t match'
     }
-  },
-  mounted() {
-    this.$emit('change-toolbar-color', 'primary')
-    this.isLoggedIn(
-      response => {
-        if (response.data == 'True') {
-          router.push('/homepage')
-          alert('logged in!')
-        }
-      },
-      error => {
-        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-      })
   },
   created () {
     window.addEventListener('scroll', this.handleScroll);
