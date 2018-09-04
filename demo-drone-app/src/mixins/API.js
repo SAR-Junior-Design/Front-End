@@ -144,12 +144,12 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
-    add_drone_to_mission(drone_id, mission_id, operator_id, success, failure) {
+    async add_drone_to_mission(drone_id, mission_id, operator_id, token) {
       var body = {'drone_id': drone_id, 'mission_id': mission_id, 'operator_id': operator_id}
       var url = this.base_url + '/mission/add_drone_to_mission/'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
     async get_missions(starts_at, ends_at, token){
       var body = {'starts_at': starts_at, 'ends_at': ends_at}

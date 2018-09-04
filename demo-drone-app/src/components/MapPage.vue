@@ -774,22 +774,19 @@
           this.selected_drone_drawer = true;
         }
       },
-      addDrone () {
+      async addDrone () {
         for(var i=0; i< this.selected.length; i++) {
-          this.add_drone_to_mission(
+          const response = await this.add_drone_to_mission(
             this.selected[i].id,
             this.mission_id,
             this.userID,
-            response => {
-              if (response.data['code'] == 200) {
-                this.getMissionDrones();
-              } else if (response.data['code'] == 31) {
-                alert(response.data.message);
-              }
-            },
-            error => {
-              alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-            });
+            this.$store.state.access_token
+          );
+          if (response.data['code'] == 200) {
+            this.getMissionDrones();
+          } else if (response.data['code'] == 31) {
+            alert(response.data.message);
+          }
         }
         this.menu = false;
       },
