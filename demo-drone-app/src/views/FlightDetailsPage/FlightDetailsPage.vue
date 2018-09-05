@@ -481,7 +481,7 @@
   import Vue from 'vue';
   import axios from 'axios'
   import VueAxios from 'vue-axios'
-  import API from '../mixins/API.js'
+  import API from '@/mixins/API.js'
   import moment from 'moment'
 
   Vue.use(VueGoogleMaps, {

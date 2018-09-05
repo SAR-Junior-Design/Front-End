@@ -79,9 +79,9 @@ import Vue from 'vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from '@/router'
-import API from '../mixins/API.js'
-import missionCard from './homepage/missionCard.vue'
-import noMissionCard from './homepage/noMissionCard.vue'
+import API from '@/mixins/API.js'
+import missionCard from './missionCard.vue'
+import noMissionCard from './noMissionCard.vue'
 Vue.use(VueAxios, axios)
 export default {
   name: 'Login',

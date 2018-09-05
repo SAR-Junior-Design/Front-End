@@ -33,10 +33,10 @@
 </style>
 
 <script>
-	import API from '../mixins/API.js'
-	import SettingsProfile from './settings/SettingsProfile.vue'
-	import SettingsLicenses from './settings/SettingsLicenses.vue'
-	import SettingsContact from './settings/SettingsContact.vue'
+	import API from '@/mixins/API.js'
+	import SettingsProfile from './settingsProfile.vue'
+	import SettingsLicenses from './settingsLicenses.vue'
+	import SettingsContact from './settingsContact.vue'
 
 	export default {
 		mixins: [API],
