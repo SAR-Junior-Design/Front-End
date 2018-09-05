@@ -143,7 +143,7 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify'
 import router from '@/router'
-import API from '../mixins/API.js'
+import API from '@/mixins/API.js'
 
 export default {
   name: 'Login',

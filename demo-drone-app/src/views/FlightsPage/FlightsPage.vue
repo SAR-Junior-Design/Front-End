@@ -382,8 +382,8 @@
 	import Vue from 'vue';
 	import Vuetify from 'vuetify'
 	import router from '@/router'
-	import API from '../mixins/API.js'
-	import mapThumbnail from '@/components/map/mapThumbnail.vue'
+	import API from '@/mixins/API.js'
+	import mapThumbnail from '@/components/mapThumbnail.vue'
 	import moment from 'moment'
 
 	Vue.use(VueGoogleMaps, {

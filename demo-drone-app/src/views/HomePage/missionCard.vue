@@ -1,9 +1,10 @@
 <template>
-  <v-card dark style="background-color:#1d561a; height:110%;width:400px;">
-    <v-card-media :src="require('@/assets/noMissionImage.png')" height="200px">
+  <v-card dark style="background-color:#1d561a; height:400px;width:400px;">
+    <v-card-media class="text-xs-center" height="200px" style="margin-left:5%;margin-right:7.5%">
+      <component :mission="this.mission" is="mapTemplate"></component>
     </v-card-media>
     <v-container fluid grid-list-lg>
-      <v-layout row justify-left>
+      <v-layout row>
         <v-flex class="text-xs-left">
           <div @mouseover="mouseOver()" @mouseout="mouseOut()" @click="goToMission()">
             <div class="text-xs-center" style="font-size:25px;"> {{ this.mission.title }}</div>
@@ -25,12 +26,16 @@
 </style>
 
 <script>
-import API from '../../mixins/API.js'
+import API from '@/mixins/API.js'
 import router from '@/router'
+import mapThumbnail from '@/components/mapThumbnail.vue'
 
 export default {
 	mixins: [API],
 	props: ['mission'],
+  components: {
+    'mapTemplate': mapThumbnail
+  },
 	data() {
 		return {
 		}

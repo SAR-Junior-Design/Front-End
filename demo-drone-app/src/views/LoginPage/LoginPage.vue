@@ -85,7 +85,7 @@ import Vue from 'vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from '@/router'
-import API from '../mixins/API.js'
+import API from '@/mixins/API.js'
 import VideoBg from 'vue-videobg'
 
 Vue.component('video-bg', VideoBg)
