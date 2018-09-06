@@ -12,7 +12,7 @@
     </v-toolbar>
     <v-data-table
       v-bind:headers="headers"
-      v-bind:items="drones"
+      v-bind:items="dronesData"
       hide-actions
       item-key="name"
       must-sort
@@ -61,8 +61,8 @@
         <v-divider></v-divider>
         <v-data-table
           :headers="headers"
-          :items="myDrones"
-          v-model="selected"
+          :items="myDronesData"
+          v-model="selectedData"
           item-key="id"
           select-all
           :rows-per-page-items="rowsPerPageItems"
@@ -110,12 +110,14 @@
           }
         ],
 
-        
+        dronesData: this.drones,
+        myDronesData: this.myDrones,
+        selectedData: this.selected
       }
     },
     methods: {
       updateDrones () {
-        this.$emit("message", "I changed the message");
+        this.$emit("message", this.selectedData);
       }
     }
 	}
