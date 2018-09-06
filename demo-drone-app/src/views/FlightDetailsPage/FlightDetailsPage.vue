@@ -1,274 +1,26 @@
 <template>
   <v-layout>
     <v-layout style="width:100%;" fixed @click="showDeleteMenu">
-      <v-card
+      
+      <drones-drawer
         v-if="drawer"
-        class = "sideNav"
-        :height="cardHeight"
-      >
-        <v-toolbar flat>
-          <v-list>
-            <v-list-tile>
-              <v-list-tile-title class="title" v-model='title'>{{title}}</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-toolbar>
-        <v-data-table
-          v-bind:headers="headers"
-          :items="drones"
-          hide-actions
-          item-key="name"
-          must-sort
-        >
-          <template slot="items" slot-scope="props">
-            <v-tooltip top>
-              <v-icon  v-if= "props.item.connection == 'IS_CONNECTION'" slot="activator">wifi</v-icon>
-              <v-icon  v-else-if= "props.item.connection == 'null'" slot="activator">visibility_off</v-icon>
-              <v-icon  v-else slot="activator">signal_wifi_off</v-icon>
-              <span>{{props.item.connection}}</span>
-            </v-tooltip>
-            <v-tooltip top>
-              <v-icon  v-if= "props.item.CURRENT_BEHAVIOR == 'SEARCHING'" slot="activator">location_searching</v-icon>
-              <v-icon  v-else-if= "props.item.CURRENT_BEHAVIOR == 'null'" slot="activator">visibility_off</v-icon>
-              <v-icon  v-else slot="activator">home</v-icon>
-              <span>{{props.item.CURRENT_BEHAVIOR}}</span>
-            </v-tooltip>
-            <v-tooltip top>
-              <v-icon  v-if= "props.item.battery_info.energy_remaining == 'null'" slot="activator">visibility_off</v-icon>
-              <v-icon  v-else-if= "props.item.battery_info.energy_remaining < 50" slot="activator">battery_alert</v-icon>
-              <v-icon  v-else slot="activator">battery_full</v-icon>
-              <span>{{props.item.battery_info.energy_remaining}}%</span>
-            </v-tooltip>
-            <tr  @click= "swapNav(props.item)" @mouseover= "mouseOver()" @mouseout= "mouseOut()">
-              <td>{{ props.item.id }}</td>
-            </tr>
-          </template>
-        </v-data-table>
-        
-        <v-menu
-          offset-x
-          :close-on-content-click="false"
-          :nudge-width="200"
-          v-model="menu"
-        >
-          <v-btn style="background-color:#1d561a;color:#ffffff" slot="activator">Add Drone</v-btn>
-          <v-card>
-            <v-list>
-              <v-list-tile>
-                <v-list-tile-content>
-                  <v-list-tile-title>Registered Drones</v-list-tile-title>
-                  <v-list-tile-sub-title>Select a drone to add to your flight.</v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
-            <v-divider></v-divider>
-            <v-data-table
-              :headers="headers"
-              :items="myDrones"
-              v-model="selected"
-              item-key="id"
-              select-all
-              :rows-per-page-items="rowsPerPageItems"
-            >
-              <template slot="items" slot-scope="props">
-                <tr>
-                  <td>
-                    <v-checkbox
-                      primary
-                      v-model="props.selected"
-                    ></v-checkbox>
-                  </td>
-                  <td>{{ props.item.id }}</td>
-                </tr>
-              </template>
-            </v-data-table>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn flat @click="menu = false">Cancel</v-btn>
-              <v-btn color="primary" flat @click="addDrone()">Save</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
-      </v-card>
-      <v-card
-        v-if="selected_drone_drawer"
-        class="sideNav"
-        :height="cardHeight"
-      >
-        <v-toolbar flat>
-          <v-list>
-            <v-list-tile>
-              <v-list-tile-title class="title">
-                Drone Details
-              </v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-toolbar>
-        <v-card>
-          <v-card-title primary-title>
-            <div>
-              <h3>ID: {{currentSelectedDrone.id}}</h3><br>
-              <h3>Flight Details</h3>
-              <p class="firstHeader"> Battery </p>
-              
-              <p class="secondHeader"> Power Remaining: {{currentSelectedDrone.battery_info.current_consumption}}%</p>
-              <p class="secondHeader"> Voltage: {{currentSelectedDrone.battery_info.voltage}} V</p>
+        :cardHeight="cardHeight"
+        :title="title"
 
-              <p class="firstHeader"> Speed </p>
-              <p class="secondHeader">x: {{currentSelectedDrone.velocity.x}} m/s</p>
-              <p class="secondHeader">y: {{currentSelectedDrone.velocity.y}} m/s</p>
-              <p class="secondHeader">z: {{currentSelectedDrone.velocity.z}} m/s</p>
+        :drones="drones"
+        :myDrones="myDrones"
+        :selected="selected"
 
-              <h3>Navigation</h3>
-              <p class="firstHeader"> Location </p>
-              <p class="secondHeader">Latitude: {{currentSelectedDrone.location.latitude}} </p>
-              <p class="secondHeader">Longitude: {{currentSelectedDrone.location.longitude}} </p>
-              <p class="secondHeader">Altitude: {{currentSelectedDrone.altitude}} m</p>
+        @message="setMessage"
+      ></drones-drawer>
 
-              <h3>Visuals</h3>
-            </div>
-          </v-card-title>
-        </v-card>
-      </v-card>
+      <drone-detail-drawer>
+        :selected_drone_drawer="selected_drone_drawer"
+        :cardHeight="cardHeight"
+        :currentSelectedDrone="currentSelectedDrone"
+      </drone-detail-drawer>
 
-      <v-card
-        v-if="edit_drawer"
-        class="sideNav"
-        :height="cardHeight"
-      >
-        <v-toolbar flat>
-          <v-list>
-            <v-list-tile>
-              <v-list-tile-title class="title">
-                Flight Details
-              </v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-toolbar>
-
-        <v-list dense class="pt-0" style="margin:2%;">
-          <v-text-field 
-            label="Flight Title"
-            v-model="title">
-          </v-text-field>
-          <v-text-field 
-            label="Description"
-            multi-line
-            v-model="description">
-          </v-text-field>
-        </v-list>
-
-        <v-select
-          :items="types"
-          v-model="selectedType"
-          label="Flight Type"
-          single-line
-          auto
-          hide-details
-          style="width:40%;float:left;margin:10px;">
-        </v-select>
-        <v-menu
-          ref="menu"
-          persistent
-          lazy
-          :close-on-content-click="false"
-          v-model="menuDate"
-          transition="scale-transition"
-          full-width
-          :nudge-right="140"
-          :return-value.sync="pickerDate"
-        >
-          <v-text-field
-            slot="activator"
-            label="Flight Date"
-            v-model="pickerDate"
-            readonly
-            prepend-icon="event"
-            style="width:40%;float:left;margin:10px;"
-          ></v-text-field>
-          <v-card>
-            <v-card-title primary-title>
-              <div>
-                <v-date-picker
-                  ref="picker"
-                  v-model="pickerDate"
-                  @change="saveDate"
-                  color ="green darken-4"
-                  :show-current="false"
-                ></v-date-picker>
-              </div>
-            </v-card-title>
-            <v-card-actions>
-              <v-btn dark style="background-color:#1d561a" @click="menuDate = false">OK</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
-        <v-menu
-          ref="menuStart"
-          persistent
-          lazy
-          :close-on-content-click="false"
-          v-model="menuStart"
-          transition="scale-transition"
-          full-width
-          :nudge-right="140"
-          :return-value.sync="pickerStart"
-        >
-          <v-text-field
-            slot="activator"
-            label="Flight Start Time"
-            v-model="pickerStart"
-            prepend-icon="access_time"
-            readonly
-            style="width:40%;float:left;margin:10px;"
-          ></v-text-field>
-          <v-card>
-            <v-card-title primary-title>
-              <div>
-                <v-time-picker v-model="pickerStart" color ="green darken-4"></v-time-picker>
-              </div>
-            </v-card-title>
-            <v-card-actions>
-              <v-btn dark style="background-color:#1d561a" @click="menuStart = false">OK</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
-
-        <v-menu
-          ref="menuEnd"
-          persistent
-          lazy
-          :close-on-content-click="false"
-          v-model="menuEnd"
-          transition="scale-transition"
-          full-width
-          :nudge-right="140"
-          :return-value.sync="pickerEnd"
-        >
-          <v-text-field
-            slot="activator"
-            label="Flight End Time"
-            v-model="pickerEnd"
-            prepend-icon="access_time"
-            readonly
-            style="width:40%;float:left;margin:10px;">
-          </v-text-field>
-          <v-card>
-            <v-card-title primary-title>
-              <div>
-                <v-time-picker v-model="pickerEnd" color ="green darken-4"></v-time-picker>
-              </div>
-            </v-card-title>
-            <v-card-actions>
-              <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
-            </v-card-actions>
-          </v-card>  
-        </v-menu>
-
-        <v-btn fixed style="left:1%;top:89%;background-color:#1d561a;color:#ffffff" @click="saveMission()">Update Flight</v-btn>
-        <v-btn fixed style="left: 15%;top:89%;background-color:#1d561a;color:#ffffff" @click="swapNav('overView')">Back</v-btn>
-
-      </v-card>
+      
       <v-card
         v-if="flight_drawer"
         class="sideNav"
@@ -483,6 +235,8 @@
   import VueAxios from 'vue-axios'
   import API from '@/mixins/API.js'
   import moment from 'moment'
+  import dronesDrawer from './dronesDrawer.vue'
+  import droneDetailDrawer from './droneDetailDrawer.vue'
 
   Vue.use(VueGoogleMaps, {
     load: {
@@ -493,11 +247,14 @@
   export default {
     name: 'MapPage',
     mixins: [API],
+    components: {
+      dronesDrawer: dronesDrawer,
+      droneDetailDrawer: droneDetailDrawer
+    },
     data: function data() {
       return {
       menu: false,
       userID: null,
-      rowsPerPageItems: [5],
 
         mission_id: '',
         center: {
@@ -578,14 +335,6 @@
             sortable: false,         
           }
         ],
-        headers: [
-          {
-            text: 'Drone ID',
-            align: 'left',
-            sortable: true,
-            value: 'id'
-          }
-        ],
         "drones" : [],
         "myDrones" : [],
         "selected": [],
@@ -602,6 +351,9 @@
       this.cardHeight = .89*document.documentElement.offsetHeight-64 + "px";
     },
     methods: {
+      setMessage(msg) {
+        console.log(msg);
+      },
       toggleAll () {
         if (this.selected.length) this.selected = []
         else this.selected = this.items.slice()
