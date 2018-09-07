@@ -2,10 +2,13 @@
   <v-content>
     <section>
       <video-bg :sources="['static/drone_landing_page.mp4']" style="height:600px;overflow:scroll">
-        <v-container>
+        <v-layout row wrap 
+        style="height:100vh;background-color:rgba(0,0,0,0.25)"
+        px-5
+        >
           <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
-          <v-layout row wrap style="margin-top:10%;">
-            <v-layout column style="margin-top:18%;">
+          <v-layout row wrap>
+            <v-layout column style="padding-top:18%;">
               <v-flex mt-3>
                 <v-flex class="text-xs-left">
                   <span style="font-size:30px;color:#dadfe8;">Campus Drone Management</span><br/>
@@ -66,7 +69,7 @@
               </v-flex>
             </v-layout>
           </v-layout>
-        </v-container>
+        </v-layout>
       </video-bg>
     </section>    
   </v-content>
