@@ -71,9 +71,13 @@ export default {
         }
       );
     },
-    async register_user(email, password, username) {
-      var body = {email, password, username}
-      var url = this.base_url + '/user/register_user/'
+    async register_pilot(email, password, username,
+      faa_registration_number, mobile_phone_number,
+      remote_pilot_certificate_number) {
+      var body = {email, password, username,
+        faa_registration_number, mobile_phone_number,
+        remote_pilot_certificate_number}
+      var url = this.base_url + '/pilot/register/'
       return await axios.post(url,body);
     },
     async get_user_info(token) {

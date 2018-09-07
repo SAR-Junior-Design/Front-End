@@ -1,229 +1,63 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['static/drone_landing_page.mp4']" style="height:610px;">
-        <v-container>
-          <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
-          <v-layout row wrap style="margin-top:10%;margin-bottom:10%;">
-            <v-layout column style="margin-top:18%;margin-bottom:10%">
-              <v-flex mt-3>
-                <v-flex class="text-xs-left" style="color:#ffffff">
-                  <span style="font-size:30px;color:#ffffff;">Campus Drone Management.</span><br/>
-                  <span style="font-size:20px;color:#ffffff;">An intuitive drone  policy toolkit.</span>
-                </v-flex>
+      <video-bg :sources="['static/drone_landing_page.mp4']">
+        <v-layout row wrap 
+        style="margin-top:15vh;margin-bottom:10%;"
+        mx-5
+        >
+          <v-layout column style="margin-top:25vh">
+            <v-flex mt-2>
+              <v-flex class="text-xs-center" style="color:#ffffff">
+                <span style="font-size:30px;color:#ffffff;">Campus Drone Management.</span><br/>
+                <span style="font-size:20px;color:#ffffff;">An intuitive drone  policy toolkit.</span>
               </v-flex>
-            </v-layout style="margin-bottom: 10%;">
-              <v-layout column>
-                <v-card style="background-color:#ffffff;opacity:0.95;">
-                  <v-card-title>
-                    <v-flex class="text-xs-left" style="margin-top:0px;">
-                      <h2> Register </h2>
-                    </v-flex>
-                  </v-card-title>
-                  <v-card-text style="opacity:1.0;">
-                    <form @submit.prevent="userSignUp">
-                      <v-layout column>
-                        <v-flex>
-                          <v-text-field
-                            name="signUpUsername"
-                            label="Username"
-                            id="signUpUsername"
-                            type="username"
-                            v-model="signUpUsername"
-                            required></v-text-field>
-                        </v-flex>
-                        <v-flex>
-                          <v-text-field
-                            name="signUpEmail"
-                            label="Email"
-                            id="signUpEmail"
-                            type="email"
-                            v-model="signUpEmail"
-                            required></v-text-field>
-                        </v-flex>
-                        <v-flex>
-                          <v-text-field
-                            name="signUpPassword"
-                            label="Password"
-                            id="signUpPassword"
-                            type="password"
-                            v-model="signUpPassword"
-                            required></v-text-field>
-                        </v-flex>
-                        <v-flex>
-                          <v-text-field
-                            name="confirmPassword"
-                            label="Confirm Password"
-                            id="confirmPassword"
-                            v-model="passwordConfirm"
-                            :rules="[comparePasswords]"
-                            type="password"
-                            ></v-text-field>
-                        </v-flex>
-                        <v-flex class="text-xs-center">
-                          <v-btn style="background-color:#1d561a;color:#1d561a" type="submit"
-                          flat
-                          outline
-                          >
-                            Join
-                          </v-btn>
-                        </v-flex>
-                      </v-layout>
-                    </form>
-                  </v-card-text>
-                </v-card>
-              </v-layout>
+            </v-flex>
           </v-layout>
-        </v-container>
+          <v-spacer/>
+          <v-flex>
+            <reg-step
+            v-on:snackbar="_snackbar"
+            />
+          </v-flex>
+        </v-layout>
       </video-bg>
     </section>
 
-
-
-    <section style = "height:95vh;">
-      <v-layout
-        column
-        wrap
-        class="my-5"
-        align-center
-      >
-        <v-flex xs12>
-          <v-container grid-list-xl>
-            <v-layout column align-center>
-              <v-flex xs12 md4 class="hidden-sm-and-up">
-                <v-card class="elevation-0 transparent">
-                  <v-card-text class="text-xs-center">
-                    <v-icon x-large color="primary">phonelink_erase</v-icon>
-                  </v-card-text>
-                  <v-card-title primary-title class="layout justify-center">
-                    <div class="headline text-xs-center">Mobile Support Under Development.</div>
-                  </v-card-title>
-                  <v-card-text>
-                    Our platform strives to provide a clean, crisp experience. Therefore our application currently only supports desktop browsers. Please use any of the major desktop browsers until further notice.
-                  </v-card-text>
-                </v-card>
-              </v-flex>
-              <v-flex xs12 md8>
-                <v-card class="elevation-0 transparent">
-                  <v-card-text class="text-xs-center">
-                    <v-icon x-large color="primary">trending_up</v-icon>
-                  </v-card-text>
-                  <v-card-title primary-title class="layout justify-center">
-                    <div class="headline text-xs-center">Be ahead of the curve.</div>
-                  </v-card-title>
-                  <v-card-text>
-                    Have a drone policy that fuels innovation.
-                  </v-card-text>
-                </v-card>
-              </v-flex>
-            </v-layout>
-            <v-layout row wrap align-center>
-              <v-flex xs12 md4>
-                <v-card class="elevation-0 transparent">
-                  <v-card-text class="text-xs-center">
-                    <v-icon x-large color="primary">color_lens</v-icon>
-                  </v-card-text>
-                  <v-card-title primary-title class="layout justify-center">
-                    <div class="headline text-xs-center">Intuitive Design</div>
-                  </v-card-title>
-                  <v-card-text>
-                    To build a cohesive flight management software, it needed to be something that was equally useful for campus law enforcement and faculty, as well as for pilots. For that reason, building a beautiful, elegantly designed product was our top priority.
-                  </v-card-text>
-                </v-card>
-              </v-flex>
-              <v-flex xs12 md4>
-                <v-card class="elevation-0 transparent">
-                  <v-card-text class="text-xs-center">
-                    <v-icon x-large color="primary">flash_on</v-icon>
-                  </v-card-text>
-                  <v-card-title primary-title class="layout justify-center">
-                    <div class="headline">Fast setup</div>
-                  </v-card-title>
-                  <v-card-text>
-                    Built by UAS operators, for UAS operators. This system is built with the user in mind to make sure that setup is as easy as possible and integrating into existing systems is seamless.
-                  </v-card-text>
-                </v-card>
-              </v-flex>
-              <v-flex xs12 md4>
-                <v-card class="elevation-0 transparent">
-                  <v-card-text class="text-xs-center">
-                    <v-icon x-large color="primary">people</v-icon>
-                  </v-card-text>
-                  <v-card-title primary-title class="layout justify-center">
-                    <div class="headline text-xs-center">Responsive Team</div>
-                  </v-card-title>
-                  <v-card-text>
-                    Our team is working around the clock to make sure this system is running at 100%. Don't worry about setting up systems or managing databases, we just take care of everything in the cloud!
-                  </v-card-text>
-                </v-card>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-flex>
-      </v-layout>
-    </section>
-
-
-
+    <first-section/>
   </v-content>
 </template>
 
 <style>
-  .background {
-    background: url(https://i.imgur.com/iuiH5Cu.jpg) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-  }
 </style>
 
 <script>
 import Vue from 'vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import router from '@/router'
-import API from '@/mixins/API.js'
 import VideoBg from 'vue-videobg'
-
-Vue.component('video-bg', VideoBg)
+import RegistrationStepper from './RegistrationStepper'
+import FirstSection from './FirstSection'
 
 Vue.use(VueAxios, axios)
 
 export default {
   name: 'Login',
-  mixins: [API],
-  data () {
-    return {
-      signUpUsername: '',
-      signUpEmail: '',
-      signUpPassword: '',
-      passwordConfirm: ''
-    }
+  components: {
+    'video-bg': VideoBg,
+    'reg-step': RegistrationStepper,
+    'first-section': FirstSection
   },
   methods: {
-    async userSignUp() {
-      if (this.comparePasswords !== true) {
-        return
-      }
-      const response = await this.register_user(this.signUpEmail, this.signUpPassword, this.signUpUsername);
-      if (response.status == 200) {
-        this.$emit('snackbar', 6000, 'Account registered.')
-        router.push('/login')
-      } 
-    },
     handleScroll(event){
       if (window.scrollY > 350) {
-        console.log('GOT SOMEWHERE')
         this.$emit('change-toolbar-color', 'primary')
       } else {
         this.$emit('change-toolbar-color', 'transparent')
       }
-    }
-  },
-  computed: {
-    comparePasswords () {
-      return this.signUpPassword === this.passwordConfirm ? true : 'Passwords don\'t match'
+    },
+    _snackbar(timeout, text) {
+      this.$emit('snackbar', timeout, text)
     }
   },
   created () {
@@ -231,6 +65,9 @@ export default {
   },
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll);
+  },
+  mounted() {
+    this.$emit('change-toolbar-color', 'transparent')
   }
 }
 </script>

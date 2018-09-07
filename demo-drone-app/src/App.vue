@@ -147,6 +147,7 @@
 				this.logged_in = false
 				this.menuItems = this.notLoggedIn
 				this.toolbar_color = 'transparent'
+				router.push('/')
 				console.log('here!!')
 			}
 		}
