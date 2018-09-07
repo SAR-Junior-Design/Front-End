@@ -34,6 +34,7 @@
                             label="Username"
                             id="loginUsername"
                             type="username"
+                            :rules=[rules.required]
                             v-model="loginUsername"
                             required></v-text-field>
                         </v-flex>
@@ -43,6 +44,7 @@
                             label="Password"
                             id="loginPassword"
                             type="password"
+                            :rules=[rules.required]
                             v-model="loginPassword"
                             required></v-text-field>
                         </v-flex>
@@ -71,13 +73,6 @@
 </template>
 
 <style>
-  .background {
-    background: url(https://i.imgur.com/iuiH5Cu.jpg) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-  }
 </style>
 
 <script>
@@ -109,7 +104,10 @@ export default {
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
-      ]
+      ],
+      rules: {
+          required: value => !!value || 'Required.'
+        }
     }
   },
   methods: {
@@ -129,8 +127,8 @@ export default {
           }
         }
         catch(error) {
-          console.log(error)
-          this.$emit('snackbar', 6000, 'Invalid login info.')
+          console.log(error.response)
+          this.$emit('snackbar', 6000, 'Either email has not been verified or invalid login info.')
         }
 
       } else {
