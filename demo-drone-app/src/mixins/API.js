@@ -86,11 +86,11 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
-    update_user_info(user_info, success, failure) {
-      var url = this.base_url + '/v1_0/update_user_info/'
-      axios.post(url,user_info, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async update_user_info(user_info, token) {
+      var url = this.base_url + '/user/update/'
+      return await axios.post(url,user_info, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
 
     //DRONE API CALLS

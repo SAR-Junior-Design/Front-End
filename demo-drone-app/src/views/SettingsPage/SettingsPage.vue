@@ -69,6 +69,7 @@
 				const response = await this.get_user_info(
 					this.$store.state.access_token
 				);
+				console.log(response.data)
 				this.user_info = response.data
 			},
 			on_nav_click(item) {
@@ -78,8 +79,8 @@
 				this.$emit('snackbar',timeout, text);
 			}
 		},
-		mounted() {
-			this._get_user_info()
+		async mounted() {
+			await this._get_user_info()
 			this.current_item = this.items[0]
 		}
 	}
