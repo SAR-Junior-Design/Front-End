@@ -8,14 +8,21 @@ import qs from 'qs';
 
 Vue.use(VueAxios, axios)
 
+var prod_data = {
+  client_id: 'TuYR0NfYbg0cPWM4tSH5GxFgCzDhu1S2N4naDEky',
+  base_url: 'https://api.icarusmap.com',
+  client_secret: 'fgW0R8Dk7MaIvEu5kwpLo9D1LDLTwOMdXEqYrzJ9P2cHm1Ct8lEbvT9Npa23SedG4Fcbpqi9Umm9O4KgE0ayRmqkxY4n3SzSQ61pJDRxU1sr83lQ1PnL3mKToI0GaVe2'
+}
+
+var dev_data = {
+  base_url: 'https://devapi.icarusmap.com',
+  client_id: '7Ax4cZd34x6lwGw24eJhSPEw2Ia7rLwSW74nldoG',
+  client_secret: 'ybWAUwOiNyTrgB0IUicVmY0Ogyu4lackx6YSg8gU0Kq9rwvjtjutGbx3FdeneXi4iKDd1M1Pev9KC9EKqAdmQvAaN2FZQstynolzpY2evEMJ3gI3JtrPSOv39SG0dg6D'
+}
+
 export default {
   data () {
-  	return {
-      base_url: 'https://devapi.icarusmap.com',
-      client_id: '7Ax4cZd34x6lwGw24eJhSPEw2Ia7rLwSW74nldoG',
-      client_secret: 'ybWAUwOiNyTrgB0IUicVmY0Ogyu4lackx6YSg8gU0Kq9rwvjtjutGbx3FdeneXi4iKDd1M1Pev9KC9EKqAdmQvAaN2FZQstynolzpY2evEMJ3gI3JtrPSOv39SG0dg6D'
-      //base_url: 'http://localhost:8000'
-  	}
+  	return dev_data
   },
   methods: {
     //USER API CALLS
@@ -80,8 +87,20 @@ export default {
       var url = this.base_url + '/pilot/register/'
       return await axios.post(url,body);
     },
-    async get_user_info(token) {
-      var url = this.base_url + '/user/get/'
+    async get_user_info(token, id) {
+      var url = this.base_url + '/user/get/?id='+id
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
+    async get_pilot_info(token, id) {
+      var url = this.base_url + '/pilot/get/?id='+id
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
+    async get_current_user_info(token) {
+      var url = this.base_url + '/user/get_current/'
       return await axios.get(url, {
         headers: {'Authorization': 'Bearer ' + token}
       });

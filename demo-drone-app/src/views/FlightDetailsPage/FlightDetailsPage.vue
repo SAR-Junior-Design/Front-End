@@ -641,7 +641,7 @@
         }
       },
       async getUserID() {
-        const response = await this.get_user_info(this.$store.state.access_token);
+        const response = await this.get_current_user_info(this.$store.state.access_token);
         this.userID = response.data.id
       },
       async getUserDrones() {

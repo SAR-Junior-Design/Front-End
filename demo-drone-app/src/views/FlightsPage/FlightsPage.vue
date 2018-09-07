@@ -390,7 +390,7 @@
 				this.is_gov_official = true
 			}
 			await this.getMissions();
-			response = await this.get_user_info(this.$store.state.access_token);
+			response = await this.get_current_user_info(this.$store.state.access_token);
 			if (response.status == 200) {
 				this.user_info = response.data
 			}

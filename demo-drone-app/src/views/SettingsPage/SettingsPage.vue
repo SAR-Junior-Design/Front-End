@@ -65,8 +65,8 @@
 			}
 		},
 		methods: {
-			async _get_user_info() {
-				const response = await this.get_user_info(
+			async _get_current_user_info() {
+				const response = await this.get_current_user_info(
 					this.$store.state.access_token
 				);
 				this.user_info = response.data
@@ -79,7 +79,7 @@
 			}
 		},
 		mounted() {
-			this._get_user_info()
+			this._get_current_user_info()
 			this.current_item = this.items[0]
 		}
 	}
