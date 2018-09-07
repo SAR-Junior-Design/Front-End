@@ -3,8 +3,9 @@
     <section>
       <video-bg :sources="['static/drone_landing_page.mp4']">
         <v-layout row wrap 
-        style="margin-top:15vh;margin-bottom:10%;"
-        mx-5
+        style="padding-top:15vh;padding-bottom:10%;
+        background-color:rgba(0,0,0,0.25)"
+        px-5
         >
           <v-layout column style="margin-top:25vh">
             <v-flex mt-2>
