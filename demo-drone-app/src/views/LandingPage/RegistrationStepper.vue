@@ -1,5 +1,5 @@
 <template>
-  <v-card flat style="opacity:0.96">
+  <v-card flat style="opacity:0.90">
     <v-card-title>
     <h1 style="font-size:28px;font-weight:200">
         Register Now
