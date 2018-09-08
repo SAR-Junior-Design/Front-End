@@ -1,73 +1,71 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['static/drone_landing_page.mp4']" style="height:600px;overflow:scroll">
+      <video-bg :sources="['static/drone_landing_page.mp4']" style="overflow:scroll;margin:0;">
         <v-layout row wrap 
-        style="height:100vh;background-color:rgba(0,0,0,0.25)"
+        style="padding-top:15vh;padding-bottom:50vh;
+        background-color:rgba(0,0,0,0.25)"
         px-5
         >
-          <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
-          <v-layout row wrap>
-            <v-layout column style="padding-top:18%;">
-              <v-flex mt-3>
-                <v-flex class="text-xs-left">
-                  <span style="font-size:30px;color:#dadfe8;">Campus Drone Management</span><br/>
-                  <span style="font-size:20px;color:#ffffff;">An intuitive drone  policy toolkit.</span>
-                </v-flex>
+          <v-layout column style="margin-top:25vh">
+            <v-flex mt-2>
+              <v-flex class="text-xs-center" style="color:#ffffff">
+                <span style="font-size:30px;color:#ffffff;">Campus Drone Management.</span><br/>
+                <span style="font-size:20px;color:#ffffff;">An intuitive drone  policy toolkit.</span>
               </v-flex>
-            </v-layout>
-            <v-layout column style="float:right;margin-top:8%;">
-              <v-flex ma-1>
-                <v-card style="background-color:#ffffff;opacity:0.95">
-                  <v-form 
-                  @success="onLogin"
-                  lazy-validation
-                  v-model="valid" ref="form"
-                  >
-                    <v-card-title>
-                      <v-flex class="text-xs-left" style="margin-top:0px;">
-                        <h2> Login </h2>
+            </v-flex>
+          </v-layout>
+          <v-layout column style="float:right;">
+            <v-flex ma-1>
+              <v-card style="background-color:#ffffff;opacity:0.90">
+                <v-form 
+                @success="onLogin"
+                lazy-validation
+                v-model="valid" ref="form"
+                >
+                  <v-card-title>
+                    <v-flex class="text-xs-left" style="padding-top:0px;">
+                      <h2 style="font-size:28px;font-weight:200"> Login </h2>
+                    </v-flex>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-layout column>
+                      <v-flex>
+                        <v-text-field
+                          name="loginUsername"
+                          label="Username"
+                          id="loginUsername"
+                          type="username"
+                          :rules=[rules.required]
+                          v-model="loginUsername"
+                          required></v-text-field>
                       </v-flex>
-                    </v-card-title>
-                    <v-card-text>
-                      <v-layout column>
-                        <v-flex>
-                          <v-text-field
-                            name="loginUsername"
-                            label="Username"
-                            id="loginUsername"
-                            type="username"
-                            :rules=[rules.required]
-                            v-model="loginUsername"
-                            required></v-text-field>
-                        </v-flex>
-                        <v-flex>
-                          <v-text-field
-                            name="loginPassword"
-                            label="Password"
-                            id="loginPassword"
-                            type="password"
-                            :rules=[rules.required]
-                            v-model="loginPassword"
-                            required></v-text-field>
-                        </v-flex>
-                        <v-flex id="warning" class="text-xs-center" style="visibility:hidden;color:#ff0000;">
-                          <p> Member does not exist </p>
-                        </v-flex>
-                        <v-flex class="text-xs-center">
-                          <v-btn v-on:click="userLogin" style="background-color:#1d561a;color:#1d561a"
-                          flat
-                          outline
-                          >
-                            Login
-                          </v-btn>
-                        </v-flex>
-                      </v-layout>
-                    </v-card-text>
-                  </v-form>
-                </v-card>
-              </v-flex>
-            </v-layout>
+                      <v-flex>
+                        <v-text-field
+                          name="loginPassword"
+                          label="Password"
+                          id="loginPassword"
+                          type="password"
+                          :rules=[rules.required]
+                          v-model="loginPassword"
+                          required></v-text-field>
+                      </v-flex>
+                      <v-flex id="warning" class="text-xs-center" style="visibility:hidden;color:#ff0000;">
+                        <p> Member does not exist </p>
+                      </v-flex>
+                      <v-flex class="text-xs-center">
+                        <v-btn v-on:click="userLogin" style="background-color:#1d561a;color:#1d561a"
+                        flat
+                        outline
+                        >
+                          Login
+                        </v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </v-card-text>
+                </v-form>
+              </v-card>
+            </v-flex>
           </v-layout>
         </v-layout>
       </video-bg>
