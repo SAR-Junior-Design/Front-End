@@ -138,7 +138,6 @@
 			const response = await this.isLoggedIn(
 				this.$store.state.access_token
 			);
-			console.log(`is logged in: ${response.data}`)
 			if (JSON.stringify(response.data) == 'true') {
 				this.logged_in = true
 				this.menuItems = this.userMenu
@@ -148,7 +147,6 @@
 				this.menuItems = this.notLoggedIn
 				this.toolbar_color = 'transparent'
 				router.push('/')
-				console.log('here!!')
 			}
 		}
 	}

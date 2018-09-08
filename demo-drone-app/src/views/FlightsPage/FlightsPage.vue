@@ -43,7 +43,7 @@
                   <v-spacer></v-spacer>
                     <v-toolbar-items class="hidden-sm-and-down">
                       <v-tooltip left>
-                        <v-btn flat slot="activator" icon @click="showDeleteWarning=true" :disabled="!can_delete(props.item.commander_id)">
+                        <v-btn flat slot="activator" icon @click="showDeleteWarning=true" :disabled="!can_delete(props.item.created_by)">
                           <v-icon> delete </v-icon>
                         </v-btn>
                         <span>Delete Flight</span>
