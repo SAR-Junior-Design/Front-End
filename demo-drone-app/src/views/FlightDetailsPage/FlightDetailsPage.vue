@@ -6,74 +6,41 @@
         v-if="drawer"
         :cardHeight="cardHeight"
         :title="title"
-
         :drones="drones"
         :myDrones="myDrones"
-        :selected="selected"
-
-        @message="setMessage"
+        @message="addDrone"
       ></drones-drawer>
 
-      <drone-detail-drawer>
-        :selected_drone_drawer="selected_drone_drawer"
+      <drone-detail-drawer
+        v-if="selected_drone_drawer"
         :cardHeight="cardHeight"
         :currentSelectedDrone="currentSelectedDrone"
-      </drone-detail-drawer>
+        @drone="swapNav"
+      ></drone-detail-drawer>
 
-      
-      <v-card
+      <flight-detail-drawer
         v-if="flight_drawer"
-        class="sideNav"
-        :height="cardHeight"
-      >
-        <v-toolbar flat>
-          <v-list>
-            <v-list-tile>
-              <v-list-tile-title class="title">
-                Flight Details
-              </v-list-tile-title>
-              <v-tooltip right>
-                <v-btn icon @click= "swapNav('edit')" slot="activator">
-                  <v-icon>settings</v-icon>
-                </v-btn>
-                <span>Edit Flight Details</span>
-              </v-tooltip>
-            </v-list-tile>
-          </v-list>
-        </v-toolbar>
-        <v-expansion-panel expand popout>
-          <v-expansion-panel-content>
-            <div slot="header">Flight Title</div>
-            <v-card>
-              <v-card-text class="grey lighten-3">{{title}}</v-card-text>
-            </v-card>
-          </v-expansion-panel-content>
-          <v-expansion-panel-content>
-            <div slot="header">Flight Description</div>
-            <v-card>
-              <v-card-text class="grey lighten-3">{{description}}</v-card-text>
-            </v-card>
-          </v-expansion-panel-content>
-          <v-expansion-panel-content>
-            <div slot="header">Flight Type</div>
-            <v-card>
-              <v-card-text class="grey lighten-3">{{type}}</v-card-text>
-            </v-card>
-          </v-expansion-panel-content>
-          <v-expansion-panel-content>
-            <div slot="header">Start Datetime</div>
-            <v-card>
-              <v-card-text class="grey lighten-3">{{starts}}</v-card-text>
-            </v-card>
-          </v-expansion-panel-content>
-          <v-expansion-panel-content>
-            <div slot="header">End Datetime</div>
-            <v-card>
-              <v-card-text class="grey lighten-3">{{ends}}</v-card-text>
-            </v-card>
-          </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-card>
+        :cardHeight="cardHeight"
+        :title="title"
+        :description="description"
+        :type="type"
+        :starts="starts"
+        :ends="ends"
+      ></flight-detail-drawer>
+
+      <edit-flight-drawer
+        v-if="edit_drawer"
+        :cardHeight="cardHeight"
+        :title="title"
+        :description="description"
+        :types="types"
+        :selectedType="selectedType"
+        :menuDate="menuDate"
+        :pickerDate="pickerDate"
+        :saveDate="saveDate"
+        :pickerEnd="pickerEnd"
+        :menuEnd="menuEnd"
+      ></edit-flight-drawer>
 
     <gmap-map
       ref="map"
@@ -237,6 +204,8 @@
   import moment from 'moment'
   import dronesDrawer from './dronesDrawer.vue'
   import droneDetailDrawer from './droneDetailDrawer.vue'
+  import flightDetailDrawer from './flightDetailDrawer.vue'
+  import editFlightDrawer from './editFlightDrawer.vue'
 
   Vue.use(VueGoogleMaps, {
     load: {
@@ -249,7 +218,9 @@
     mixins: [API],
     components: {
       dronesDrawer: dronesDrawer,
-      droneDetailDrawer: droneDetailDrawer
+      droneDetailDrawer: droneDetailDrawer,
+      flightDetailDrawer: flightDetailDrawer,
+      editFlightDrawer: editFlightDrawer
     },
     data: function data() {
       return {
@@ -336,8 +307,7 @@
           }
         ],
         "drones" : [],
-        "myDrones" : [],
-        "selected": [],
+        "myDrones" : []
       };
     },
     beforeMount() {
@@ -351,13 +321,6 @@
       this.cardHeight = .89*document.documentElement.offsetHeight-64 + "px";
     },
     methods: {
-      setMessage(msg) {
-        console.log(msg);
-      },
-      toggleAll () {
-        if (this.selected.length) this.selected = []
-        else this.selected = this.items.slice()
-      },
       async getMissionDrones() {
         const response = await this.get_mission_drones(
           this.mission_id,
@@ -526,10 +489,10 @@
           this.selected_drone_drawer = true;
         }
       },
-      async addDrone () {
-        for(var i=0; i< this.selected.length; i++) {
+      async addDrone (selectedDroneArray) {
+        for(var i=0; i< selectedDroneArray.length; i++) {
           const response = await this.add_drone_to_mission(
-            this.selected[i].id,
+            selectedDroneArray[i].id,
             this.mission_id,
             this.userID,
             this.$store.state.access_token

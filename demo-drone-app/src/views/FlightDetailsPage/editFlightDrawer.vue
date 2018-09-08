@@ -140,6 +140,16 @@
 <script>
   export default {
     props: [
+    	"cardHeight",
+        "title",
+        "description",
+        "types",
+        "selectedType",
+        "menuDate",
+        "pickerDate",
+       	"saveDate",
+        "pickerEnd",
+        "menuEnd"
     ]
   }
 </script>
@@ -148,13 +158,5 @@
     top:64px;
     overflow: scroll;
     width:40%;
-  }
-  p.firstHeader {
-    text-indent: 10px;
-    line-height: 1.5;
-  }
-  p.secondHeader {
-    line-height: 0.25;
-    text-indent: 20px;
   }
 </style>

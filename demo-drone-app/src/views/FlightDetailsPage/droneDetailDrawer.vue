@@ -1,6 +1,5 @@
 <template>
   <v-card
-    v-if="selected_drone_drawer"
     class="sideNav"
     :height="cardHeight"
   >
@@ -43,7 +42,6 @@
 <script>
   export default {
     props: [
-      "selected_drone_drawer",
       "cardHeight",
       "currentSelectedDrone"
     ]

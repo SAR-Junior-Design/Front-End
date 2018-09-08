@@ -12,7 +12,7 @@
     </v-toolbar>
     <v-data-table
       v-bind:headers="headers"
-      v-bind:items="dronesData"
+      v-bind:items="drones"
       hide-actions
       item-key="name"
       must-sort
@@ -36,7 +36,7 @@
           <v-icon  v-else slot="activator">battery_full</v-icon>
           <span>{{props.item.battery_info.energy_remaining}}%</span>
         </v-tooltip>
-        <tr @click= "swapNav(props.item)" @mouseover= "mouseOver()" @mouseout= "mouseOut()">
+        <tr @click= "openDroneDetail(props.item)" @mouseover= "mouseOver()" @mouseout= "mouseOut()">
           <td>{{ props.item.id }}</td>
         </tr>
       </template>
@@ -61,8 +61,8 @@
         <v-divider></v-divider>
         <v-data-table
           :headers="headers"
-          :items="myDronesData"
-          v-model="selectedData"
+          :items="myDrones"
+          v-model="selected"
           item-key="id"
           select-all
           :rows-per-page-items="rowsPerPageItems"
@@ -94,8 +94,7 @@
 			"cardHeight",
 			"title",
 			"drones",
-			"myDrones",
-			"selected"
+			"myDrones"
 		],
     data: function data() {
       return {
@@ -109,15 +108,26 @@
             value: 'id'
           }
         ],
-
-        dronesData: this.drones,
-        myDronesData: this.myDrones,
-        selectedData: this.selected
+        selected: []
       }
     },
     methods: {
+      mouseOver () {
+        document.body.style.cursor= 'pointer';
+      },
+      mouseOut () {
+        document.body.style.cursor= 'default';
+      },
+      toggleAll () {
+        if (this.selected.length) this.selected = []
+        else this.selected = this.items.slice()
+      },
       updateDrones () {
-        this.$emit("message", this.selectedData);
+        this.$emit("message", this.selected);
+      },
+      openDroneDetail(aDrone) {
+      console.log(aDrone);
+        this.$emit("drone", aDrone);
       }
     }
 	}
