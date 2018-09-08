@@ -65,7 +65,7 @@
                           </v-card>
                       </v-dialog>
                         <v-tooltip left>
-                          <v-btn flat slot="activator" icon @click="goToMission(props.item.id)" :disabled="!can_delete(props.item.commander_id)">
+                          <v-btn flat slot="activator" icon @click="goToMission(props.item.id)">
                             <v-icon> map </v-icon>
                           </v-btn>
                       <span>Open in Map</span>
