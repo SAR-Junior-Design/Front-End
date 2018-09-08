@@ -115,7 +115,7 @@ export default {
         	}
       	},
 		async save_profile_changes() {
-			var info = {'username': this.user_info.name, 'email': this.user_info.email}
+			var info = {'username': this.user_info.user.username, 'email': this.user_info.user.email}
 			try {
 				const response = await this.update_user_info(info,
 					this.$store.state.access_token
@@ -130,9 +130,6 @@ export default {
           		this.$emit('snackbar', 6000, 'Username already taken!')
 			}
 		}
-	},
-	mounted() {
-		this.local_info = this.user_info
 	}
 }
 </script>

@@ -196,7 +196,7 @@
                   <v-tabs-content
                     id="tab-commander-info"
                   >
-                    <commander-info/>
+                    <commander-info :created_by="props.item.created_by"/>
                   </v-tabs-content>
 						    </v-tabs-items>
 							</v-tabs>

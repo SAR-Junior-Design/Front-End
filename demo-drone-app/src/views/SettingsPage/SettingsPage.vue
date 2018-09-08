@@ -69,7 +69,6 @@
 				const response = await this.get_current_user_info(
 					this.$store.state.access_token
 				);
-				console.log(response.data)
 				this.user_info = response.data
 			},
 			on_nav_click(item) {
