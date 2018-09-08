@@ -63,9 +63,35 @@
       "ends",
     ],
     data: function data() {
-      return {}
+      return {
+        menu: false,
+        rowsPerPageItems: [5],
+        headers: [
+          {
+            text: 'Drone ID',
+            align: 'left',
+            sortable: true,
+            value: 'id'
+          }
+        ],
+        selected: []
+      }
     },
-    methods: {}
+    methods: {
+      mouseOver () {
+        document.body.style.cursor= 'pointer';
+      },
+      mouseOut () {
+        document.body.style.cursor= 'default';
+      },
+      toggleAll () {
+        if (this.selected.length) this.selected = []
+        else this.selected = this.items.slice()
+      },
+      updateDrones () {
+        this.$emit("message", this.selected);
+      }
+    }
   }
 </script>
 <style>

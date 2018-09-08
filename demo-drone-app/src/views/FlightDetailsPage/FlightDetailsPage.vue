@@ -9,13 +9,13 @@
         :drones="drones"
         :myDrones="myDrones"
         @message="addDrone"
+        @swapNav="swapNav"
       ></drones-drawer>
 
       <drone-detail-drawer
         v-if="selected_drone_drawer"
         :cardHeight="cardHeight"
         :currentSelectedDrone="currentSelectedDrone"
-        @drone="swapNav"
       ></drone-detail-drawer>
 
       <flight-detail-drawer
@@ -26,6 +26,7 @@
         :type="type"
         :starts="starts"
         :ends="ends"
+        @swapNav="swapNav"
       ></flight-detail-drawer>
 
       <edit-flight-drawer

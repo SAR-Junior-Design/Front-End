@@ -126,8 +126,7 @@
         this.$emit("message", this.selected);
       },
       openDroneDetail(aDrone) {
-      console.log(aDrone);
-        this.$emit("drone", aDrone);
+        this.$emit("swapNav", aDrone);
       }
     }
 	}
