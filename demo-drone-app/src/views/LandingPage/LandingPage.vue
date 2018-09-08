@@ -3,7 +3,7 @@
     <section>
       <video-bg :sources="['static/drone_landing_page.mp4']">
         <v-layout row wrap 
-        style="padding-top:15vh;padding-bottom:10%;
+        style="padding-top:15vh;padding-bottom:25%;
         background-color:rgba(0,0,0,0.25)"
         px-5
         >
