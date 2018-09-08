@@ -22,7 +22,7 @@ var prod_data = {
 
 export default {
   data () {
-  	return prod_data
+  	return dev_data
   },
   methods: {
     //USER API CALLS
