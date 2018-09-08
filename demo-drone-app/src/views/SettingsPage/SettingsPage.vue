@@ -65,11 +65,10 @@
 			}
 		},
 		methods: {
-			async _get_user_info() {
-				const response = await this.get_user_info(
+			async _get_current_user_info() {
+				const response = await this.get_current_user_info(
 					this.$store.state.access_token
 				);
-				console.log(response.data)
 				this.user_info = response.data
 			},
 			on_nav_click(item) {
@@ -79,8 +78,8 @@
 				this.$emit('snackbar',timeout, text);
 			}
 		},
-		async mounted() {
-			await this._get_user_info()
+		mounted() {
+			this._get_current_user_info()
 			this.current_item = this.items[0]
 		}
 	}
