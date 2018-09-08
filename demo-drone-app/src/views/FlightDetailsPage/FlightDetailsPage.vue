@@ -38,8 +38,10 @@
         :selectedType="selectedType"
         :menuDate="menuDate"
         :pickerDate="pickerDate"
+        :pickerStart="pickerStart"
         :saveDate="saveDate"
         :pickerEnd="pickerEnd"
+        :menuStart="menuStart"
         :menuEnd="menuEnd"
       ></edit-flight-drawer>
 

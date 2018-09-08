@@ -10,7 +10,7 @@
                 Flight Details
               </v-list-tile-title>
               <v-tooltip right>
-                <v-btn icon @click= "swapNav('edit')" slot="activator">
+                <v-btn icon @click= "openEditDetails" slot="activator">
                   <v-icon>settings</v-icon>
                 </v-btn>
                 <span>Edit Flight Details</span>
@@ -88,8 +88,8 @@
         if (this.selected.length) this.selected = []
         else this.selected = this.items.slice()
       },
-      updateDrones () {
-        this.$emit("message", this.selected);
+      openEditDetails () {
+        this.$emit("swapNav",'edit');
       }
     }
   }

@@ -1,6 +1,5 @@
 <template>
 	<v-card
-	    v-if="edit_drawer"
 	    class="sideNav"
 	    :height="cardHeight"
 	  >
@@ -149,7 +148,9 @@
         "pickerDate",
        	"saveDate",
         "pickerEnd",
-        "menuEnd"
+        "menuEnd",
+        "menuStart",
+        "pickerStart"
     ]
   }
 </script>
