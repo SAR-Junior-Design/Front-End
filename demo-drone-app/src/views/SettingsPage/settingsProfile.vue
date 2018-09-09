@@ -31,7 +31,7 @@
 					</v-layout>
 				</form>
 			</v-layout>
-			<v-layout column>
+			<v-layout column v-if="false">
 				<v-flex class="text-xs-center">
 					<span style="font-size:20px;"> Profile Picture </span>
 				</v-flex>
@@ -72,7 +72,7 @@
 </style>
 
 <script>
-import API from '../../mixins/API.js'
+import API from '@/mixins/API.js'
 
 export default {
 	mixins: [API],
@@ -126,7 +126,6 @@ export default {
 					throw error
 				}
 			} catch (err) {
-				console.log(error.response)
           		this.$emit('snackbar', 6000, 'Username already taken!')
 			}
 		}

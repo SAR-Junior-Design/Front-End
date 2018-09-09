@@ -662,7 +662,6 @@
           var area = response.data.area;
           this.pickerStart = moment(response.data.starts_at).local().format('YYYY-DD-MM HH:mm:ss');
           this.starts = this.pickerStart;
-          console.log(`picker start: ${moment(response.data.starts_at).local().format('YYYY-DD-MM HH:mm:ss')}`);
           this.type = response.data.type;
           this.selectedType = this.type;
           this.pickerEnd = moment(response.data.ends_at).local().format('YYYY-DD-MM HH:mm:ss');

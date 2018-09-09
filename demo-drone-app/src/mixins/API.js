@@ -111,7 +111,12 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
-
+    async update_pilot_info(pilot_info, token) {
+      var url = this.base_url + '/pilot/update/'
+      return await axios.post(url,pilot_info, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
     //DRONE API CALLS
     async get_user_drones(token){
       var url = this.base_url + '/drone/get_user_drones/'

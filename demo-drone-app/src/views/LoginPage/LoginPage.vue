@@ -128,7 +128,6 @@ export default {
           }
         }
         catch(error) {
-          console.log(error.response)
           this.$emit('snackbar', 6000, 'Either email has not been verified or invalid login info.')
         }
 

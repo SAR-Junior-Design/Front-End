@@ -53,7 +53,6 @@ export default {
       for(var i=0; i<this.drone_data.length; i++) {
         this.items.push(this.drone_data[i])
       }
-      console.log(this.items)
     },
     async registerDrone(registration_info) {
       if (registration_info.description == null) {

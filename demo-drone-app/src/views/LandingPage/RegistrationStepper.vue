@@ -217,7 +217,6 @@
           } 
         }
         catch(error) {
-          console.log(error)
           this.$emit('snackbar', 6000, 'Registration failed.')
         }
       },
@@ -228,7 +227,7 @@
       accept() {
         this.clear_content()
         this.e1 = 1
-        dialog = false
+        this.dialog = false
       },
       clear_content() {
         this.signUpUsername= ''
