@@ -644,7 +644,6 @@
             this.$store.state.access_token
           );
           if (response['status'] == 200) {
-            console.log('saved mission!!')
             for (var i = 0; i < this.polygons.length; i++) {
               this.polygons[i].setEditable(false);
               this.polygons[i].setDraggable(false);

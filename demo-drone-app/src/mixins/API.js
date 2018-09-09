@@ -111,7 +111,12 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
-
+    async update_pilot_info(pilot_info, token) {
+      var url = this.base_url + '/pilot/update/'
+      return await axios.post(url,pilot_info, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
     //DRONE API CALLS
     async get_user_drones(token){
       var url = this.base_url + '/drone/get_user_drones/'
@@ -119,13 +124,10 @@ export default {
           headers: {'Authorization': 'Bearer ' + token}
         });
     },
-    async register_drone(description, manufacturer, type, color, number_of_blades, token) {
+    async register_drone(description, manufacturer, type, color, name, token) {
       var url = this.base_url + '/drone/register_drone/'
-      var body = {'description': description,
-              "manufacturer": manufacturer,
-              "type": type,
-              "color": color,
-              "number_of_blades": number_of_blades}
+      var body = {description, manufacturer, type,
+              color, name}
       return await axios.post(url,body, {
           headers: {'Authorization': 'Bearer ' + token}
         });

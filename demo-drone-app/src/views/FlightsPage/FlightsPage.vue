@@ -281,7 +281,7 @@
 		},
 		methods: {
 			can_delete(id){
-				return this.user_info.id == id
+				return this.user_info.user.id == id
 			},
 			_state(clearance) {
 				if (clearance == null){
