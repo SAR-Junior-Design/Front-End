@@ -1,7 +1,7 @@
 <template>
   <v-card id="drone_ADD">
     <v-form v-model="valid" ref="form" validation>
-      <v-card>
+      <v-card flat>
         <v-card-title>
           <v-flex xs12 >
             <h1 style="font-size:25px;font-weight:200">

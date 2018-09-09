@@ -281,7 +281,8 @@
 		},
 		methods: {
 			can_delete(id){
-				return this.user_info.id == id
+				console.log(`user_info.id: ${this.user_info.id}, id: ${id}`)
+				return this.user_info.user.id == id
 			},
 			_state(clearance) {
 				if (clearance == null){
