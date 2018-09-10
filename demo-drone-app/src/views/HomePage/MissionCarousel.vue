@@ -1,19 +1,30 @@
 <template>
   <v-layout column>
 		<v-flex>
-			<h1 class="rowHeader"> PAST MISSIONS </h1>
+			<h1 class="rowHeader"> {{title}} </h1>
 		</v-flex>
 		<v-layout row
         style="
         margin-left:25px;
         margin-top:15px;
+				margin-bottom:15px;
+        overflow-x:scroll;
         ">
 			<v-flex
+			v-if="missions && missions.length > 0"
       v-model="missions" 
       v-for="mission in missions" 
-		  :key="mission.id" >
+		  :key="mission.id"
+      style="margin-right:15px;">
 				<mission-card
+        :mission="mission"
         />
+			</v-flex>
+			<v-flex
+			v-if="missions.length == 0"
+			class="text-xs-center"
+			>
+			CURRENTLY NO MISSIONS TO DISPLAY
 			</v-flex>
 		</v-layout>
 	</v-layout>
@@ -31,7 +42,7 @@ import MissionCard from './MissionCard'
 
 export default {
 	mixins: [API],
-	props: ['missions'],
+	props: ['missions', 'title'],
   components: {
     'mapTemplate': mapThumbnail,
     'mission-card': MissionCard

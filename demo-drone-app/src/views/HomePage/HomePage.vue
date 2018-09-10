@@ -1,11 +1,21 @@
 <template>
-  <v-container style="margin-top:15vh">
+  <div style="margin-top:15vh;
+  margin-left:5vh;margin-right:5vh;">
     <v-layout column>
-      <past-missions
+      <mission-carousel
+        :missions="current_missions"
+        title="CURRENT FLIGHTS"
+      />
+      <mission-carousel
         :missions="past_missions"
+        title="RECENT FLIGHTS"
+      />
+      <mission-carousel
+        :missions="upcoming_missions"
+        title="UPCOMING FLIGHTS"
       />
     </v-layout>
-  </v-container>
+  </div>
 </template>
 
 
@@ -14,28 +24,39 @@
 import Vue from 'vue';
 import router from '@/router'
 import API from '@/mixins/API.js'
-import PastMissions from './PastMissions'
+import MissionCarousel from './MissionCarousel'
 
 export default {
   name: 'Login',
   mixins: [API],
   components: {
-    'past-missions': PastMissions
+    'mission-carousel': MissionCarousel
   },
   data () {
     return {
-      past_missions: null,
+      past_missions: [],
+      current_missions: [],
+      upcoming_missions: []
     }
   },
   methods: {
     
   },
   async mounted() {
-    const response = await this.get_past_missions(
+    var response = await this.get_past_missions(
       this.$store.state.access_token
     );
-    console.log(response)
     this.past_missions = response.data
+
+    response = await this.get_current_missions(
+      this.$store.state.access_token
+    );
+    this.current_missions = response.data
+
+    response = await this.get_upcoming_missions(
+      this.$store.state.access_token
+    );
+    this.upcoming_missions = response.data
   }
 }
 </script>
