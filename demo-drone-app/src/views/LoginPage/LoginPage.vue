@@ -1,83 +1,79 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['static/drone_landing_page.mp4']" style="height:600px;overflow:scroll">
-        <v-container>
-          <!-- First Row on the Main Login Page with SignUp & Login Dialogs -->
-          <v-layout row wrap style="margin-top:10%;">
-            <v-layout column style="margin-top:18%;">
-              <v-flex mt-3>
-                <v-flex class="text-xs-left">
-                  <span style="font-size:30px;color:#dadfe8;">Campus Drone Management</span><br/>
-                  <span style="font-size:20px;color:#ffffff;">An intuitive drone  policy toolkit.</span>
-                </v-flex>
+      <video-bg :sources="['static/drone_landing_page.mp4']" style="overflow:scroll;margin:0;">
+        <v-layout row wrap 
+        style="padding-top:15vh;padding-bottom:50vh;
+        background-color:rgba(0,0,0,0.25)"
+        px-5
+        >
+          <v-layout column style="margin-top:25vh">
+            <v-flex mt-2>
+              <v-flex class="text-xs-center" style="color:#ffffff">
+                <span style="font-size:30px;color:#ffffff;">Campus Drone Management.</span><br/>
+                <span style="font-size:20px;color:#ffffff;">An intuitive drone  policy toolkit.</span>
               </v-flex>
-            </v-layout>
-            <v-layout column style="float:right;margin-top:8%;">
-              <v-flex ma-1>
-                <v-card style="background-color:#ffffff;opacity:0.95">
-                  <v-form 
-                  @success="onLogin"
-                  lazy-validation
-                  v-model="valid" ref="form"
-                  >
-                    <v-card-title>
-                      <v-flex class="text-xs-left" style="margin-top:0px;">
-                        <h2> Login </h2>
-                      </v-flex>
-                    </v-card-title>
-                    <v-card-text>
-                      <v-layout column>
-                        <v-flex>
-                          <v-text-field
-                            name="loginUsername"
-                            label="Username"
-                            id="loginUsername"
-                            type="username"
-                            v-model="loginUsername"
-                            required></v-text-field>
-                        </v-flex>
-                        <v-flex>
-                          <v-text-field
-                            name="loginPassword"
-                            label="Password"
-                            id="loginPassword"
-                            type="password"
-                            v-model="loginPassword"
-                            required></v-text-field>
-                        </v-flex>
-                        <v-flex id="warning" class="text-xs-center" style="visibility:hidden;color:#ff0000;">
-                          <p> Member does not exist </p>
-                        </v-flex>
-                        <v-flex class="text-xs-center">
-                          <v-btn v-on:click="userLogin" style="background-color:#1d561a;color:#1d561a"
-                          flat
-                          outline
-                          >
-                            Login
-                          </v-btn>
-                        </v-flex>
-                      </v-layout>
-                    </v-card-text>
-                  </v-form>
-                </v-card>
-              </v-flex>
-            </v-layout>
+            </v-flex>
           </v-layout>
-        </v-container>
+          <v-layout column style="float:right;">
+            <v-flex ma-1>
+              <v-card style="background-color:#ffffff;opacity:0.90">
+                <v-form 
+                @success="onLogin"
+                lazy-validation
+                v-model="valid" ref="form"
+                >
+                  <v-card-title>
+                    <v-flex class="text-xs-left" style="padding-top:0px;">
+                      <h2 style="font-size:28px;font-weight:200"> Login </h2>
+                    </v-flex>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-layout column>
+                      <v-flex>
+                        <v-text-field
+                          name="loginUsername"
+                          label="Username"
+                          id="loginUsername"
+                          type="username"
+                          :rules=[rules.required]
+                          v-model="loginUsername"
+                          required></v-text-field>
+                      </v-flex>
+                      <v-flex>
+                        <v-text-field
+                          name="loginPassword"
+                          label="Password"
+                          id="loginPassword"
+                          type="password"
+                          :rules=[rules.required]
+                          v-model="loginPassword"
+                          required></v-text-field>
+                      </v-flex>
+                      <v-flex id="warning" class="text-xs-center" style="visibility:hidden;color:#ff0000;">
+                        <p> Member does not exist </p>
+                      </v-flex>
+                      <v-flex class="text-xs-center">
+                        <v-btn v-on:click="userLogin" color="primary"
+                        flat
+                        outline
+                        >
+                          Login
+                        </v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </v-card-text>
+                </v-form>
+              </v-card>
+            </v-flex>
+          </v-layout>
+        </v-layout>
       </video-bg>
     </section>    
   </v-content>
 </template>
 
 <style>
-  .background {
-    background: url(https://i.imgur.com/iuiH5Cu.jpg) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-  }
 </style>
 
 <script>
@@ -109,7 +105,10 @@ export default {
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
-      ]
+      ],
+      rules: {
+          required: value => !!value || 'Required.'
+        }
     }
   },
   methods: {
@@ -129,8 +128,7 @@ export default {
           }
         }
         catch(error) {
-          console.log(error)
-          this.$emit('snackbar', 6000, 'Invalid login info.')
+          this.$emit('snackbar', 6000, 'Either email has not been verified or invalid login info.')
         }
 
       } else {

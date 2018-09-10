@@ -34,23 +34,25 @@
 
 <script>
 	import API from '@/mixins/API.js'
-	import SettingsProfile from './settingsProfile.vue'
-	import SettingsLicenses from './settingsLicenses.vue'
-	import SettingsContact from './settingsContact.vue'
+	import SettingsProfile from './SettingsProfile.vue'
+	import SettingsLicenses from './SettingsLicenses.vue'
+	import SettingsContact from './SettingsContact.vue'
+	import SettingsPilot from './SettingsPilot.vue'
 
 	export default {
 		mixins: [API],
 		components: {
 		    'settings-profile': SettingsProfile,
 		    'settings-licenses': SettingsLicenses,
-		    'settings-contact': SettingsContact
+			'settings-contact': SettingsContact,
+			'settings-pilot': SettingsPilot
 	  },
 		data() {
 			return {
 				size:'150px',
 				items: [
 					{'title': 'Profile', 'color': 'black', 'component': 'settings-profile'},
-					{'title': 'Licenses', 'color': 'black', 'component': 'settings-licenses'},
+					{'title': 'Pilot', 'color': 'black', 'component': 'settings-pilot'},
 					{'title': 'Contact', 'color': 'black', 'component': 'settings-contact'}
 				],
 				current_item: {},
@@ -65,8 +67,8 @@
 			}
 		},
 		methods: {
-			async _get_user_info() {
-				const response = await this.get_user_info(
+			async _get_current_user_info() {
+				const response = await this.get_current_user_info(
 					this.$store.state.access_token
 				);
 				this.user_info = response.data
@@ -79,7 +81,7 @@
 			}
 		},
 		mounted() {
-			this._get_user_info()
+			this._get_current_user_info()
 			this.current_item = this.items[0]
 		}
 	}

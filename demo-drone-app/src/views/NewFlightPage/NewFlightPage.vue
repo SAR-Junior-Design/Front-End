@@ -59,13 +59,14 @@
                   ref="picker"
                   v-model="pickerDate"
                   @change="saveDate"
-                  color ="green darken-4"
+                  color ="primary"
                   :show-current="false"
                 ></v-date-picker>
               </div>
             </v-card-title>
             <v-card-actions>
-              <v-btn dark style="background-color:#1d561a" @click="menuDate = false">OK</v-btn>
+              <v-btn dark
+              color="primary" @click="menuDate = false">OK</v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -91,11 +92,11 @@
           <v-card>
             <v-card-title primary-title>
               <div>
-                <v-time-picker v-model="pickerStart" color ="green darken-4"></v-time-picker>
+                <v-time-picker v-model="pickerStart" color="primary"></v-time-picker>
               </div>
             </v-card-title>
             <v-card-actions>
-              <v-btn dark style="background-color:#1d561a" @click="menuStart = false">OK</v-btn>
+              <v-btn dark color="primary" @click="menuStart = false">OK</v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -122,15 +123,16 @@
         <v-card>
           <v-card-title primary-title>
             <div>
-              <v-time-picker v-model="pickerEnd" color ="green darken-4"></v-time-picker>
+              <v-time-picker v-model="pickerEnd" color="primary"></v-time-picker>
             </div>
           </v-card-title>
           <v-card-actions>
-            <v-btn dark style="background-color:#1d561a" @click="menuEnd = false">OK</v-btn>
+            <v-btn dark color="primary" @click="menuEnd = false">OK</v-btn>
           </v-card-actions>
         </v-card>  
       </v-menu>
-      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="background-color:#1d561a; margin-left:60%">
+      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="margin-left:60%"
+        color="primary">
         Save Flight
       </v-btn>
     </v-card>
@@ -644,7 +646,6 @@
             this.$store.state.access_token
           );
           if (response['status'] == 200) {
-            console.log('saved mission!!')
             for (var i = 0; i < this.polygons.length; i++) {
               this.polygons[i].setEditable(false);
               this.polygons[i].setDraggable(false);

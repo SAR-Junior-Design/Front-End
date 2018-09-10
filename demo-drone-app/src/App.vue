@@ -2,10 +2,10 @@
 	<v-app id="inspire">
 		<v-toolbar primary fixed :flat = "is_flat" :color="toolbar_color">
 			<v-toolbar-title style="margin-right:20px;">
-				<router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: white;">
+				<router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: white;font-weight:200;">
 					ICARUS
 				</router-link>
-				<router-link v-if="logged_in" to="/homepage" tag="span" style="cursor: pointer;color: white;">
+				<router-link v-if="logged_in" to="/homepage" tag="span" style="cursor: pointer;color: white;font-weight:200;">
 					ICARUS
 				</router-link>
 			</v-toolbar-title>
@@ -56,7 +56,7 @@
 			class="hidden-sm-and-down"
 		>
 			<span style="color:black"> {{ text }} </span>
-			<v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
+			<v-btn flat color="secondary" @click.native="snackbar = false">Close</v-btn>
 		</v-snackbar>
 	</v-app>
 </template>
@@ -72,8 +72,8 @@
 	Vue.use(VueAxios, axios)
 	Vue.use(Vuetify, {
 		theme: {
-			primary: '#1d561a',
-			secondary: '#b0bec5',
+			primary: '#04274A',
+			secondary: '#E5B43D',
 			accent: '#8c9eff',
 			error: '#b71c1c'
 		}
@@ -138,7 +138,6 @@
 			const response = await this.isLoggedIn(
 				this.$store.state.access_token
 			);
-			console.log(`is logged in: ${response.data}`)
 			if (JSON.stringify(response.data) == 'true') {
 				this.logged_in = true
 				this.menuItems = this.userMenu
@@ -147,7 +146,7 @@
 				this.logged_in = false
 				this.menuItems = this.notLoggedIn
 				this.toolbar_color = 'transparent'
-				console.log('here!!')
+				router.push('/')
 			}
 		}
 	}

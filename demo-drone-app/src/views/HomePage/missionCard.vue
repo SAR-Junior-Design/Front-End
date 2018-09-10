@@ -1,58 +1,63 @@
 <template>
-  <v-card dark style="background-color:#1d561a; height:400px;width:400px;">
-    <v-card-media class="text-xs-center" height="200px" style="margin-left:5%;margin-right:7.5%">
-      <component :mission="this.mission" is="mapTemplate"></component>
-    </v-card-media>
-    <v-container fluid grid-list-lg>
-      <v-layout row>
-        <v-flex class="text-xs-left">
-          <div @mouseover="mouseOver()" @mouseout="mouseOut()" @click="goToMission()">
-            <div class="text-xs-center" style="font-size:25px;"> {{ this.mission.title }}</div>
-            <v-divider></v-divider>
-            <div><b>Commander:</b> {{ this.mission.commander }}</div>
-            <div v-if='this.clearanceExists()'><b>Clearence:</b> {{ this.mission.clearance.state }}</div>
-            <div><b>Start Date:</b> {{ this.mission.starts_at }}</div>
-            <div><b>Drones Online:</b> {{ this.mission.num_drones }}</div>
-            <div><b>Description:</b> {{ this.mission.description }}</div>
-          </div>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-card>
+  <div
+	class="mission-card"
+	width=250px
+	@click="onClick">
+		<map-thumbnail
+		:mission="mission"
+		:width="250"
+		:height="150"
+		style="width:250px;"
+		/>
+		<v-flex
+			class="card-text"
+		> 
+			<span style="font-weight:500"> Title:</span> {{mission.title}} <br>
+			<span style="font-weight:500"> Commander:</span> {{mission.commander_id}} <br>
+			<span style="font-weight:500"> Starts at:</span> {{mission.starts_at | date_filter}} <br>
+		</v-flex>
+	</div>
 </template>
 
 <style>
-
+	.mission-card {
+		width:250px;
+		height:250px;
+	}
+	.card-text {
+		font-weight:300;
+	}
 </style>
 
 <script>
 import API from '@/mixins/API.js'
 import router from '@/router'
 import mapThumbnail from '@/components/mapThumbnail.vue'
+import moment from 'moment'
 
 export default {
 	mixins: [API],
 	props: ['mission'],
   components: {
-    'mapTemplate': mapThumbnail
+    'map-thumbnail': mapThumbnail
   },
 	data() {
 		return {
 		}
 	},
 	methods: {
-    goToMission() {
-      router.push('map?id='+this.mission.id);
-    },
-    mouseOver() {
-      document.body.style.cursor= 'pointer';
-    },
-    mouseOut() {
-      document.body.style.cursor= 'default';
-    },
-    clearanceExists () {
-      return typeof this.mission.clearance !== 'undefined';
-    }
-	}
+    onClick(){
+			router.push(`/map?id=${this.mission.id}`)
+		}
+	}, 
+	mounted() {
+		console.log(`Mission card: ${this.mission}`)
+	},
+	filters: {
+  	date_filter: function (date) {
+    return moment(date).format('MMMM Do, YYYY');
+  }
+}
+
 }
 </script>

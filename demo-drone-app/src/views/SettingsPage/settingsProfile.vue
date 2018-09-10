@@ -12,14 +12,14 @@
               label="Name"
               id="name"
               type="username"
-              v-model="user_info.name"
+              v-model="user_info.user.username"
               required></v-text-field>
             <v-text-field
               name="email"
               label="Email"
               id="email"
               type="email"
-              v-model="user_info.email"
+              v-model="user_info.user.email"
               required></v-text-field>
 					</v-flex>
 					<v-layout row>
@@ -31,7 +31,7 @@
 					</v-layout>
 				</form>
 			</v-layout>
-			<v-layout column>
+			<v-layout column v-if="false">
 				<v-flex class="text-xs-center">
 					<span style="font-size:20px;"> Profile Picture </span>
 				</v-flex>
@@ -72,7 +72,7 @@
 </style>
 
 <script>
-import API from '../../mixins/API.js'
+import API from '@/mixins/API.js'
 
 export default {
 	mixins: [API],
@@ -114,23 +114,21 @@ export default {
         		return;
         	}
       	},
-		save_profile_changes() {
-			var info = {'name': this.user_info.name, 'email': this.user_info.email}
-			this.update_user_info(info,
-			(response) => {
-        if (response.data['code'] == 200) {
-          this.$emit('snackbar',6000, 'Profile Updated');
-        } else if (response.data['code'] == 31) {
-          throw error
-        }
-      },
-      error => {
-        alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-      })
+		async save_profile_changes() {
+			var info = {'username': this.user_info.user.username, 'email': this.user_info.user.email}
+			try {
+				const response = await this.update_user_info(info,
+					this.$store.state.access_token
+				);
+				if (response.status == 200) {
+					this.$emit('snackbar',6000, 'Profile Updated');
+				} else if (response.status == 31) {
+					throw error
+				}
+			} catch (err) {
+          		this.$emit('snackbar', 6000, 'Username already taken!')
+			}
 		}
-	},
-	mounted() {
-		this.local_info = this.user_info
 	}
 }
 </script>
