@@ -1,7 +1,8 @@
 <template>
   <div
 	class="mission-card"
-	width=250px>
+	width=250px
+	@click="onClick">
 		<map-thumbnail
 		:mission="mission"
 		:width="250"
@@ -45,7 +46,9 @@ export default {
 		}
 	},
 	methods: {
-    
+    onClick(){
+			router.push(`/map?id=${this.mission.id}`)
+		}
 	}, 
 	mounted() {
 		console.log(`Mission card: ${this.mission}`)

@@ -101,10 +101,10 @@
                             <v-layout column>
                               <v-layout row style="margin-top:10px;">
                                 <v-flex>
-                                  <h4>Start Date/Time:</h4> <span>{{props.item.starts_at}}</span>
+                                  <h4>Start Date/Time:</h4> <span>{{props.item.starts_at | datetime_filter}}</span>
                                 </v-flex>
                                 <v-flex>
-                                  <h4>End Date/Time: </h4> <span>{{props.item.ends_at}}</span>
+                                  <h4>End Date/Time: </h4> <span>{{props.item.ends_at | datetime_filter}}</span>
                                 </v-flex>
                               </v-layout>
                               <v-flex>
@@ -354,6 +354,9 @@
 		filters: {
   		date_filter: function (date) {
     		return moment(date).format('MMMM Do, YYYY');
+			},
+			datetime_filter: function (date) {
+    		return moment(date).format('MMMM Do YYYY, h:mm a');
 			}
 		}
 	}

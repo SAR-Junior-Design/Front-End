@@ -56,7 +56,7 @@
 			class="hidden-sm-and-down"
 		>
 			<span style="color:black"> {{ text }} </span>
-			<v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
+			<v-btn flat color="secondary" @click.native="snackbar = false">Close</v-btn>
 		</v-snackbar>
 	</v-app>
 </template>
