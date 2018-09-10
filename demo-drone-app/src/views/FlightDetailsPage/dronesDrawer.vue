@@ -123,7 +123,7 @@
         else this.selected = this.items.slice()
       },
       updateDrones () {
-        this.$emit("message", this.selected);
+        this.$emit("addDrone", this.selected);
       },
       openDroneDetail(aDrone) {
         this.$emit("swapNav", aDrone);

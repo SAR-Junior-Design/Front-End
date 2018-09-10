@@ -16,18 +16,18 @@
 	    <v-list dense class="pt-0" style="margin:2%;">
 	      <v-text-field 
 	        label="Flight Title"
-	        v-model="title">
+	        v-model="titleMutable">
 	      </v-text-field>
 	      <v-text-field 
 	        label="Description"
 	        multi-line
-	        v-model="description">
+	        v-model="descriptionMutable">
 	      </v-text-field>
 	    </v-list>
 
 	    <v-select
 	      :items="types"
-	      v-model="selectedType"
+	      v-model="selectedTypeMutable"
 	      label="Flight Type"
 	      single-line
 	      auto
@@ -43,12 +43,12 @@
 	      transition="scale-transition"
 	      full-width
 	      :nudge-right="140"
-	      :return-value.sync="pickerDate"
+	      :return-value.sync="pickerDateMutable"
 	    >
 	      <v-text-field
 	        slot="activator"
 	        label="Flight Date"
-	        v-model="pickerDate"
+	        v-model="pickerDateMutable"
 	        readonly
 	        prepend-icon="event"
 	        style="width:40%;float:left;margin:10px;"
@@ -58,7 +58,7 @@
 	          <div>
 	            <v-date-picker
 	              ref="picker"
-	              v-model="pickerDate"
+	              v-model="pickerDateMutable"
 	              @change="saveDate"
 	              color ="green darken-4"
 	              :show-current="false"
@@ -133,7 +133,7 @@
 	    </v-menu>
 
 	    <v-btn fixed style="left:1%;top:89%;background-color:#1d561a;color:#ffffff" @click="saveMission()">Update Flight</v-btn>
-	    <v-btn fixed style="left: 15%;top:89%;background-color:#1d561a;color:#ffffff" @click="swapNav('overView')">Back</v-btn>
+	    <v-btn fixed style="left: 15%;top:89%;background-color:#1d561a;color:#ffffff" @click="openOverview()">Back</v-btn>
 	</v-card>
 </template>
 <script>
@@ -142,16 +142,46 @@
     	"cardHeight",
         "title",
         "description",
-        "types",
         "selectedType",
-        "menuDate",
         "pickerDate",
        	"saveDate",
         "pickerEnd",
-        "menuEnd",
-        "menuStart",
         "pickerStart"
-    ]
+    ],
+    data: function data() {
+	    return {
+	    	types:[
+	          	'Recreational', 'Commercial', 'Research'
+	        ],
+	        menuDate: false,
+	        menuStart: false,
+	        menuEnd: false,
+
+	        titleMutable: this.title,
+	        descriptionMutable: this.description,
+	        selectedTypeMutable: this.selectedType,
+	        pickerDateMutable: this.pickerDate,
+	       	saveDateMutable: this.saveDate,
+	        pickerEndMutable: this.pickerEnd,
+	        pickerStartMutable: this.pickerStart
+        }
+    },
+    methods: {
+	    openOverview() {
+	    	this.$emit("swapNav", 'overView');
+	    },
+      	saveMission() {
+	        this.$emit("saveMission", {
+	        	title: this.titleMutable,
+		        description: this.descriptionMutable,
+		        selectedType: this.selectedTypeMutable,
+		        pickerDate: this.pickerDateMutable,
+		       	saveDate: this.saveDateMutable,
+		        pickerEnd: this.pickerEndMutable,
+		        pickerStart: this.pickerStartMutable
+	        });
+      	}
+    }
   }
 </script>
 <style>

@@ -8,7 +8,7 @@
         :title="title"
         :drones="drones"
         :myDrones="myDrones"
-        @message="addDrone"
+        @addDrone="addDrone"
         @swapNav="swapNav"
       ></drones-drawer>
 
@@ -34,15 +34,13 @@
         :cardHeight="cardHeight"
         :title="title"
         :description="description"
-        :types="types"
         :selectedType="selectedType"
-        :menuDate="menuDate"
         :pickerDate="pickerDate"
         :pickerStart="pickerStart"
         :saveDate="saveDate"
         :pickerEnd="pickerEnd"
-        :menuStart="menuStart"
-        :menuEnd="menuEnd"
+        @saveMission = "saveMission"
+        @swapNav="swapNav"
       ></edit-flight-drawer>
 
     <gmap-map
@@ -255,13 +253,7 @@
         flight_drawer: false,
         selected_drone_drawer: false,
 
-        types:[
-          'Recreational', 'Commercial', 'Research'
-        ],
         selectedType: "Recreational",
-        menuDate: false,
-        menuStart: false,
-        menuEnd: false,
         pickerDate:null,
         pickerStart:null,
         pickerEnd:null,
@@ -744,20 +736,33 @@
           }
           return gJson;
       },
-      async saveMission() {
+      setParentValues(missionJson) {
+      console.log(missionJson.title);
+      console.log(missionJson.titleMutable);
+        this.title = missionJson.titleMutable;
+      console.log(this.title);
+        this.description = missionJson.descriptionMutable;
+        this.selectedType = missionJson.selectedTypeMutable;
+        this.pickerDate = missionJson.pickerDateMutable;
+        this.saveDate = missionJson.saveDateMutable;
+        this.pickerEnd = missionJson.pickerEndMutable;
+        this.pickerStart = missionJson.pickerStartMutable;
+      },
+      async saveMission(newMission) {
         var geoJ = this.makeGeoJson();
-        this.date = this.pickerDate;
-        this.starts = this.pickerDate + ' ' + this.pickerStart;
+        this.date = newMission.pickerDate;
+        this.starts = newMission.pickerDate + ' ' + newMission.pickerStart;
         this.starts = moment(this.starts, 'YYYY-MM-DD HH:mm').toISOString()
-        this.ends = this.pickerDate + ' ' + this.pickerEnd;
+        this.ends = newMission.pickerDate + ' ' + newMission.pickerEnd;
         this.ends = moment(this.ends, 'YYYY-MM-DD HH:mm').toISOString()
-        this.type = this.selectedType;
-        var body = {'mission_id': this.mission_id, 'area': geoJ, 'title': this.title, 'description': this.description, 'starts_at': this.pickerDate + ' ' + this.starts, 'ends_at': this.pickerDate + ' ' + this.ends, 'type': this.selectedType}
+        this.type = newMission.selectedType;
+        var body = {'mission_id': this.mission_id, 'area': geoJ, 'title': newMission.title, 'description': newMission.description, 'starts_at': newMission.pickerDate + ' ' + this.starts, 'ends_at': newMission.pickerDate + ' ' + this.ends, 'type': newMission.selectedType}
         const response = await this.edit_mission_details(
           body,
           this.$store.state.access_token
         );
         if (response['status'] == 200) {
+          this.setParentValues(newMission);
           for (var i = 0; i < this.polygons.length; i++) {
             this.polygons[i].setEditable(false);
             this.polygons[i].setDraggable(false);
