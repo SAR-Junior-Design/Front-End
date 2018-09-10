@@ -54,7 +54,7 @@
                         <p> Member does not exist </p>
                       </v-flex>
                       <v-flex class="text-xs-center">
-                        <v-btn v-on:click="userLogin" style="background-color:#1d561a;color:#1d561a"
+                        <v-btn v-on:click="userLogin" color="primary"
                         flat
                         outline
                         >

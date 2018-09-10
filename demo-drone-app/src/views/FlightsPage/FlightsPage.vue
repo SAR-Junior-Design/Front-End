@@ -16,7 +16,7 @@
 				<v-card style="margin:20px;">
 					<v-data-table
 							v-bind:headers="headers"
-							v-bind:items="items"
+							v-bind:items="missions"
 							v-bind:search="search"
 							:rows-per-page-items="rppi"
 						>
@@ -25,7 +25,7 @@
 								<td class="text-xs-left">{{ props.item.title }}</td>
 								<td class="text-xs-center">{{ props.item.commander_id }}</td>
 								<td class="text-xs-center">{{ props.item.num_drones }}</td>
-								<td class="text-xs-center">{{ props.item.starts_at }}</td>
+								<td class="text-xs-center">{{ props.item.starts_at | date_filter}}</td>
 								<td class="text-xs-center">
 									<v-icon v-if="_state(props.item.clearance) == 'DECLINED'" right color="red">block</v-icon>
 									<v-icon v-if="_state(props.item.clearance) == 'PENDING'" right color="yellow">error</v-icon>
@@ -101,10 +101,10 @@
                             <v-layout column>
                               <v-layout row style="margin-top:10px;">
                                 <v-flex>
-                                  <h4>Start Date/Time:</h4> <span>{{props.item.starts_at}}</span>
+                                  <h4>Start Date/Time:</h4> <span>{{props.item.starts_at | datetime_filter}}</span>
                                 </v-flex>
                                 <v-flex>
-                                  <h4>End Date/Time: </h4> <span>{{props.item.ends_at}}</span>
+                                  <h4>End Date/Time: </h4> <span>{{props.item.ends_at | datetime_filter}}</span>
                                 </v-flex>
                               </v-layout>
                               <v-flex>
@@ -113,7 +113,8 @@
                             </v-layout>
                             <v-layout column align-center>
                               <v-flex>
-                                <component :mission="props.item" is="mapTemplate"></component>
+                                <mapTemplate :mission="props.item"
+																:width="250" :height="200"/>
                               </v-flex>
                             </v-layout>
                           </v-layout>
@@ -264,7 +265,7 @@
 					{ text: 'Start Date', align: 'center', value: 'starts_at'},
 					{ text: 'Status', align: 'center', value: 'legal_status'}
 				],
-				items: [],
+				missions: [],
 				showDeleteWarning: false,
 				currState: null,
 				message: null,
@@ -305,52 +306,7 @@
 					ends_at,
 					this.$store.state.access_token
 				);
-				this.items = response.data
-				for (var j = 0; j < this.items.length; j++){
-					var area = this.items[j].area
-					this.items[j].polygons = []
-					this.items[j].paths = []
-					var paths = []
-					var avg_lat = 0
-					var lat_range = {min: 200, max: -200, range: 0}
-					var avg_lng = 0
-					var lng_range = {min: 200, max: -200, range: 0}
-					if(area.features.length>0) {
-						var num_coords = area.features[0].geometry.coordinates.length
-						for(var i = 0; i < area.features.length; i++) {
-							for (var a in area.features[i].geometry.coordinates) {
-								paths.push({
-								lat:area.features[i].geometry.coordinates[a][0],lng:area.features[i].geometry.coordinates[a][1]
-								});
-								//avg_lat
-								avg_lat += area.features[i].geometry.coordinates[a][0]
-								if (area.features[i].geometry.coordinates[a][0] > lat_range.max) {
-									lat_range.max = area.features[i].geometry.coordinates[a][0]
-								}
-								if (area.features[i].geometry.coordinates[a][0] < lat_range.min) {
-									lat_range.min = area.features[i].geometry.coordinates[a][0]
-								}
-								//avg_lng
-								if (area.features[i].geometry.coordinates[a][1] > lng_range.max) {
-									lng_range.max = area.features[i].geometry.coordinates[a][1]
-								}
-								if (area.features[i].geometry.coordinates[a][1] < lng_range.min) {
-									lng_range.min = area.features[i].geometry.coordinates[a][1]
-								}
-								avg_lng += area.features[i].geometry.coordinates[a][1]
-							}
-						}
-						if (this.items.length != 0) {
-							lat_range.range = Math.abs(lat_range.max) - Math.abs(lat_range.min)
-							lng_range.range = Math.abs(lng_range.max) - Math.abs(lng_range.min)
-							var range = Math.max(lat_range.range, lng_range.range)
-							var zoom_coefficient = 2
-							this.items[j].zoom = -1.420533814 * Math.log(range) + 6.8957137
-							this.items[j].paths = paths
-							this.items[j].center = {lat: avg_lat/num_coords, lng: avg_lng/num_coords}
-						}
-					}
-				}
+				this.missions = response.data
 			},
 				setEvent(poly, that){
 					google.maps.event.addListener(poly, 'dragend', function (event) {
@@ -393,6 +349,14 @@
 			response = await this.get_current_user_info(this.$store.state.access_token);
 			if (response.status == 200) {
 				this.user_info = response.data
+			}
+		},
+		filters: {
+  		date_filter: function (date) {
+    		return moment(date).format('MMMM Do, YYYY');
+			},
+			datetime_filter: function (date) {
+    		return moment(date).format('MMMM Do YYYY, h:mm a');
 			}
 		}
 	}
