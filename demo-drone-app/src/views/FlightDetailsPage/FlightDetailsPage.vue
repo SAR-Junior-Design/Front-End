@@ -1,7 +1,6 @@
 <template>
   <v-layout>
-    <v-layout style="width:100%;" fixed @click="showDeleteMenu">
-      
+    <v-layout style="width:100%;" fixed @click="showDeleteMenu">     
       <drones-drawer
         v-if="drawer"
         :cardHeight="cardHeight"
@@ -43,22 +42,15 @@
         @swapNav="swapNav"
       ></edit-flight-drawer>
 
-    <gmap-map
-      ref="map"
-      class="map-panel"
-      :center="center"
-      :zoom="zoom"
-      :map-type-id="mapType"
-      :options="{minZoom: 2, scrollwheel: scrollwheel, disableDefaultUI: true, draggable: draggable, zoomControl: true, clickableIcons: false}"
-      @click="drawLine($event)">
-      <gmap-polyline v-if="paths.length > 0"
-          :path="paths"
-          :editable="true"
-          ref="polyline"
-          @click="closePolygon($event)"
-          @rightclick="selectingVertex">
-      </gmap-polyline>
-    </gmap-map>
+      <flight-map
+        ref="map"
+        :center="center"
+        :zoom="zoom"
+        :mapType="mapType"
+        :scrollwheel="scrollwheel"
+        :draggable="draggable"
+        :paths="paths"
+      ></flight-map>
 
     <v-menu
       offset-y
@@ -174,25 +166,12 @@
 </template>
 
 <style>
-  .sideNav {
-    top:64px;
-    overflow: scroll;
-    width:40%;
-  }
   .map-panel {
     height:100%;
     width:100%;
   }
   .btn-toggle {
     flex-direction: column;
-  }
-  p.firstHeader {
-    text-indent: 10px;
-    line-height: 1.5;
-  }
-  p.secondHeader {
-    line-height: 0.25;
-    text-indent: 20px;
   }
 </style>
 
@@ -207,6 +186,7 @@
   import droneDetailDrawer from './droneDetailDrawer.vue'
   import flightDetailDrawer from './flightDetailDrawer.vue'
   import editFlightDrawer from './editFlightDrawer.vue'
+  import flightMap from '../../components/flightMap.vue'
 
   Vue.use(VueGoogleMaps, {
     load: {
@@ -221,7 +201,8 @@
       dronesDrawer: dronesDrawer,
       droneDetailDrawer: droneDetailDrawer,
       flightDetailDrawer: flightDetailDrawer,
-      editFlightDrawer: editFlightDrawer
+      editFlightDrawer: editFlightDrawer,
+      flightMap: flightMap
     },
     data: function data() {
       return {
@@ -424,19 +405,13 @@
               editable:false,
               draggable:false
             });
-            poly.setMap(this.$refs.map.$mapObject);
+            poly.setMap(this.$refs.map.$children[0].$mapObject);
             this.setEvent(poly, this);
             this.polygons.push(poly);
           }
         } else if (response.data['code'] == 31) {
           alert("Authentication Error");
         }
-      },
-      mouseOver () {
-        document.body.style.cursor= 'pointer';
-      },
-      mouseOut () {
-        document.body.style.cursor= 'default';
       },
       swapNav (drone) {
         if (drone == 'edit') {
@@ -513,7 +488,7 @@
                   anchor: new google.maps.Point(50, 50)
                 }
               });
-          marker.setMap(this.$refs.map.$mapObject);
+          marker.setMap(this.$refs.map.$children[0].$mapObject);
           this.setMarkerEvent(marker, this.drones[i], this);
         }
       },
@@ -628,7 +603,7 @@
                 editable:false,
                 draggable:false
               });
-              poly.setMap(this.$refs.map.$mapObject);
+              poly.setMap(this.$refs.map.$children[0].$mapObject);
               this.setEvent(poly, this);
               this.polygons.push(poly);
               this.paths = [];
@@ -649,7 +624,7 @@
         this.canDraw = true;
         this.deleteable = false;
         this.draggable = false;
-        this.$refs.map.$mapObject.setOptions({ draggableCursor: 'crosshair' });
+        this.$refs.map.$children[0].$mapObject.setOptions({ draggableCursor: 'crosshair' });
         for (var i = 0; i < this.polygons.length; i++) {
           this.polygons[i].setEditable(false);
           this.polygons[i].setDraggable(false);
@@ -660,7 +635,7 @@
         this.canDraw = false;
         this.deleteable = false;
         this.draggable = true;
-        this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
+        this.$refs.map.$children[0].$mapObject.setOptions({ draggableCursor: 'grab' });
         for (var i = 0; i < this.polygons.length; i++) {
           this.polygons[i].setEditable(true);
           this.polygons[i].setDraggable(true);
@@ -736,16 +711,13 @@
           return gJson;
       },
       setParentValues(missionJson) {
-      console.log(missionJson.title);
-      console.log(missionJson.titleMutable);
-        this.title = missionJson.titleMutable;
-      console.log(this.title);
-        this.description = missionJson.descriptionMutable;
-        this.selectedType = missionJson.selectedTypeMutable;
-        this.pickerDate = missionJson.pickerDateMutable;
-        this.saveDate = missionJson.saveDateMutable;
-        this.pickerEnd = missionJson.pickerEndMutable;
-        this.pickerStart = missionJson.pickerStartMutable;
+        this.title = missionJson.title;
+        this.description = missionJson.description;
+        this.selectedType = missionJson.selectedType;
+        this.pickerDate = missionJson.pickerDate;
+        this.saveDate = missionJson.saveDate;
+        this.pickerEnd = missionJson.pickerEnd;
+        this.pickerStart = missionJson.pickerStart;
       },
       async saveMission(newMission) {
         var geoJ = this.makeGeoJson();
@@ -767,7 +739,7 @@
             this.polygons[i].setDraggable(false);
           }
           this.draggable = true;
-          this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
+          this.$refs.map.$children[0].$mapObject.setOptions({ draggableCursor: 'grab' });
           this.canDraw = false;
           this.edit = !this.edit;
           this.edit_drawer = false;
