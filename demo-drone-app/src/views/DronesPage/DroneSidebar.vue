@@ -58,6 +58,14 @@
           </v-layout>
           <v-flex xs12>
             <v-text-field
+              v-if="registration_info.manufacturer==='Other / Not Listed'"
+              name="input-7-1"
+              label="Other (manufacturer)"
+              v-model="other.manufacturer"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs12>
+            <v-text-field
               name="input-7-1"
               label="Description (optional)"
               multi-line
@@ -81,10 +89,10 @@
   export default {
     data () {
       return {
-        manufacturer_options: [
-          'AeroVironment', "Ambarella", "DJI", "GoPro", "Parrot", "Yuneec", "Kespry", "Nutel Robotics", "Institu", "Ehang", "Aeryon Labs", "CyPhy", "senseFly", "Aerialtronics", "Freefly", "FLyability", "draganfly", "ActionDrone",
-          "3D Robotics", "CUSTOM BUILD"
-        ],
+        manufacturer_options: ['3D Robotics', 'ActionDrone', 'Aerialtronics', 'AeroVironment',
+         'Aeryon Labs', 'Ambarella', 'CyPhy', 'DJI', 'Ehang', 'FLyability',
+          'Freefly', 'GoPro','Institu', 'Kespry', 'Nutel Robotics', 'Parrot', 
+          'Yuneec', 'draganfly', 'senseFly', 'CUSTOM BUILD', 'Other / Not Listed'],
         num_blades_options: [
           '1', '2', '3', '4', '5', '6', '7', '8', '9', "10"
         ],
@@ -92,6 +100,9 @@
           'White', 'Black', 'Grey', 'Blue', 'Red', 'Orange'
         ],
         valid: false,
+        other: {
+          manufacturer: ''
+        },
         registration_info: {
           name: '',
           type: '',
@@ -103,7 +114,11 @@
     },
     methods: {
       registerDrone(){
-        this.$emit('register_drone', this.registration_info)
+        var reg_info = this.registration_info
+        if (this.registration_info.manufacturer == 'Other / Not Listed') {
+          reg_info.manufacturer = this.other.manufacturer
+        }
+        this.$emit('register_drone', reg_info)
       }
     }
   }
