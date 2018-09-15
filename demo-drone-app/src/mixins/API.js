@@ -155,12 +155,6 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
-    get_user_missions(success, failure){
-      var url = this.base_url + '/mission/get_user_missions/'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
     async get_mission_info(mission_id, token){
       var body = {'mission_id': mission_id}
       var url = this.base_url + '/mission/get_mission_info/'
@@ -175,8 +169,14 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
-    async get_missions(starts_at, ends_at, token){
-      var body = {'starts_at': starts_at, 'ends_at': ends_at}
+    async get_missions(token){
+      var url = this.base_url + '/mission/get_missions/'
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
+    async get_missions_post(start_datetime, end_datetime, token){
+      var body = {start_datetime, end_datetime}
       var url = this.base_url + '/mission/get_missions/'
       return await axios.post(url,body, {
         headers: {'Authorization': 'Bearer ' + token}
