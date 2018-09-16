@@ -49,7 +49,10 @@
 		},
 		data () {
 			return {
-
+				filters: {
+					after: '',
+					before: ''
+				}
 			}
 		},
 		methods: {

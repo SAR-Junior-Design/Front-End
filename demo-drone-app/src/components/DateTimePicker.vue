@@ -73,14 +73,15 @@
     methods: {
       update() {
         this.dialog = false
-        console.log(this.date)
-        this.datetime_formatted = moment(`${this.date} ${this.time}`, 'YYYY-MM-DD HH:MM a').format('MMMM Do YYYY, hh:mm a');
+        console.log(`${this.date} ${this.time}`)
+        this.datetime_formatted = moment(`${this.date} ${this.time}`, 'YYYY-MM-DD hh:mm a').format('MMMM Do YYYY, hh:mm a');
         console.log(this.datetime_formatted)
+        this.$emit('input', this.datetime_formatted)
       },
     },
     mounted() {
-      this.date = moment(this.datetime).format('YYYY-MM-DD')
-      this.time = moment(this.datetime).format('HH:MM a')
+      // this.date = moment(this.datetime).format('YYYY-MM-DD')
+      // this.time = moment(this.datetime).format('HH:MM a')
       this.datetime_formatted = moment(this.datetime).format('MMMM Do YYYY, h:mm a');
     },
 		filters: {

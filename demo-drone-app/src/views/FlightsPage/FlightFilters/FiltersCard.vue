@@ -9,43 +9,34 @@
           FILTERS
         </h3>
       </v-flex>
-      <v-layout row
-      style="margin:2px;">
-        <v-flex xs12 sm6 d-flex>
-          <v-select
-            outline
-            v-model="type"
-            :items="filter_types"
-            label="type"
-          />
-        </v-flex>
-        <v-flex
-        class="text-xs-right"
-        style="margin-top:8px;">
-          <v-btn
-            slot="activator"
-            color="primary"
-            dark
-            flat
-            icon
-            :disabled="type===''"
-            @click="addFilterItem()"
-            >
-              <v-icon> add </v-icon>
-            </v-btn>
-        </v-flex>
-      </v-layout>
-      <filter-item
-        v-model="filters"
-        v-for="(filter, index) in filters"
-        :key="filter.id"
-        v-bind:details = "filter"
-        v-on:input="filter = $event.target.value"
-        v-bind:index = "index"
-        v-on:deleted= "deleteFilterItem"
-      >
-      {{filter.id}}
-      </filter-item>
+      <v-flex style="margin-top:20px;">
+        <v-layout row>
+          <v-flex
+          xs2
+          style="margin-right:2px;"
+          >
+            {{filters[0].type}}
+          </v-flex>
+          <v-flex
+          style="margin-top:-25px;"
+          xs10>
+            <datetimepicker v-model="filters[0].datetime"/>
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex
+          xs2
+          style="margin-right:2px;"
+          >
+            {{filters[1].type}}
+          </v-flex>
+          <v-flex
+          style="margin-top:-25px;"
+          xs10>
+            <datetimepicker v-model="filters[1].datetime"/>
+          </v-flex>
+        </v-layout>
+      </v-flex>
       <v-flex class="text-xs-center">
         <v-btn flat outline style="margin:10px;"
           @click="refreshMissions();">
@@ -58,34 +49,28 @@
 
 
 <script>
-  import FilterItem from './FilterItem'
   import moment from 'moment'
+  import DateTimePicker from '@/components/DateTimePicker'
 
   export default {
     components: {
-      'filter-item': FilterItem
+      'datetimepicker': DateTimePicker
     },
     data() {
       return {
-        filters: [],
-        filter_types: ['After', 'Before'],
-        type: ''
+        filters: [{
+          type: 'After',
+          datetime: ''
+        },
+        {
+          type: 'Before',
+          datetime: ''
+        }],
       }
     },
     methods: {
-      addFilterItem(id) {
-        var datetime = moment().local().format('YYYY-MM-DD HH:mm:ss');
-        var filter_item = {
-          type: this.type,
-          datetime
-        }
-        this.filters.push(filter_item)
-      },
-      deleteFilterItem(index) {
-        console.log(JSON.stringify(this.filters[index]))
-        this.filters.splice(index, 1)
-      },
       refreshMissions(){
+        console.log(JSON.stringify(this.filters))
         this.$emit('refresh_missions', this.filters)
       }
     }
