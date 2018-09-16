@@ -36,8 +36,8 @@
 	import API from '@/mixins/API.js'
   import moment from 'moment'
   
-  import FiltersCard from './FiltersCard'
-	import FlightsTable from './FlightsTable'
+  import FiltersCard from './FlightFilters/FiltersCard'
+	import FlightsTable from './FlightTable//FlightsTable'
 
 	export default {
 		name: 'MissionsPage',
@@ -49,17 +49,7 @@
 		},
 		data () {
 			return {
-				currState: null,
-				message: null,
-				clearance_states: [
-					'APPROVED',
-					'DECLINED'
-				],
-				is_gov_official: false,
-				y: 'top',
-				x: null,
-				mode: '',
-				mapLoaded: false
+
 			}
 		},
 		methods: {
