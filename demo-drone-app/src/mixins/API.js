@@ -117,6 +117,10 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
+    async forgot_password(email) {
+      var url = this.base_url + '/user/forgot_password/?email='+email
+      return await axios.get(url);
+    },
     //DRONE API CALLS
     async get_user_drones(token){
       var url = this.base_url + '/drone/get_user_drones/'
