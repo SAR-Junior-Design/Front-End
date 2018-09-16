@@ -49,6 +49,9 @@
                         v-model="loginPassword"
                         required></v-text-field>
                     </v-flex>
+                    <v-flex>
+                      <a @click="forgotPassword"> forgot password? </a>
+                    </v-flex>
                     <v-flex id="warning" class="text-xs-center" style="visibility:hidden;color:#ff0000;">
                       <p> Member does not exist </p>
                     </v-flex>
@@ -67,7 +70,60 @@
           </v-flex>
         </v-layout>
       </v-layout>
-    </section>    
+    </section> 
+
+    <v-dialog
+      v-model="dialog"
+      width="500"
+    >
+      <v-card>
+        <v-card-title
+          class="headline grey lighten-2"
+          primary-title
+        >
+          Password Reset
+        </v-card-title>
+
+        <v-card-text>
+          An email will be sent to the address you submit below 
+          with a link to a page to reset your password.
+        </v-card-text>
+        <v-flex
+        style="margin-left:20px;margin-right:20px;"
+        >
+          <v-text-field
+            name="password_reset_email"
+            label="Account Email"
+            id="password_reset_email"
+            type="email"
+            :rules=[rules.required]
+            v-model="passwordResetEmail"
+            required>
+          </v-text-field>
+        </v-flex>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="secondary"
+            flat
+            @click="sendPasswordResetEmail"
+          >
+            Submit
+          </v-btn>
+          <v-btn
+            color="primary"
+            flat
+            @click="dialog=false"
+          >
+            Nevermind
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </v-content>
 </template>
 
@@ -108,6 +164,8 @@ export default {
       loginDialog: false,
       signUpDialog: false,
       valid: true,
+      dialog: false,
+      passwordResetEmail: '',
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
@@ -138,11 +196,20 @@ export default {
         }
 
       } else {
-        this.$emits('snackbar', 6000, 'Fill out login info.')
+        this.$emit('snackbar', 6000, 'Fill out login info.')
       }
     },
     onLogin() {
       router.push('/homepage')
+    },
+    forgotPassword() {
+      console.log('forgot password!')
+      this.dialog = true
+    },
+    async sendPasswordResetEmail() {
+      var response = await this.forgot_password(this.passwordResetEmail)
+      this.dialog = false
+      this.$emit('snackbar', 6000, response.data.message)
     }
   },
   computed: {
