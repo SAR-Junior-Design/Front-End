@@ -49,9 +49,6 @@ export default {
     onClick(){
 			router.push(`/map?id=${this.mission.id}`)
 		}
-	}, 
-	mounted() {
-		console.log(`Mission card: ${this.mission}`)
 	},
 	filters: {
   	date_filter: function (date) {
