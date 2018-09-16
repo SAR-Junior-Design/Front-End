@@ -9,7 +9,8 @@
         <v-flex xs12>
           <v-container grid-list-xl>
             <v-layout column align-center>
-              <v-flex xs12 md4 class="hidden-sm-and-up">
+              <v-flex xs12 md4 class="hidden-sm-and-up"
+              style="height:100vh;">
                 <v-card class="elevation-0 transparent">
                   <v-card-text class="text-xs-center">
                     <v-icon x-large color="primary">phonelink_erase</v-icon>
@@ -18,11 +19,15 @@
                     <div class="headline text-xs-center">Mobile Support Under Development.</div>
                   </v-card-title>
                   <v-card-text>
-                    Our platform strives to provide a clean, crisp experience. Therefore our application currently only supports desktop browsers. Please use any of the major desktop browsers until further notice.
+                    <v-flex class="text-xs-center">
+                      We are working hard to add mobile support. <br>
+                      Thank you for understanding!
+                    </v-flex>
                   </v-card-text>
                 </v-card>
               </v-flex>
-              <v-flex xs12 md8>
+              <v-flex xs12 md8
+              style="height:100vh;">
                 <v-card class="elevation-0 transparent">
                   <v-card-text class="text-xs-center">
                     <v-icon x-large color="primary">trending_up</v-icon>
@@ -31,13 +36,17 @@
                     <div class="headline text-xs-center">Be ahead of the curve.</div>
                   </v-card-title>
                   <v-card-text>
-                    Have a drone policy that fuels innovation.
+                    <div class="text-xs-center">
+                      Have a drone policy that fuels innovation. Our Unmanned Traffic Management (UTM) system
+                      gives you direct control of the sky while still allowing innovative useage of drones.
+                    </div>
                   </v-card-text>
                 </v-card>
               </v-flex>
             </v-layout>
             <v-layout row wrap align-center>
-              <v-flex xs12 md4>
+              <v-flex xs12 md4
+              style="height:100vh;">
                 <v-card class="elevation-0 transparent">
                   <v-card-text class="text-xs-center">
                     <v-icon x-large color="primary">color_lens</v-icon>
@@ -50,7 +59,8 @@
                   </v-card-text>
                 </v-card>
               </v-flex>
-              <v-flex xs12 md4>
+              <v-flex xs12 md4
+              style="height:100vh;">
                 <v-card class="elevation-0 transparent">
                   <v-card-text class="text-xs-center">
                     <v-icon x-large color="primary">flash_on</v-icon>
@@ -63,7 +73,8 @@
                   </v-card-text>
                 </v-card>
               </v-flex>
-              <v-flex xs12 md4>
+              <v-flex xs12 md4
+              style="height:100vh;">
                 <v-card class="elevation-0 transparent">
                   <v-card-text class="text-xs-center">
                     <v-icon x-large color="primary">people</v-icon>

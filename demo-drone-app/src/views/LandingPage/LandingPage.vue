@@ -1,28 +1,26 @@
 <template>
   <v-content>
     <section>
-      <video-bg :sources="['static/drone_landing_page.mp4']">
-        <v-layout row wrap 
-        style="padding-top:15vh;padding-bottom:25%;
-        background-color:rgba(0,0,0,0.25)"
-        px-5
-        >
-          <v-layout column style="margin-top:25vh">
-            <v-flex mt-2>
-              <v-flex class="text-xs-center" style="color:#ffffff">
-                <span style="font-size:30px;color:#ffffff;">Campus Drone Management.</span><br/>
-                <span style="font-size:20px;color:#ffffff;">An intuitive drone  policy toolkit.</span>
-              </v-flex>
+      <v-layout row wrap
+      class="background"
+      style="padding-top:15vh;height:100vh"
+      px-5
+      >
+        <v-layout column style="margin-top:25vh">
+          <v-flex mt-2>
+            <v-flex class="text-xs-center" style="color:#ffffff">
+              <span style="font-size:30px;color:#ffffff;">Campus Drone Management.</span><br/>
+              <span style="font-size:20px;color:#ffffff;">An intuitive drone policy toolkit.</span>
             </v-flex>
-          </v-layout>
-          <v-spacer/>
-          <v-flex>
-            <reg-step
-            v-on:snackbar="_snackbar"
-            />
           </v-flex>
         </v-layout>
-      </video-bg>
+        <v-spacer/>
+        <v-flex class="hidden-sm-and-down">
+          <reg-step
+          v-on:snackbar="_snackbar"
+          />
+        </v-flex>
+      </v-layout>
     </section>
 
     <first-section/>
@@ -30,6 +28,14 @@
 </template>
 
 <style>
+  .background {
+		background: linear-gradient( rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4) ), url('/static/result.jpg');
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    width:100%;
+	}
 </style>
 
 <script>
