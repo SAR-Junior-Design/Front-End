@@ -73,9 +73,7 @@
     methods: {
       update() {
         this.dialog = false
-        console.log(`${this.date} ${this.time}`)
         this.datetime_formatted = moment(`${this.date} ${this.time}`, 'YYYY-MM-DD hh:mm a').format('MMMM Do YYYY, hh:mm a');
-        console.log(this.datetime_formatted)
         this.$emit('input', this.datetime_formatted)
       },
     },

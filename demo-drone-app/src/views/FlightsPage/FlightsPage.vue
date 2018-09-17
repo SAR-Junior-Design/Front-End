@@ -3,7 +3,11 @@
 		<v-layout row style="margin-top:70px;">
 			<v-flex xs5>
 				<v-layout column>
-					<filters-card/>
+					<filters-card
+          @afterchange="afterFilterHandler"
+          @beforechange="beforeFilterHandler"
+          @refresh_missions="getMissions"
+          />
 					<v-card style="margin-left:20px;margin-right:20px;">
 						<v-flex class="text-xs-center">
 							<v-btn flat outline style="margin:10px;"
@@ -14,7 +18,12 @@
 					</v-card>
 				</v-layout>
 			</v-flex>
-			<flights-table/>
+			<flights-table
+      :missions="missions"
+      :user_info="user_info"
+      :is_gov_official="is_gov_official"
+      @delete_mission="deleteMission"
+      />
 		</v-layout>
 	</v-content>
 </template>
@@ -49,14 +58,21 @@
 		},
 		data () {
 			return {
-				filters: {
-					after: '',
-					before: ''
-				}
-			}
-		},
+          afterFilter: '',
+          beforeFilter: '',
+          missions: [],
+          user_info: null,
+          is_gov_official: false,
+        }
+      },
 		methods: {
-
+      async getMissions() {
+        console.log(this.afterFilter)
+				var response = await this.get_missions(
+					this.$store.state.access_token
+				);
+				this.missions = response.data
+      },
 			async deleteMission(mission) {
 				const response = await this.delete_mission(mission,
 					this.$store.state.access_token
@@ -68,11 +84,25 @@
 				this.showDeleteWarning=false;
 			},
 			newMission(){
-			router.push('/newflight')
-			}
+			  router.push('/newflight')
+      },
+      afterFilterHandler(value) {
+        this.afterFilter = value
+      },
+      beforeFilterHandler(value) {
+        this.beforeFilter = value
+      }
 		},
 		async mounted () {
-
+      var response = await this.is_government_official(this.$store.state.access_token);
+			if (JSON.stringify(response.data) == 'true') {
+				this.is_gov_official = true
+			}
+			await this.getMissions();
+			response = await this.get_current_user_info(this.$store.state.access_token);
+			if (response.status == 200) {
+				this.user_info = response.data
+			}
 		},
 		filters: {
   		date_filter: function (date) {

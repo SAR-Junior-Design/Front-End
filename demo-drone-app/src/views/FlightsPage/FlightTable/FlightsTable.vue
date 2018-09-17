@@ -201,6 +201,7 @@
 
   export default {
     mixins: [API],
+    props: ['missions','user_info','is_gov_official'],
     components: {
       'commander-info': CommanderInfo,
       'mapTemplate': mapThumbnail,
@@ -214,25 +215,12 @@
 					{ text: 'Start Date', align: 'center', value: 'starts_at'},
 					{ text: 'Status', align: 'center', value: 'legal_status'}
         ],
-        missions: [],
         search: '',
         rppi: [10,20,40,{"text":"All","value":-1}],
-        user_info: null,
-        is_gov_official: false,
         showDeleteWarning: false,
       }
     },
     methods: {
-      async getMissions() {
-				var starts_at = this.start_date + ' ' + this.start_time;
-				starts_at = moment(starts_at, 'YYYY-MM-DD HH:mm').toISOString()
-				var ends_at = this.end_date + ' ' + this.end_time;
-				ends_at = moment(ends_at, 'YYYY-MM-DD HH:mm').toISOString()
-				var response = await this.get_missions(
-					this.$store.state.access_token
-				);
-				this.missions = response.data
-      },
       _state(clearance) {
 				if (clearance == null){
 					return false
@@ -259,14 +247,7 @@
 				return this.user_info.user.id == id
       },
       async deleteMission(mission) {
-				const response = await this.delete_mission(mission,
-					this.$store.state.access_token
-				);
-				if (response.status == 200) {
-					this.$emit('snackbar', 6000, 'Flight Deleted.')
-					this.getMissions()
-				}
-				this.showDeleteWarning=false;
+				this.$emit('delete_mission', mission)
 			},
 			newMission(){
 			router.push('/newflight')
@@ -274,17 +255,6 @@
       goToMission(mission) {
 					router.push('map?id='+mission);
 			},
-    },
-    async mounted() {
-      var response = await this.is_government_official(this.$store.state.access_token);
-			if (JSON.stringify(response.data) == 'true') {
-				this.is_gov_official = true
-			}
-			await this.getMissions();
-			response = await this.get_current_user_info(this.$store.state.access_token);
-			if (response.status == 200) {
-				this.user_info = response.data
-			}
     },
 		filters: {
   		date_filter: function (date) {

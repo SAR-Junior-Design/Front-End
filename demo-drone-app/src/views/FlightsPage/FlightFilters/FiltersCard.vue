@@ -20,7 +20,7 @@
           <v-flex
           style="margin-top:-25px;"
           xs10>
-            <datetimepicker v-model="filters[0].datetime"/>
+            <datetimepicker :value="filters[0].datetime" @input="afterHandler"/>
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -33,7 +33,7 @@
           <v-flex
           style="margin-top:-25px;"
           xs10>
-            <datetimepicker v-model="filters[1].datetime"/>
+            <datetimepicker :value="filters[1].datetime" @input="beforeHandler"/>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -61,17 +61,23 @@
         filters: [{
           type: 'After',
           datetime: ''
-        },
-        {
+          },
+          {
           type: 'Before',
           datetime: ''
-        }],
+          }
+        ],
       }
     },
     methods: {
       refreshMissions(){
-        console.log(JSON.stringify(this.filters))
         this.$emit('refresh_missions', this.filters)
+      },
+      afterHandler(value) {
+        this.$emit('afterchange', value)
+      },
+      beforeHandler(value) {
+        this.$emit('beforechange', value)
       }
     }
   }
