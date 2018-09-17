@@ -38,6 +38,7 @@
 	import SettingsLicenses from './SettingsLicenses.vue'
 	import SettingsContact from './SettingsContact.vue'
 	import SettingsPilot from './SettingsPilot.vue'
+	import SettingsOfficial from './SettingsOfficial.vue'
 
 	export default {
 		mixins: [API],
@@ -45,14 +46,16 @@
 		    'settings-profile': SettingsProfile,
 		    'settings-licenses': SettingsLicenses,
 			'settings-contact': SettingsContact,
-			'settings-pilot': SettingsPilot
+			'settings-pilot': SettingsPilot,
+			'settings-official': SettingsOfficial
 	  },
 		data() {
 			return {
 				size:'150px',
+				pilot: {'title': 'Pilot', 'color': 'black', 'component': 'settings-pilot'},
+				gov_official: {'title': 'Official', 'color': 'black', 'component': 'settings-official'},
 				items: [
 					{'title': 'Profile', 'color': 'black', 'component': 'settings-profile'},
-					{'title': 'Pilot', 'color': 'black', 'component': 'settings-pilot'},
 					{'title': 'Contact', 'color': 'black', 'component': 'settings-contact'}
 				],
 				current_item: {},
@@ -80,9 +83,14 @@
 				this.$emit('snackbar',timeout, text);
 			}
 		},
-		mounted() {
-			this._get_current_user_info()
+		async mounted() {
+			await this._get_current_user_info()
 			this.current_item = this.items[0]
+			if (this.user_info.user.role === 'pilot') {
+				this.items.push(this.pilot)
+			} else {
+				this.items.push(this.gov_official)
+			}
 		}
 	}
 </script>
