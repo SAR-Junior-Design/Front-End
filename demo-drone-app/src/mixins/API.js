@@ -179,6 +179,12 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
+    async post_get_missions(filters, token){
+      var url = this.base_url + '/mission/get_missions/'
+      return await axios.post(url, {filters}, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
     async get_missions_post(start_datetime, end_datetime, token){
       var body = {start_datetime, end_datetime}
       var url = this.base_url + '/mission/get_missions/'

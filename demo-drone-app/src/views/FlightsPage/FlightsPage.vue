@@ -67,8 +67,17 @@
       },
 		methods: {
       async getMissions() {
-        console.log(this.afterFilter)
-				var response = await this.get_missions(
+        var filters = []
+        if (this.afterFilter !== '') {
+          var datetime = moment(this.afterFilter,'MMMM Do YYYY, h:mm a').toISOString()
+          filters.push({title:'after', datetime})
+        }
+        if (this.beforeFilter !== '') {
+          var datetime = moment(this.beforeFilter,'MMMM Do YYYY, h:mm a').toISOString()
+          filters.push({title:'before', datetime})
+        }
+				var response = await this.post_get_missions(
+          filters,
 					this.$store.state.access_token
 				);
 				this.missions = response.data
@@ -98,7 +107,7 @@
 			if (JSON.stringify(response.data) == 'true') {
 				this.is_gov_official = true
 			}
-			await this.getMissions();
+      await this.getMissions();
 			response = await this.get_current_user_info(this.$store.state.access_token);
 			if (response.status == 200) {
 				this.user_info = response.data

@@ -77,11 +77,6 @@
         this.$emit('input', this.datetime_formatted)
       },
     },
-    mounted() {
-      // this.date = moment(this.datetime).format('YYYY-MM-DD')
-      // this.time = moment(this.datetime).format('HH:MM a')
-      this.datetime_formatted = moment(this.datetime).format('MMMM Do YYYY, h:mm a');
-    },
 		filters: {
   		date_filter: function (date) {
     		return moment(date).format('MMMM Do, YYYY');
