@@ -5747,6 +5747,10 @@ vue2.1-google-maps@^0.7.6:
     babel-runtime "^5.8.0"
     marker-clusterer-plus "^2.1.4"
 
+vue@^2.3.0:
+  version "2.5.17"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
+
 vue@^2.3.2:
   version "2.5.16"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.16.tgz#07edb75e8412aaeed871ebafa99f4672584a0085"
@@ -5755,9 +5759,21 @@ vue@^2.5.3:
   version "2.5.13"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.13.tgz#95bd31e20efcf7a7f39239c9aa6787ce8cf578e1"
 
+vuetify-datetime-picker@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/vuetify-datetime-picker/-/vuetify-datetime-picker-1.0.6.tgz#3ca9bc8955c47cf58971a3b4b5ee6853c6db060f"
+  dependencies:
+    moment "^2.22.2"
+    vue "^2.3.0"
+    vuetify "^1.1.4"
+
 vuetify@^0.17.7:
   version "0.17.7"
   resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-0.17.7.tgz#068c8210473643d45166ef9c5f6eb0ecf26bb5a5"
+
+vuetify@^1.1.4:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.2.3.tgz#519bab56c31420892912c0c7dbd23e790c9287bb"
 
 vuex@^3.0.1:
   version "3.0.1"
