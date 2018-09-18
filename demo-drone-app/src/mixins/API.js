@@ -192,13 +192,6 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
-    get_possible_mission_conflicts(starts_at, ends_at, success, failure){
-      var body = {'starts_at': starts_at, 'ends_at': ends_at}
-      var url = this.base_url + '/v1_0/get_possible_mission_conflicts/'
-      axios.get(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
     async delete_mission(mission_id, token) {
       var body = {'mission_id': mission_id}
       var url = this.base_url + '/mission/delete_missions/'
@@ -242,7 +235,7 @@ export default {
     //   'ends_at': <datetime>
     // }
     async edit_mission_details(details, token) {
-      var url = this.base_url + '/mission/edit_mission_details/'
+      var url = this.base_url + '/mission/edit/'
       return await axios.post(url,details, {
         headers: {'Authorization': 'Bearer '+token}
       });
