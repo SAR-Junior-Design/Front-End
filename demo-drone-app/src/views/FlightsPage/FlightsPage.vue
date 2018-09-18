@@ -23,6 +23,7 @@
       :user_info="user_info"
       :is_gov_official="is_gov_official"
       @delete_mission="deleteMission"
+			@snackbar='snackbar'
       />
 		</v-layout>
 	</v-content>
@@ -100,7 +101,10 @@
       },
       beforeFilterHandler(value) {
         this.beforeFilter = value
-      }
+			},
+			snackbar(time, message) {
+				this.$emit('snackbar', time, message)
+			}
 		},
 		async mounted () {
       var response = await this.is_government_official(this.$store.state.access_token);
