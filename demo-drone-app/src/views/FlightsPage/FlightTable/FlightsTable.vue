@@ -175,7 +175,8 @@
                         </span>
                       </v-flex>
                     </v-layout>
-                    <v-btn v-if="is_gov_official" @click="update_clearance(props.item)" flat>Save Clearance</v-btn>
+                    <v-btn v-if="is_gov_official" @click="update_clearance(props.item)"
+                    :disabled="currState===''" flat>Save Clearance</v-btn>
                   </v-layout>
                 </v-card-text>
               </v-card>
@@ -216,8 +217,11 @@
 					{ text: 'Status', align: 'center', value: 'legal_status'}
         ],
         search: '',
+        currState: '',
+        message: '',
         rppi: [10,20,40,{"text":"All","value":-1}],
         showDeleteWarning: false,
+        clearance_states: ['DECLINED', 'PENDING', 'APPROVED']
       }
     },
     methods: {
