@@ -132,6 +132,7 @@
                               label="Write a short message to the commander to explain how you're setting the status."
                               multi-line
                               rows="3"
+                              :placeholder="props.item.clearance.message"
                               v-model="message"
                             >
                             </v-text-field>
