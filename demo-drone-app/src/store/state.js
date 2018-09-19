@@ -1,3 +1,4 @@
 export const state = {
-    access_token: ''
+    access_token: '',
+    user_info: {}
 }

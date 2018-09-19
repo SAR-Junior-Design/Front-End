@@ -179,7 +179,7 @@ export default {
     async userLogin() {
       if (this.$refs.form.validate()) {
         try {
-          const response = await this.login(this.loginUsername, this.loginPassword)
+          var response = await this.login(this.loginUsername, this.loginPassword)
           if (response.status == 200) {
             this.loginDialog = true;
             this.signUpDialog = false;
@@ -189,6 +189,15 @@ export default {
             this.$emit('change-toolbar-color', 'primary')
             this.$emit('login')
             router.push('/homepage')
+          }
+
+          response = await this.get_current_user_info(
+            this.$store.state.access_token
+          )
+          if (response.status == 200) {
+            const data = response.data;
+            this.$store.commit('user_info', data)
+            localStorage.setItem('user_info', JSON.stringify(data) )
           }
         }
         catch(error) {
