@@ -100,6 +100,12 @@
 					{ title: 'New Flight', path: '/newflight', icon: 'lock'},
 					{ title: 'Drones', path: '/drones', icon: 'lock'}
 				],
+				govOffMenu: [
+					{ title: 'Flights', path: '/flights', icon: 'home'},
+					{ title: 'New Flight', path: '/newflight', icon: 'lock'},
+					{ title: 'Drones', path: '/drones', icon: 'lock'},
+					{ title: 'Dashboard', path: '/dashboard', icon: 'lock'}
+				],
 				notLoggedIn: [
 
 				],
@@ -114,9 +120,16 @@
 			change_toolbar_color(color) {
 				this.toolbar_color = color
 			},
-			login() {
+			async login() {
 				this.logged_in = true
-				this.menuItems = this.userMenu
+				const is_gov_response = await this.is_government_official(
+					this.$store.state.access_token
+				)
+				if (JSON.stringify(is_gov_response.data) == 'true') {
+					this.menuItems = this.govOffMenu
+				} else {
+					this.menuItems = this.userMenu
+				}
 			},
 			async _logout() {
 				const response = await this.logout(
@@ -139,8 +152,15 @@
 				this.$store.state.access_token
 			);
 			if (JSON.stringify(response.data) == 'true') {
+				const is_gov_response = await this.is_government_official(
+					this.$store.state.access_token
+				)
+				if (JSON.stringify(is_gov_response.data) == 'true') {
+					this.menuItems = this.govOffMenu
+				} else {
+					this.menuItems = this.userMenu
+				}
 				this.logged_in = true
-				this.menuItems = this.userMenu
 				this.toolbar_color = 'primary'
 			} else {
 				this.logged_in = false
