@@ -5,7 +5,7 @@
   export default {
     extends: Line,
     mixins: [reactiveProp],
-    props: ['options', 'chartData'],
+    props: ['options', 'chartData', 'labels'],
     data() {
       return {
         gradient: null,
@@ -23,10 +23,10 @@
       this.gradient.addColorStop(1, 'rgba(100, 100, 100, 0)');
 
       this.data_collection = {
-        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        labels: this.labels,
         datasets: [
           {
-            label: 'Daily Flights',
+            label: 'Past Week Flight Histogram',
             backgroundColor: this.gradient,
             data: this.chartData
           }

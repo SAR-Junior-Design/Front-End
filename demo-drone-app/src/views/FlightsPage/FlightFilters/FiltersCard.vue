@@ -18,7 +18,7 @@
             {{filters[0].type}}
           </v-flex>
           <v-flex
-          style="margin-top:-25px;"
+          style="margin-top:-25px;margin-right:8px;"
           xs10>
             <datetimepicker :value="filters[0].datetime" @input="afterHandler"/>
           </v-flex>
@@ -31,7 +31,7 @@
             {{filters[1].type}}
           </v-flex>
           <v-flex
-          style="margin-top:-25px;"
+          style="margin-top:-25px;margin-right:8px;"
           xs10>
             <datetimepicker :value="filters[1].datetime" @input="beforeHandler"/>
           </v-flex>
