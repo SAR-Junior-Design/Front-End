@@ -16,7 +16,8 @@ const routerOptions = [
   { path: '/homepage', view: 'HomePage'},
   { path: '/drones', view: 'DronesPage'},
   { path: '/flights', view: 'FlightsPage'},
-  { path: '/education', view: 'EducationPage'}
+  { path: '/education', view: 'EducationPage'},
+  { path: '/dashboard', view: 'OfficialDashboardPage'}
 ]
 
 const routes = routerOptions.map(route => {

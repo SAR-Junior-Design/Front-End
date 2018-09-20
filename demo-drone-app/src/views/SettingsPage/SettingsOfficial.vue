@@ -13,8 +13,8 @@
         class="text-xs-center">
           <map-thumbnail
           :mission="user_info.government_official"
-          :width="400"
-          :height="350"
+          width="400px"
+          height="350px"
           />
         </v-flex>
       </v-layout>
@@ -29,9 +29,6 @@
     props: ['user_info'],
     components: {
       'map-thumbnail': mapThumbnail
-    },
-    mounted() {
-      console.log(JSON.stringify(this.user_info))
     }
   }
 </script>

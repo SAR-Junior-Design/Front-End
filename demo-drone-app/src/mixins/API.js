@@ -32,14 +32,7 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
-    async is_government_official(token) {
-      var url = this.base_url + '/official/is_government_official/'
-      return await axios.get(url, {
-        headers: {'Authorization': 'Bearer ' + token}
-      });
-    },
     async login(username, password) {
-    	var body = {'username': username, 'password': password}
       var url = this.base_url + '/o/token/'
       var data = { 'grant_type': 'password',
         client_id: this.client_id,
@@ -244,6 +237,20 @@ export default {
       var url = this.base_url + '/mission/edit_clearance/'
       var body = {'mission_id' : mission_id, 'state': new_clearance_state,
                   'message': message}
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer '+token}
+      });
+    },
+    async is_government_official(token) {
+      var url = this.base_url + '/official/is_government_official/'
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
+    //OFFICIAL CALLS
+    async flight_histogram(start_day, end_day, token){
+      var body = {start_day, end_day}
+      var url = this.base_url + '/official/flight_histogram/'
       return await axios.post(url,body, {
         headers: {'Authorization': 'Bearer '+token}
       });
