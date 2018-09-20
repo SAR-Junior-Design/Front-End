@@ -1,8 +1,8 @@
 <template>
-  <v-content style="margin-top:70px;">
+  <v-content>
     <v-layout row>
-      <jurisdiction-map :user_info="user_info" xs8/>
-      <dashboard-stats xs4/>
+      <jurisdiction-map v-if="user_info" :user_info="user_info" xs5/>
+      <dashboard-stats v-if="user_info" :user_info="user_info" xs7/>
     </v-layout>
   </v-content>
 </template>
@@ -24,17 +24,11 @@
         user_info: null
       }
     },
-    methods: {
-      async _get_current_user_info() {
-				const response = await this.get_current_user_info(
-					this.$store.state.access_token
-				);
-        this.user_info = response.data
-        console.log(this.user_info)
-			},
-    },
     async mounted() {
-      await this._get_current_user_info()
+      const response = await this.get_current_user_info(
+        this.$store.state.access_token
+      );
+      this.user_info = response.data
     }
   }
 </script>

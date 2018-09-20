@@ -82,7 +82,7 @@
 	    }
 		},
 		created() {
-			this.gmap_style= `width:${this.width}px;height:${this.height}px;`
+			this.gmap_style= `width:${this.width};height:${this.height};`
 			var area = this.mission.area
 			this.mission.polygons = []
 			this.mission.paths = []

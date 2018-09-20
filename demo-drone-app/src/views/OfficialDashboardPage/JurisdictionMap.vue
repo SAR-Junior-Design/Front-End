@@ -1,13 +1,13 @@
 <template>
   <v-content>
     <v-flex
-        class="text-xs-center">
-          <map-thumbnail
-          :mission="user_info.government_official"
-          :width="400"
-          :height="350"
-          />
-        </v-flex>
+      class="text-xs-center">
+        <map-thumbnail
+        :mission="user_info.government_official"
+        width="400px"
+        height="100vh"
+        />
+      </v-flex>
   </v-content>
 </template>
 
@@ -18,7 +18,7 @@
     props: ['user_info'],
     components: {
       'map-thumbnail': mapThumbnail
-    },
+    }
   }
 </script>
 

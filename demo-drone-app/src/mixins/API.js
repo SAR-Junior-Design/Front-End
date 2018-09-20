@@ -39,7 +39,6 @@ export default {
       });
     },
     async login(username, password) {
-    	var body = {'username': username, 'password': password}
       var url = this.base_url + '/o/token/'
       var data = { 'grant_type': 'password',
         client_id: this.client_id,

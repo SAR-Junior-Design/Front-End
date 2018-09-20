@@ -5,8 +5,8 @@
 	@click="onClick">
 		<map-thumbnail
 		:mission="mission"
-		:width="250"
-		:height="150"
+		width="250px"
+		height="150px"
 		style="width:250px;"
 		/>
 		<v-flex

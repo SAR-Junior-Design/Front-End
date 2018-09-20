@@ -100,7 +100,7 @@
                       <v-layout column align-center>
                         <v-flex>
                           <mapTemplate :mission="props.item"
-                          :width="250" :height="200"/>
+                          width="250px" height="200px"/>
                         </v-flex>
                       </v-layout>
                     </v-layout>
