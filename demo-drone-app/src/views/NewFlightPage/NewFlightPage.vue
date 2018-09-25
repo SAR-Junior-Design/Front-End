@@ -309,12 +309,12 @@
         <v-card>
         <v-card-title primary-title>
           <div>
-            <h3 class="headline mb-0">DISCLAIMER</h3>
-            <h4>“Please note, filing a Flight Plan with GTPD does NOT relieve the Pilot of the responsibility
+            <h3 class="headline mb-1">DISCLAIMER</h3>
+            <p>“Please note, filing a Flight Plan with GTPD does NOT relieve the Pilot of the responsibility
                of adhering to all FAA regulations and community-based safety guidelines. The ICARUS Campus Drone 
                Management System is NOT currently integrated with the FAA. You, the Pilot, are responsible for 
                contacting any local airport/heliport Air Traffic Control towers in order to comply with
-               FAA requirements.”</h4>
+               FAA requirements.”</p>
           </div>
         </v-card-title>
         <v-card-actions>
