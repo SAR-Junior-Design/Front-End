@@ -94,6 +94,16 @@ export default {
         throw error;
       }
     },
+    async editDrone(updatedValues) {
+      var response = await this.edit_drone_details(selected, this.$store.state.access_token);
+      if (response.status == 200) {
+        this.$emit('snackbar',6000, 'Drone Updated Successfully');
+        this.getUserDrones();
+        this.selected = [];
+      } else if (response.data['code'] == 31) {
+        throw error;
+      }
+    }
   },
   mounted () {
     this.getUserDrones();

@@ -135,6 +135,17 @@ export default {
         headers: {'Authorization': 'Bearer ' + token}
       });
     },
+    /**
+     * endpoint to edit drone details.
+     * @param {Dict} drone required: id, optional: manufacturer, color, type, name.
+     * @param {*} token 
+     */
+    async edit_drone_details(drone, token) {
+      var url = this.base_url + '/drone/delete_drone/'
+      return await axios.post(url,drone, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
 
     //MISSION API CALLS
     async register_mission(title, area, description, starts_at, ends_at, type, token) {
