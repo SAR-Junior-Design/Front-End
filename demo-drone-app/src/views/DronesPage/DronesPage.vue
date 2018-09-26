@@ -8,7 +8,8 @@
     <v-flex xs8>
       <drones-table
       :drones="items"
-      v-on:delete_drones="deleteDrone"/>
+      v-on:delete_drones="deleteDrone"
+      v-on:update_drone="updateDrone"/>
     </v-flex>
   </v-layout>
 </template>
@@ -94,6 +95,16 @@ export default {
         throw error;
       }
     },
+    async updateDrone(drone_changes) {
+      var response = await this.edit_drone_details(drone_changes,this.$store.state.access_token)
+      if (response.status == 200) {
+        //this.snackbar2 = true;
+        this.$emit('snackbar',6000, 'Drone Updated Successfully');
+        this.getUserDrones();
+      } else if (response.data['code'] == 31) {
+        throw error;
+      }
+    }
   },
   mounted () {
     this.getUserDrones();
