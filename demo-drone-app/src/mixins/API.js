@@ -141,7 +141,7 @@ export default {
      * @param {*} token 
      */
     async edit_drone_details(drone, token) {
-      var url = this.base_url + '/drone/delete_drone/'
+      var url = this.base_url + '/drone/edit_drone_details/'
       return await axios.post(url,drone, {
         headers: {'Authorization': 'Bearer ' + token}
       });

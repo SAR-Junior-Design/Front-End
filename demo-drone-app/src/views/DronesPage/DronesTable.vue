@@ -94,7 +94,7 @@
                   <h3> Description: </h3> <br>
                   <v-text-field
                     name="input-description"
-                    :value="edit_drone.description"
+                    v-model="edit_drone.description"
                     multi-line
                   ></v-text-field>
                 </v-flex>
@@ -170,9 +170,12 @@
           }
         });
 
+        drone_changes['id'] = original_drone['id']
+
         console.log(JSON.stringify(original_drone))
         console.log(JSON.stringify(this.edit_drone))
         console.log(JSON.stringify(drone_changes))
+        this.edit = false;
         this.$emit('update_drone', drone_changes)
       },
       openEditWindow (item) {
