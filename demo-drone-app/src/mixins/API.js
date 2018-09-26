@@ -4,168 +4,211 @@
 import Vue from 'vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import router from '@/router'
+import qs from 'qs';
 
 Vue.use(VueAxios, axios)
 
+var dev_data = {
+  base_url: 'https://devapi.icarusmap.com',
+  client_id: '7Ax4cZd34x6lwGw24eJhSPEw2Ia7rLwSW74nldoG',
+  client_secret: 'ybWAUwOiNyTrgB0IUicVmY0Ogyu4lackx6YSg8gU0Kq9rwvjtjutGbx3FdeneXi4iKDd1M1Pev9KC9EKqAdmQvAaN2FZQstynolzpY2evEMJ3gI3JtrPSOv39SG0dg6D'
+}
+
+var prod_data = {
+  base_url: 'https://api.icarusmap.com',
+  client_id: 'HnhPTf1tHDmcVE4eeaoGla66K74yV3DKTgWoxqBv',
+  client_secret: 'nFXQ5Ywv7Xd71LVXDhloHX9JiakCkSArDKEY03HTKkeZWDspbI8j1bL60E12bgiGSF4bK1kZB8qy85wx2dXsJEICGasdeyyeSAeDrIpubGYmdyQ08hYEkh5T0U7fdhRw'
+}
+
 export default {
   data () {
-  	return {
-  		base_url: 'https://backend.icarusmap.com'
-      //base_url: 'http://localhost:5000'
-  	}
+  	return dev_data
   },
   methods: {
     //USER API CALLS
-    isLoggedIn(success, failure) {
-    	var url = this.base_url + '/v1_0/isLoggedIn'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async isLoggedIn(token) {
+    	var url = this.base_url + '/user/is_logged_in/'
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    is_government_official(success, failure) {
-      var url = this.base_url + '/v1_0/is_government_official'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-      },
-    login(email, password, success, failure) {
-    	var body = {'email': email, 'password': password}
-      var url = this.base_url + '/v1_1/login'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async login(username, password) {
+      var url = this.base_url + '/o/token/'
+      var data = { 'grant_type': 'password',
+        client_id: this.client_id,
+        client_secret: this.client_secret,
+        username,
+        password
+      };
+      data = qs.stringify(data)
+      return await axios(
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data,
+          url
+        }
+      );
     },
-    logoff(success, failure) {
-    	var url = this.base_url + '/v1_1/logoff'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async logout(token) {
+      var url = this.base_url + '/o/revoke_token/'
+      var data = { 'grant_type': 'password',
+        client_id: this.client_id,
+        client_secret: this.client_secret,
+        token
+      };
+      data = qs.stringify(data)
+      return await axios(
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data,
+          url
+        }
+      );
     },
-    register_user(email, password, name, success, failure) {
-      var body = {'email': email, 'password': password, 'name': name}
-      var url = this.base_url + '/v1_1/register_user'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async register_pilot(email, password, username,
+      faa_registration_number, mobile_phone_number,
+      remote_pilot_certificate_number) {
+      var body = {email, password, username,
+        faa_registration_number, mobile_phone_number,
+        remote_pilot_certificate_number}
+      var url = this.base_url + '/pilot/register/'
+      return await axios.post(url,body);
     },
-    list_all_users(success, failure) {
-      var url = this.base_url + '/v1_0/list_all_users'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async get_user_info(token, id) {
+      var url = this.base_url + '/user/get/?id='+id
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    get_user_info(success, failure) {
-      var url = this.base_url + '/v1_0/get_user_info'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async get_pilot_info(token, id) {
+      var url = this.base_url + '/pilot/get/?id='+id
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    update_user_info(user_info, success, failure) {
-      var url = this.base_url + '/v1_0/update_user_info'
-      axios.post(url,user_info, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async get_current_user_info(token) {
+      var url = this.base_url + '/user/get_current/'
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
+    async update_user_info(user_info, token) {
+      var url = this.base_url + '/user/update/'
+      return await axios.post(url,user_info, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
+    async update_pilot_info(pilot_info, token) {
+      var url = this.base_url + '/pilot/update/'
+      return await axios.post(url,pilot_info, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
+    async forgot_password(email) {
+      var url = this.base_url + '/user/forgot_password/?email='+email
+      return await axios.get(url);
+    },
+    //DRONE API CALLS
+    async get_user_drones(token){
+      var url = this.base_url + '/drone/get_user_drones/'
+      return await axios.get(url, {
+          headers: {'Authorization': 'Bearer ' + token}
+        });
+    },
+    async register_drone(description, manufacturer, type, color, name, token) {
+      var url = this.base_url + '/drone/register_drone/'
+      var body = {description, manufacturer, type,
+              color, name}
+      return await axios.post(url,body, {
+          headers: {'Authorization': 'Bearer ' + token}
+        });
+    },
+    async delete_drone(drone_array, token) {
+      var url = this.base_url + '/drone/delete_drone/'
+      return await axios.post(url,drone_array, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
 
-    //DRONE API CALLS
-    get_user_drones(success, failure){
-      var url = this.base_url + '/v1_0/get_user_drones'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
-    register_drone(description, manufacturer, type, color, number_of_blades, success, failure) {
-      var url = this.base_url + '/v1_0/register_drone'
-      var body = {'description': description,
-              "manufacturer": manufacturer,
-              "type": type,
-              "color": color,
-              "number_of_blades": number_of_blades}
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
-    delete_drone(drone_array, success, failure) {
-      var url = this.base_url + '/v1_0/delete_drone'
-      axios.post(url,drone_array, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
     //MISSION API CALLS
-    register_mission_v1_1(title, area, description, starts_at, ends_at, type, success, failure) {
+    async register_mission(title, area, description, starts_at, ends_at, type, token) {
       var body = {'title': title, 'area': area, 'description': description,
                   'starts_at': starts_at, 'ends_at': ends_at, 'type': type}
-      var url = this.base_url + '/v1_1/register_mission'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      var url = this.base_url + '/mission/register_mission/'
+      return await axios.post(url,body,{
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    get_mission_drones(mission_id, success, failure) {
+    async get_mission_drones(mission_id, token) {
       var body = {'mission_id': mission_id}
-      var url = this.base_url + '/v1_0/get_mission_drones'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      var url = this.base_url + '/mission/get_mission_drones/'
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    get_user_missions(success, failure){
-      var url = this.base_url + '/v1_0/get_user_missions'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
-    },
-    get_mission_info_v1_1(mission_id, success, failure){
+    async get_mission_info(mission_id, token){
       var body = {'mission_id': mission_id}
-      var url = this.base_url + '/v1_1/get_mission_info'
-      axios.post(url, body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      var url = this.base_url + '/mission/get_mission_info/'
+      return await axios.post(url, body, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    add_drone_to_mission(drone_id, mission_id, operator_id, success, failure) {
+    async add_drone_to_mission(drone_id, mission_id, operator_id, token) {
       var body = {'drone_id': drone_id, 'mission_id': mission_id, 'operator_id': operator_id}
-      var url = this.base_url + '/v1_0/add_drone_to_mission'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      var url = this.base_url + '/mission/add_drone_to_mission/'
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    get_missions_v1_1(starts_at, ends_at, success, failure){
-      var body = {'starts_at': starts_at, 'ends_at': ends_at}
-      var url = this.base_url + '/v1_1/get_missions'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async get_missions(token){
+      var url = this.base_url + '/mission/get_missions/'
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    get_possible_mission_conflicts(starts_at, ends_at, success, failure){
-      var body = {'starts_at': starts_at, 'ends_at': ends_at}
-      var url = this.base_url + '/v1_0/get_possible_mission_conflicts'
-      axios.get(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async post_get_missions(filters, token){
+      var url = this.base_url + '/mission/get_missions/'
+      return await axios.post(url, {filters}, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    delete_mission(mission_id, success, failure) {
+    async get_missions_post(start_datetime, end_datetime, token){
+      var body = {start_datetime, end_datetime}
+      var url = this.base_url + '/mission/get_missions/'
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
+    async delete_mission(mission_id, token) {
       var body = {'mission_id': mission_id}
-      var url = this.base_url + '/v1_0/delete_mission'
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      var url = this.base_url + '/mission/delete_missions/'
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    get_active_missions(success, failure){
-      var url = this.base_url + '/v1_1/get_active_missions'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async get_current_missions(token){
+      var url = this.base_url + '/mission/get_current_missions/'
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    get_past_missions(success, failure){
-      var url = this.base_url + '/v1_1/get_past_missions'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async get_past_missions(token){
+      var url = this.base_url + '/mission/get_past_missions/'
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
     },
-    get_upcoming_missions(success, failure){
-      var url = this.base_url + '/v1_1/get_upcoming_missions'
-      axios.get(url, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async get_upcoming_missions(token){
+      var url = this.base_url + '/mission/get_upcoming_missions/'
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer '+token}
+      });
     },
     // Details must be a dictionary with any combination
     // of 'area', 'description', 'title', 'type', 'starts_at', 'ends_at'. If you don't
@@ -184,19 +227,33 @@ export default {
     //   'description': 'New description.',
     //   'ends_at': <datetime>
     // }
-    edit_mission_details_v1_1(details, success, failure) {
-      var url = this.base_url + '/v1_1/edit_mission_details'
-      axios.post(url,details, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+    async edit_mission_details(details, token) {
+      var url = this.base_url + '/mission/edit/'
+      return await axios.post(url,details, {
+        headers: {'Authorization': 'Bearer '+token}
+      });
     },
-    edit_clearance(mission_id,new_clearance_state, message, success, failure) {
-      var url = this.base_url + '/v1_1/edit_clearance'
-      var body = {'mission_id' : mission_id, 'new_clearance_state': new_clearance_state,
+    async edit_clearance(mission_id,new_clearance_state, message, token) {
+      var url = this.base_url + '/mission/edit_clearance/'
+      var body = {'mission_id' : mission_id, 'state': new_clearance_state,
                   'message': message}
-      axios.post(url,body, {withCredentials:true})
-        .then(success)
-        .catch(failure);
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer '+token}
+      });
+    },
+    async is_government_official(token) {
+      var url = this.base_url + '/official/is_government_official/'
+      return await axios.get(url, {
+        headers: {'Authorization': 'Bearer ' + token}
+      });
+    },
+    //OFFICIAL CALLS
+    async flight_histogram(start_day, end_day, token){
+      var body = {start_day, end_day}
+      var url = this.base_url + '/official/flight_histogram/'
+      return await axios.post(url,body, {
+        headers: {'Authorization': 'Bearer '+token}
+      });
     }
   }
 }

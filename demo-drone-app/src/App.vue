@@ -1,11 +1,11 @@
 <template>
 	<v-app id="inspire">
-		<v-toolbar transparent fixed :flat = "is_flat" :color="toolbar_color">
+		<v-toolbar primary fixed :flat = "is_flat" :color="toolbar_color">
 			<v-toolbar-title style="margin-right:20px;">
-				<router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: white;">
+				<router-link v-if="!logged_in" to="/" tag="span" style="cursor: pointer;color: white;font-weight:200;">
 					ICARUS
 				</router-link>
-				<router-link v-if="logged_in" to="/homepage" tag="span" style="cursor: pointer;color: white;">
+				<router-link v-if="logged_in" to="/homepage" tag="span" style="cursor: pointer;color: white;font-weight:200;">
 					ICARUS
 				</router-link>
 			</v-toolbar-title>
@@ -27,15 +27,15 @@
 					<v-list-tile to="/settings">
 						<v-list-tile-title> settings</v-list-tile-title>
 					</v-list-tile>
-					<v-list-tile @click="_logoff()">
+					<v-list-tile @click="_logout()">
 						<v-list-tile-title> sign out</v-list-tile-title>
 					</v-list-tile>
 				</v-list>
 			</v-menu>
 			<v-toolbar-items class="hidden-sm-and-down" v-if="!logged_in">
-				<v-btn 
-				style="color:white;" 
-				flat 
+				<v-btn
+				style="color:white;"
+				flat
 				to="/login"
 				>
 					<v-icon style="margin-right:5px">lock_outline</v-icon>
@@ -53,37 +53,38 @@
 			:vertical="mode === 'vertical'"
 			v-model="snackbar"
 			color="white"
+			class="hidden-sm-and-down"
 		>
 			<span style="color:black"> {{ text }} </span>
-			<v-btn flat color="green" @click.native="snackbar = false">Close</v-btn>
+			<v-btn flat color="secondary" @click.native="snackbar = false">Close</v-btn>
 		</v-snackbar>
 	</v-app>
 </template>
 
 <script>
-import Vue from 'vue';
-import axios from 'axios'
-import VueAxios from 'vue-axios'
-import router from '@/router'
-import API from './mixins/API.js'
-import Vuetify from 'vuetify'
+	import Vue from 'vue';
+	import axios from 'axios'
+	import VueAxios from 'vue-axios'
+	import router from '@/router'
+	import API from './mixins/API.js'
+	import Vuetify from 'vuetify'
 
-Vue.use(VueAxios, axios)
-Vue.use(Vuetify, {
-	theme: {
-		primary: '#1d561a',
-		secondary: '#b0bec5',
-		accent: '#8c9eff',
-		error: '#b71c1c'
-	}
-})
+	Vue.use(VueAxios, axios)
+	Vue.use(Vuetify, {
+		theme: {
+			primary: '#04274A',
+			secondary: '#E5B43D',
+			accent: '#8c9eff',
+			error: '#b71c1c'
+		}
+	})
 
 	export default {
 		mixins: [API],
 		data () {
 			return {
 				is_flat: true,
-				toolbar_color: "transparent",
+				toolbar_color: "primary",
 				sidebar: false,
 				logged_in: false,
 				snackbar: false,
@@ -99,6 +100,12 @@ Vue.use(Vuetify, {
 					{ title: 'New Flight', path: '/newflight', icon: 'lock'},
 					{ title: 'Drones', path: '/drones', icon: 'lock'}
 				],
+				govOffMenu: [
+					{ title: 'Flights', path: '/flights', icon: 'home'},
+					{ title: 'New Flight', path: '/newflight', icon: 'lock'},
+					{ title: 'Drones', path: '/drones', icon: 'lock'},
+					{ title: 'Dashboard', path: '/dashboard', icon: 'lock'}
+				],
 				notLoggedIn: [
 
 				],
@@ -113,19 +120,26 @@ Vue.use(Vuetify, {
 			change_toolbar_color(color) {
 				this.toolbar_color = color
 			},
-			login() {
+			async login() {
 				this.logged_in = true
-				this.menuItems = this.userMenu
+				const is_gov_response = await this.is_government_official(
+					this.$store.state.access_token
+				)
+				if (JSON.stringify(is_gov_response.data) == 'true') {
+					this.menuItems = this.govOffMenu
+				} else {
+					this.menuItems = this.userMenu
+				}
 			},
-			_logoff() {
-				this.logoff(response => {
+			async _logout() {
+				const response = await this.logout(
+					this.$store.state.access_token
+				);
+				if (response.status == 200) {
 					this.logged_in = false
 					this.menuItems = this.notLoggedIn
 					router.push('/')
-				},
-				error => {
-					alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-				})
+				}
 			},
 			_snackbar(timeout,text) {
 				this.timeout = timeout
@@ -133,22 +147,27 @@ Vue.use(Vuetify, {
 				this.snackbar = true
 			}
 		},
-		mounted() {
-			this.isLoggedIn(
-				response => {
-					if (response.data == 'True') {
-						this.logged_in = true
-						this.menuItems = this.userMenu
-						this.toolbar_color = 'primary'
-					} else {
-						this.logged_in = false
-						this.menuItems = this.notLoggedIn
-						this.toolbar_color = 'transparent'
-					}
-				},
-				error => {
-					alert('Hmmm something went wrong with our servers when fetching stations!! Sorry!')
-				})
+		async mounted() {
+			const response = await this.isLoggedIn(
+				this.$store.state.access_token
+			);
+			if (JSON.stringify(response.data) == 'true') {
+				const is_gov_response = await this.is_government_official(
+					this.$store.state.access_token
+				)
+				if (JSON.stringify(is_gov_response.data) == 'true') {
+					this.menuItems = this.govOffMenu
+				} else {
+					this.menuItems = this.userMenu
+				}
+				this.logged_in = true
+				this.toolbar_color = 'primary'
+			} else {
+				this.logged_in = false
+				this.menuItems = this.notLoggedIn
+				this.toolbar_color = 'transparent'
+				router.push('/')
+			}
 		}
 	}
 </script>
