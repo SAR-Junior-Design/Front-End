@@ -125,6 +125,7 @@
                 <v-card-text v-if="!editDescription">
                   <v-layout row justify-space-between>
                     <v-flex xs8>
+                      <h3> Description: </h3> <br>
                       {{props.item.description}}
                     </v-flex>
                     <v-flex xs2>

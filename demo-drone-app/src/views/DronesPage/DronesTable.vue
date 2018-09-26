@@ -45,7 +45,37 @@
           </template>
           <template slot="expand" slot-scope="props">
             <v-card flat>
-              <v-card-text>{{props.item.description}}</v-card-text>
+              <v-card-text v-if="!editDescription">
+                <v-layout row justify-space-between>
+                  <v-flex xs8>
+                    {{props.item.description}}
+                  </v-flex>
+                  <v-flex xs2>
+                    <v-btn flat @click="editDescription=true">
+                      <v-icon>edit</v-icon>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+              <v-card-text v-if="editDescription">
+                <v-layout row justify-space-between>
+                  <v-flex xs8>
+                    <v-text-field
+                      name="input-description"
+                      :value="props.item.description"
+                      multi-line
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs2>
+                    <v-btn flat @click="editDescription=false">
+                      <v-icon>close</v-icon>
+                    </v-btn>
+                    <v-btn flat @click="">
+                      <v-icon>save</v-icon>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
             </v-card>
           </template>
           <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -72,6 +102,7 @@
           { text: 'Manufacturer', value: 'manufacturer' },
           { text: 'Type', value: 'type' }
         ],
+        editDescription: false
       }
     },
     methods: {
