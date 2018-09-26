@@ -10,7 +10,7 @@
         <tr @click.prevent="props.expanded = !props.expanded">
           <td class="text-xs-left">{{ props.item.title }}</td>
           <td class="text-xs-center">{{ props.item.commander_id }}</td>
-          <td class="text-xs-center">{{ props.item.num_drones }}</td>
+          <td class="text-xs-center">{{ props.item.created_at | date_filter }}</td>
           <td class="text-xs-center">{{ props.item.starts_at | date_filter}}</td>
           <td class="text-xs-center">
             <v-icon v-if="_state(props.item.clearance) == 'RECOMMEND AGAINST FLIGHT'" right color="red">block</v-icon>
@@ -214,7 +214,7 @@
 				headers: [
 					{ text: 'Title', align: 'left', value: 'title' },
 					{ text: 'Commander', align: 'center', value: 'commander'},
-					{ text: 'Drones', align: 'center', value: 'Drones#'},
+					{ text: 'Created On', align: 'center', value: 'created_at'},
 					{ text: 'Start Date', align: 'center', value: 'starts_at'},
 					{ text: 'Status', align: 'center', value: 'legal_status'}
         ],
