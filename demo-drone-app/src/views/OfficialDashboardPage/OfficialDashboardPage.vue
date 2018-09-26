@@ -1,8 +1,8 @@
 <template>
   <v-content>
     <v-layout row>
-      <jurisdiction-map v-if="user_info" :user_info="user_info" xs5/>
-      <dashboard-stats v-if="user_info" :user_info="user_info" xs7/>
+      <jurisdiction-map v-if="user_info" :mission="user_info.government_official" xs8/>
+      <dashboard-stats v-if="user_info" :user_info="user_info" xs4/>
     </v-layout>
   </v-content>
 </template>

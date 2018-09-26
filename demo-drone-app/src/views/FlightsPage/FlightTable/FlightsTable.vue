@@ -13,9 +13,10 @@
           <td class="text-xs-center">{{ props.item.num_drones }}</td>
           <td class="text-xs-center">{{ props.item.starts_at | date_filter}}</td>
           <td class="text-xs-center">
-            <v-icon v-if="_state(props.item.clearance) == 'DECLINED'" right color="red">block</v-icon>
-            <v-icon v-if="_state(props.item.clearance) == 'PENDING'" right color="yellow">error</v-icon>
-            <v-icon v-if="_state(props.item.clearance) == 'APPROVED'" right color="green">check_circle</v-icon>
+            <v-icon v-if="_state(props.item.clearance) == 'RECOMMEND AGAINST FLIGHT'" right color="red">block</v-icon>
+            <v-icon v-if="_state(props.item.clearance) == 'CAUTION'" right color="yellow">error</v-icon>
+            <v-icon v-if="_state(props.item.clearance) == 'NOTIFICATION RECEIVED'" right color="green">check_circle</v-icon>
+            <v-icon v-if="_state(props.item.clearance) == 'PENDING'" right >radio_button_unchecked</v-icon>
           </td>
         </tr>
       </template>
@@ -222,7 +223,7 @@
         message: '',
         rppi: [10,20,40,{"text":"All","value":-1}],
         showDeleteWarning: false,
-        clearance_states: ['DECLINED', 'PENDING', 'APPROVED']
+        clearance_states: ['RECOMMEND AGAINST FLIGHT', 'NOTIFICATION RECEIVED', 'CAUTION']
       }
     },
     methods: {

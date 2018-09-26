@@ -131,7 +131,7 @@
           </v-card-actions>
         </v-card>  
       </v-menu>
-      <v-btn @click.stop="drawer = !drawer" @click="saveMission()" dark style="margin-left:60%"
+      <v-btn @click.stop="drawer = !drawer" @click="isFilledOut()" dark style="margin-left:60%"
         color="primary">
         Save Flight
       </v-btn>
@@ -291,7 +291,7 @@
               <ul style="list-style-position: inside; margin-left: 25%;">
                 <li> Flight Title </li>
                 <li> Flight Description </li>
-                <li> Flight Area </li>
+                <li> Flight Area (To set area, click the hand button on the right then click the pen.) </li>
                 <li> Flight Date </li>
                 <li> Start Time </li>
                 <li> End Time </li>
@@ -301,6 +301,25 @@
         </v-card-title>
         <v-card-actions>
           <v-btn color="primary" flat @click.stop="alertMissingCriteria=false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="disclaimerDialog" max-width="500px">
+        <v-card>
+        <v-card-title primary-title>
+          <div>
+            <h3 class="headline mb-1">DISCLAIMER</h3>
+            <p>“Please note, filing a Flight Plan with GTPD does NOT relieve the Pilot of the responsibility
+               of adhering to all FAA regulations and community-based safety guidelines. The ICARUS Campus Drone 
+               Management System is NOT currently integrated with the FAA. You, the Pilot, are responsible for 
+               contacting any local airport/heliport Air Traffic Control towers in order to comply with
+               FAA requirements.”</p>
+          </div>
+        </v-card-title>
+        <v-card-actions>
+          <v-btn color="secondary" flat @click.stop="saveMission()">Accept</v-btn>
+          <v-btn color="primary" flat @click.stop="disclaimerDialog = false">Decline</v-btn>
         </v-card-actions>
       </v-card>
       </v-dialog>
@@ -355,6 +374,7 @@
         timeout: null,
         show: false,
         alertMissingCriteria: false,
+        disclaimerDialog: false,
         cardHeight: '200px',
         deleteMenu: false,
         x: 0,
@@ -621,6 +641,7 @@
               if (end != '' & end != null) {
                 if (this.polygons.length > 0) {
                   return true;
+                  this.disclaimerDialog = true;
                 }
               }
             }
@@ -629,34 +650,39 @@
         this.alertMissingCriteria = true;
         return false;
       },
+      isFilledOut() {
+        var start = this.pickerDate + ' ' + this.pickerStart;
+        var end = this.pickerDate + ' ' + this.pickerEnd;
+        if (this.checkCriteria(this.title, this.description, start, end)) {
+          this.disclaimerDialog = true
+        }
+      },
       async saveMission() {
         var geoJ = this.makeGeoJson();
         var start = this.pickerDate + ' ' + this.pickerStart;
         var end = this.pickerDate + ' ' + this.pickerEnd;
         start = moment(start, 'YYYY-MM-DD HH:mm').toISOString()
         end = moment(end, 'YYYY-MM-DD HH:mm').toISOString()
-        if(this.checkCriteria(this.title, this.description, start, end)) {
-          var response = await this.register_mission(
-            this.title,
-            geoJ, 
-            this.description,
-            start,
-            end,
-            this.selectedType,
-            this.$store.state.access_token
-          );
-          if (response['status'] == 200) {
-            for (var i = 0; i < this.polygons.length; i++) {
-              this.polygons[i].setEditable(false);
-              this.polygons[i].setDraggable(false);
-            }
-            this.draggable = true;
-            this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
-            this.canDraw = false;
-            this.edit = !this.edit;
-            this.$emit('snackbar',6000, 'Flight Successfully Saved');
-            router.push('/flights')
+        var response = await this.register_mission(
+          this.title,
+          geoJ, 
+          this.description,
+          start,
+          end,
+          this.selectedType,
+          this.$store.state.access_token
+        );
+        if (response['status'] == 200) {
+          for (var i = 0; i < this.polygons.length; i++) {
+            this.polygons[i].setEditable(false);
+            this.polygons[i].setDraggable(false);
           }
+          this.draggable = true;
+          this.$refs.map.$mapObject.setOptions({ draggableCursor: 'grab' });
+          this.canDraw = false;
+          this.edit = !this.edit;
+          this.$emit('snackbar',6000, 'Flight Successfully Saved');
+          router.push('/flights')
         }
       },
       leaving () {
